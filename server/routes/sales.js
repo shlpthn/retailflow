@@ -37,6 +37,64 @@ function summarize(salesForScope) {
   };
 }
 
+function getLatestTransactions(salesList, limit = 20) {
+  return [...salesList]
+    .sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''))
+    .slice(0, limit);
+}
+
+/**
+ * GET /api/sales/transactions (alias: /api/sales/history)
+ * Returns the latest transactions for a store (default: 20 transactions).
+ * Supports query parameters:
+ *   - storeId: target store (for roles with SALES_VIEW_ALL_STORES)
+ *   - limit: number of transactions to return (default 20, max 100)
+ */
+const handleTransactions = (req, res) => {
+  let storeId;
+  if (hasPermission(req.user, 'SALES_VIEW_ALL_STORES')) {
+    storeId = req.query.storeId
+      ? (assertStoreAccess(req, res, req.query.storeId) ? req.query.storeId : null)
+      : effectiveStoreId(req);
+    if (storeId === null && res.headersSent) return;
+  } else {
+    storeId = effectiveStoreId(req);
+    if (!assertStoreAccess(req, res, storeId)) return;
+  }
+
+  const limit = Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 20));
+
+  let matching = db.sales.filter((s) => s.storeId === storeId);
+  if (req.user.role === 'CASHIER') {
+    matching = matching.filter((s) => s.cashierId === req.user.id);
+  }
+
+  const transactions = getLatestTransactions(matching, limit);
+
+  res.json({
+    storeId,
+    storeName: db.getStore(storeId)?.name || storeId,
+    totalCount: matching.length,
+    limit,
+    transactions,
+    sales: transactions,
+  });
+};
+
+router.get(
+  '/transactions',
+  requireAnyPermission('SALES_VIEW_OWN_STORE', 'SALES_VIEW_ALL_STORES'),
+  resolveStoreScope,
+  handleTransactions
+);
+
+router.get(
+  '/history',
+  requireAnyPermission('SALES_VIEW_OWN_STORE', 'SALES_VIEW_ALL_STORES'),
+  resolveStoreScope,
+  handleTransactions
+);
+
 router.get(
   '/',
   requireAnyPermission('SALES_VIEW_OWN_STORE', 'SALES_VIEW_ALL_STORES'),
@@ -47,7 +105,12 @@ router.get(
     // that distinction is enforced here, not by a role check.
     if (req.user.role === 'CASHIER') {
       const own = db.sales.filter((s) => s.cashierId === req.user.id);
-      return res.json({ scope: 'OWN_TRANSACTIONS', sales: own, summary: summarize(own) });
+      return res.json({
+        scope: 'OWN_TRANSACTIONS',
+        sales: own,
+        recentTransactions: getLatestTransactions(own, 20),
+        summary: summarize(own),
+      });
     }
 
     if (hasPermission(req.user, 'SALES_VIEW_ALL_STORES')) {
@@ -56,14 +119,26 @@ router.get(
         : effectiveStoreId(req);
       if (storeId === null && res.headersSent) return;
       const scoped = db.sales.filter((s) => s.storeId === storeId);
-      return res.json({ scope: 'STORE', storeId, storeName: db.getStore(storeId)?.name, summary: summarize(scoped) });
+      return res.json({
+        scope: 'STORE',
+        storeId,
+        storeName: db.getStore(storeId)?.name,
+        recentTransactions: getLatestTransactions(scoped, 20),
+        summary: summarize(scoped),
+      });
     }
 
     // SALES_VIEW_OWN_STORE without CASHIER role => Store Manager: fixed own store.
     const storeId = effectiveStoreId(req);
     if (!assertStoreAccess(req, res, storeId)) return;
     const scoped = db.sales.filter((s) => s.storeId === storeId);
-    res.json({ scope: 'STORE', storeId, storeName: db.getStore(storeId)?.name, summary: summarize(scoped) });
+    res.json({
+      scope: 'STORE',
+      storeId,
+      storeName: db.getStore(storeId)?.name,
+      recentTransactions: getLatestTransactions(scoped, 20),
+      summary: summarize(scoped),
+    });
   }
 );
 
