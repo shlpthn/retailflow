@@ -1,0 +1,24 @@
+import { clsx, type ClassValue } from "clsx"
+import { twMerge } from "tailwind-merge"
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
+
+export function fmtMoney(n: number | string | null | undefined): string {
+  return `$${Number(n || 0).toFixed(2)}`
+}
+
+export function fmtDate(iso: string | null | undefined): string {
+  if (!iso) return ''
+  return new Date(iso).toLocaleString(undefined, {
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+}
+
+export function esc(s: string | null | undefined): string {
+  return String(s ?? '')
+}

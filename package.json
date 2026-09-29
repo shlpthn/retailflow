@@ -5,7 +5,9 @@
   "main": "server/index.js",
   "scripts": {
     "start": "node server/index.js",
-    "dev": "node server/index.js"
+    "dev": "node server/index.js",
+    "build:client": "npm --prefix client run build",
+    "dev:client": "npm --prefix client run dev"
   },
   "dependencies": {
     "express": "^4.19.2",

@@ -28,10 +28,14 @@ app.use('/api/roles', require('./routes/roles'));
 app.use('/api/audit-logs', require('./routes/auditLogs'));
 
 // ---- Static SPA frontend ----------------------------------------------------
-app.use(express.static(path.join(__dirname, '..', 'public')));
+const fs = require('fs');
+const clientDist = path.join(__dirname, '..', 'client', 'dist');
+const staticDir = fs.existsSync(clientDist) ? clientDist : path.join(__dirname, '..', 'public');
+
+app.use(express.static(staticDir));
 app.get('*', (req, res) => {
   if (req.path.startsWith('/api')) return res.status(404).json({ error: 'Not found' });
-  res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
+  res.sendFile(path.join(staticDir, 'index.html'));
 });
 
 const PORT = process.env.PORT || 3000;
