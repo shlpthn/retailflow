@@ -63,14 +63,21 @@ async function boot() {
       sessionStorage.removeItem('rf_token');
     }
   }
-  if (!state.token) return renderLogin();
+  if (!state.token) {
+    window.onhashchange = () => {
+      if (location.hash === '#/signup') renderSignup();
+      else renderLogin();
+    };
+    if (location.hash === '#/signup') return renderSignup();
+    return renderLogin();
+  }
   if (hasAny('STORE_VIEW')) {
     try { state.stores = await api('/stores'); } catch (e) { /* ignore */ }
   }
   if (state.user.storeId) state.selectedStoreId = state.user.storeId;
   else if (state.stores.length) state.selectedStoreId = state.stores[0].id;
 
-  if (!location.hash) location.hash = defaultRoute();
+  if (!location.hash || location.hash === '#/login' || location.hash === '#/signup') location.hash = defaultRoute();
   window.onhashchange = renderShell;
   renderShell();
 }
@@ -85,6 +92,14 @@ function defaultRoute() {
   return '#/';
 }
 
+const ROLE_LABEL = {
+  CASHIER: 'Cashier',
+  INVENTORY_STAFF: 'Inventory Staff',
+  STORE_MANAGER: 'Store Manager',
+  HEAD_OFFICE_MANAGER: 'Head Office Manager',
+  SYSTEM_ADMIN: 'System Admin',
+};
+
 const DEMO_ACCOUNTS = [
   ['cashier1', 'Cashier · Downtown'],
   ['inventory1', 'Inventory Staff · Downtown'],
@@ -93,6 +108,16 @@ const DEMO_ACCOUNTS = [
   ['ho1', 'Head Office Manager'],
   ['admin1', 'System Admin'],
 ];
+
+function navToLogin() {
+  if (location.hash === '#/login' || !location.hash) renderLogin();
+  else location.hash = '#/login';
+}
+
+function navToSignup() {
+  if (location.hash === '#/signup') renderSignup();
+  else location.hash = '#/signup';
+}
 
 function renderLogin() {
   app.innerHTML = `
@@ -105,6 +130,7 @@ function renderLogin() {
           <div class="field"><label>Username</label><input name="username" autocomplete="username" required /></div>
           <div class="field"><label>Password</label><input name="password" type="password" autocomplete="current-password" required /></div>
           <button class="btn btn-primary" type="submit">Sign in</button>
+          <button class="btn btn-ghost" id="to-signup-btn" type="button" style="width:100%;margin-top:10px;">Sign up</button>
         </form>
         <div class="demo-accounts">
           <p>Demo accounts — password123</p>
@@ -115,6 +141,8 @@ function renderLogin() {
       </div>
     </div>`;
 
+  document.getElementById('to-signup-btn').addEventListener('click', navToSignup);
+
   document.getElementById('login-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const fd = new FormData(e.target);
@@ -122,6 +150,66 @@ function renderLogin() {
   });
   document.querySelectorAll('.demo-list button').forEach((b) => {
     b.addEventListener('click', () => doLogin(b.dataset.user, 'password123'));
+  });
+}
+
+async function renderSignup() {
+  let stores = [];
+  try {
+    stores = await api('/auth/stores');
+  } catch (e) {
+    stores = [];
+  }
+  const roles = Object.keys(ROLE_LABEL);
+
+  app.innerHTML = `
+    <div class="login-screen">
+      <div class="login-card">
+        <div class="login-brand"><span class="mark"></span><h1>RetailFlow</h1></div>
+        <p class="login-sub">Create your account to get started.</p>
+        <div id="signup-error"></div>
+        <form id="signup-form">
+          <div class="field"><label>Full Name</label><input name="name" id="s-name" placeholder="Cara Chen" required /></div>
+          <div class="field"><label>Username</label><input name="username" id="s-username" placeholder="cashier2" autocomplete="username" required /></div>
+          <div class="field"><label>Role</label><select name="role" id="s-role">${roles.map((r) => `<option value="${r}">${ROLE_LABEL[r]}</option>`).join('')}</select></div>
+          <div class="field" id="s-store-field"><label>Store</label><select name="storeId" id="s-store">${stores.map((s) => `<option value="${s.id}">${esc(s.name)}</option>`).join('')}</select></div>
+          <div class="field"><label>Password</label><input name="password" id="s-password" type="password" autocomplete="new-password" placeholder="Password" required /></div>
+          <button class="btn btn-primary" type="submit">Sign up</button>
+          <button class="btn btn-ghost" id="to-login-btn" type="button" style="width:100%;margin-top:10px;">Back to Sign in</button>
+        </form>
+      </div>
+    </div>`;
+
+  const roleSel = document.getElementById('s-role');
+  const storeField = document.getElementById('s-store-field');
+  function syncStoreField() {
+    storeField.style.display = ['CASHIER', 'INVENTORY_STAFF', 'STORE_MANAGER'].includes(roleSel.value) ? '' : 'none';
+  }
+  roleSel.addEventListener('change', syncStoreField);
+  syncStoreField();
+
+  document.getElementById('to-login-btn').addEventListener('click', navToLogin);
+
+  document.getElementById('signup-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = document.getElementById('s-name').value;
+    const username = document.getElementById('s-username').value;
+    const role = roleSel.value;
+    const isStoreLevel = ['CASHIER', 'INVENTORY_STAFF', 'STORE_MANAGER'].includes(role);
+    const storeId = isStoreLevel ? document.getElementById('s-store').value : undefined;
+    const password = document.getElementById('s-password').value;
+
+    try {
+      await api('/auth/signup', {
+        method: 'POST',
+        body: { name, username, role, storeId, password },
+      });
+      toast('Account created successfully! Please sign in.', 'ok');
+      navToLogin();
+    } catch (err) {
+      const box = document.getElementById('signup-error');
+      if (box) box.innerHTML = `<div class="error-banner">${esc(err.message)}</div>`;
+    }
   });
 }
 
@@ -142,7 +230,7 @@ function logout() {
   state.token = null; state.user = null;
   sessionStorage.removeItem('rf_token');
   location.hash = '';
-  renderLogin();
+  boot();
 }
 
 // ---------------------------------------------------------------------------
@@ -176,14 +264,6 @@ const NAV_BY_ROLE = {
     { key: 'stores', label: 'Stores', icon: '🏬' },
     { key: 'audit', label: 'Audit Log', icon: '🗂️' },
   ],
-};
-
-const ROLE_LABEL = {
-  CASHIER: 'Cashier',
-  INVENTORY_STAFF: 'Inventory Staff',
-  STORE_MANAGER: 'Store Manager',
-  HEAD_OFFICE_MANAGER: 'Head Office Manager',
-  SYSTEM_ADMIN: 'System Admin',
 };
 
 const PAGE_TITLES = {
@@ -1026,7 +1106,11 @@ async function PageAudit(root) {
 // PAGE: Users — System Admin
 // ============================================================================
 async function PageUsers(root) {
-  const [users, storesResp] = await Promise.all([api('/users'), api('/stores')]);
+  const [users, storesResp] = await Promise.all([
+    api('/users'),
+    hasAny('STORE_VIEW') ? api('/stores').catch(() => state.stores || []) : Promise.resolve(state.stores || []),
+  ]);
+  if (Array.isArray(storesResp) && storesResp.length) state.stores = storesResp;
   const roles = Object.keys(ROLE_LABEL);
   root.innerHTML = `
     <div class="card">
@@ -1056,7 +1140,7 @@ async function PageUsers(root) {
       <div class="field"><label>Username</label><input id="u-username" /></div>
       <div class="field"><label>Password</label><input id="u-password" type="password" value="password123" /></div>
       <div class="field"><label>Role</label><select id="u-role">${roles.map((r) => `<option value="${r}">${ROLE_LABEL[r]}</option>`).join('')}</select></div>
-      <div class="field" id="u-store-field"><label>Store</label><select id="u-store">${storesResp.map((s) => `<option value="${s.id}">${esc(s.name)}</option>`).join('')}</select></div>
+      <div class="field" id="u-store-field"><label>Store</label><select id="u-store">${storesResp.length ? storesResp.map((s) => `<option value="${s.id}">${esc(s.name)}</option>`).join('') : '<option value="">(No stores available)</option>'}</select></div>
       <div class="modal-actions"><button class="btn btn-ghost" id="cancel">Cancel</button><button class="btn btn-primary" id="confirm">Create</button></div></div>`;
     document.body.appendChild(backdrop);
     const roleSel = document.getElementById('u-role');
@@ -1108,6 +1192,9 @@ async function PageRoles(root) {
     try {
       await api(`/roles/${cb.dataset.role}/permissions`, { method: 'PUT', body: { permission: cb.dataset.perm, enabled: cb.checked } });
       toast(`${cb.dataset.perm} ${cb.checked ? 'granted to' : 'removed from'} ${ROLE_LABEL[cb.dataset.role]}`, 'ok');
+      if (state.user && cb.dataset.role === state.user.role) {
+        state.user = await api('/auth/me');
+      }
     } catch (e) { cb.checked = !cb.checked; toast(e.message, 'bad'); }
   }));
 }

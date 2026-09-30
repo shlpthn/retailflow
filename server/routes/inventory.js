@@ -54,6 +54,66 @@ router.get('/', requirePermission('INVENTORY_VIEW'), resolveStoreScope, (req, re
   });
 });
 
+/**
+ * GET /api/inventory/restock-history (alias: /api/inventory/restocks)
+ * Fetches the restock history (which product was restocked, how much, when, by whom)
+ * for a store.
+ * Supports query parameters:
+ *   - storeId: target store (for roles with organization scope, e.g. Head Office Manager)
+ *   - limit: maximum number of records to return (default 20, max 100)
+ *   - productId: filter by a specific product
+ */
+const handleRestockHistory = (req, res) => {
+  const storeId = req.query.storeId
+    ? (assertStoreAccess(req, res, req.query.storeId) ? req.query.storeId : null)
+    : effectiveStoreId(req);
+  if (storeId === null && res.headersSent) return;
+  if (!assertStoreAccess(req, res, storeId)) return;
+
+  const RESTOCK_TYPES = new Set(['RECEIVE', 'TRANSFER_IN']);
+  const matching = db.stockMovements.filter((m) => {
+    if (m.storeId !== storeId) return false;
+    if (!RESTOCK_TYPES.has(m.type)) return false;
+    if (req.query.productId && m.productId !== req.query.productId) return false;
+    return true;
+  });
+
+  const limit = Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 20));
+  const sorted = [...matching].sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
+  const paged = sorted.slice(0, limit);
+
+  const restocks = paged.map((m) => {
+    const product = db.getProduct(m.productId);
+    const actor = db.getUserById(m.actorId);
+    return {
+      id: m.id,
+      storeId: m.storeId,
+      productId: m.productId,
+      productName: product?.name || m.productId,
+      productBarcode: product?.barcode || null,
+      productImage: product?.image || null,
+      quantity: m.quantity,
+      type: m.type,
+      note: m.note || null,
+      actorId: m.actorId,
+      actorName: actor?.name || actor?.username || 'system',
+      createdAt: m.createdAt,
+    };
+  });
+
+  res.json({
+    storeId,
+    storeName: db.getStore(storeId)?.name || storeId,
+    totalCount: matching.length,
+    limit,
+    restocks,
+    history: restocks,
+  });
+};
+
+router.get('/restock-history', requirePermission('INVENTORY_VIEW'), resolveStoreScope, handleRestockHistory);
+router.get('/restocks', requirePermission('INVENTORY_VIEW'), resolveStoreScope, handleRestockHistory);
+
 router.get('/movements', requirePermission('INVENTORY_VIEW'), resolveStoreScope, (req, res) => {
   const storeId = effectiveStoreId(req);
   const movements = db.stockMovements
