@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { api } from '@/lib/api'
 import { useAuth } from '@/hooks/use-auth'
 import { toast } from 'sonner'
+import { isImg } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { AddStockDialog } from './add-stock-dialog'
@@ -291,7 +292,13 @@ export const InventoryPage: React.FC = () => {
               {filteredRows.length > 0 ? (
                 filteredRows.map((r) => (
                   <tr key={r.productId} className="row-hover">
-                    <td className="py-2 px-3 text-center text-xl">{r.image || '📦'}</td>
+                    <td className="py-2 px-3 text-center text-xl">
+                      {isImg(r.image) ? (
+                        <img alt={r.name} className="w-8 h-8 object-contain mx-auto rounded" src={r.image} />
+                      ) : (
+                        <span>{r.image || '📦'}</span>
+                      )}
+                    </td>
                     <td className="py-2 px-3 font-medium text-left">{r.name}</td>
                     <td className="py-2 px-3 font-mono text-muted-foreground text-xs text-left">
                       {r.barcode}
@@ -357,7 +364,11 @@ export const InventoryPage: React.FC = () => {
                       return (
                         <tr key={m.id} className="row-hover">
                           <td className="py-2 px-2.5 font-medium text-left truncate max-w-[130px]">
-                            <span className="mr-1">{prod?.image || '📦'}</span>
+                            {isImg(prod?.image) ? (
+                              <img alt={prod?.name} className="w-5 h-5 object-contain inline-block mr-1 rounded align-middle" src={prod?.image} />
+                            ) : (
+                              <span className="mr-1">{prod?.image || '📦'}</span>
+                            )}
                             {prod?.name || m.productId}
                           </td>
                           <td className="py-2 px-2.5 font-mono text-muted-foreground text-xs text-left">

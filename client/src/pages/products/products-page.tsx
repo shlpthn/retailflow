@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { api } from '@/lib/api'
 import { useAuth } from '@/hooks/use-auth'
-import { fmtMoney } from '@/lib/utils'
+import { fmtMoney, isImg } from '@/lib/utils'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -113,8 +113,13 @@ export const ProductsPage: React.FC = () => {
               {filteredProducts.length > 0 ? (
                 filteredProducts.map((p) => (
                   <tr key={p.id} className="row-hover">
-                    <td className="py-2 px-3 text-center text-xl">{p.image || '📦'}</td>
-                    <td className="py-2 px-3 font-medium text-left">{p.name}</td>
+                    <td className="py-2 px-3 text-center text-xl">
+                      {isImg(p.image) ? (
+                        <img alt={p.name} className="w-8 h-8 object-contain mx-auto rounded" src={p.image} />
+                      ) : (
+                        <span>{p.image || '📦'}</span>
+                      )}
+                    </td>
                     <td className="py-2 px-3 font-mono text-muted-foreground text-xs text-left">
                       {p.barcode}
                     </td>

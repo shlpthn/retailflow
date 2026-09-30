@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { api } from '@/lib/api'
 import { useAuth } from '@/hooks/use-auth'
-import { fmtMoney } from '@/lib/utils'
+import { fmtMoney, isImg } from '@/lib/utils'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -171,38 +171,24 @@ export const CheckoutPage: React.FC = () => {
 
         <div className="product-grid">
           {products.length > 0 ? (
-            products.map((p) => {
-              const isImg = Boolean(
-                p.image && (
-                  p.image.startsWith('http://') ||
-                  p.image.startsWith('https://') ||
-                  p.image.startsWith('/') ||
-                  p.image.startsWith('./') ||
-                  p.image.startsWith('../') ||
-                  p.image.startsWith('data:') ||
-                  /\.(png|jpe?g|svg|webp|gif|avif)$/i.test(p.image)
-                )
-              )
-
-              return (
-                <div
-                  key={p.productId}
-                  className="product-tile group hover:-translate-y-0.5 hover:shadow-md transition-all duration-150"
-                  onClick={() => addToCart(p)}
-                >
-                  <div className="product-img-wrap">
-                    {isImg ? (
-                      <img src={p.image} alt={p.name} className="product-photo" />
-                    ) : (
-                      <span className="emoji">{p.image}</span>
-                    )}
-                  </div>
-                  <div className="name truncate" title={p.name}>{p.name}</div>
-                  <div className="price mono">{fmtMoney(p.price)}</div>
-                  <div className="avail">{p.available} in stock</div>
+            products.map((p) => (
+              <div
+                key={p.productId}
+                className="product-tile group hover:-translate-y-0.5 hover:shadow-md transition-all duration-150"
+                onClick={() => addToCart(p)}
+              >
+                <div className="product-img-wrap">
+                  {isImg(p.image) ? (
+                    <img src={p.image} alt={p.name} className="product-photo" />
+                  ) : (
+                    <span className="emoji">{p.image}</span>
+                  )}
                 </div>
-              )
-            })
+                <div className="name truncate" title={p.name}>{p.name}</div>
+                <div className="price mono">{fmtMoney(p.price)}</div>
+                <div className="avail">{p.available} in stock</div>
+              </div>
+            ))
           ) : (
             <div className="empty col-span-full">No products in stock at this store.</div>
           )}

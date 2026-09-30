@@ -22,3 +22,24 @@ export function fmtDate(iso: string | null | undefined): string {
 export function esc(s: string | null | undefined): string {
   return String(s ?? '')
 }
+
+export const isImg = (val: string | null | undefined): boolean => {
+  if (!val) return false
+  const s = String(val).trim()
+  return Boolean(
+    s.startsWith('http://') ||
+    s.startsWith('https://') ||
+    s.startsWith('//') ||
+    s.startsWith('/') ||
+    s.startsWith('./') ||
+    s.startsWith('../') ||
+    s.startsWith('data:') ||
+    s.startsWith('blob:') ||
+    /\.(png|jpe?g|svg|webp|gif|avif|bmp|ico)($|\?)/i.test(s)
+  )
+}
+
+export const getImageUrl = (val: string | null | undefined, fallback = ''): string => {
+  if (!val || !isImg(val)) return fallback
+  return String(val).trim()
+}

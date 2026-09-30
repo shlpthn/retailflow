@@ -8,7 +8,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { api } from '@/lib/api'
-import { fmtDate } from '@/lib/utils'
+import { fmtDate, isImg } from '@/lib/utils'
 import { toast } from 'sonner'
 import { History, Search, ArrowUpRight, ArrowDownLeft, ShoppingCart, RefreshCw } from 'lucide-react'
 
@@ -242,7 +242,11 @@ export const StockHistoryDialog: React.FC<StockHistoryDialogProps> = ({
                           {getTypeBadge(m.type)}
                         </td>
                         <td className="py-2.5 px-3 font-medium">
-                          <span className="mr-1.5 text-base">{prod?.image || '📦'}</span>
+                          {isImg(prod?.image) ? (
+                            <img alt={prod?.name} className="w-5 h-5 object-contain inline-block mr-1.5 rounded align-middle" src={prod?.image} />
+                          ) : (
+                            <span className="mr-1.5 text-base">{prod?.image || '📦'}</span>
+                          )}
                           {prod?.name || m.productId}
                         </td>
                         <td className="py-2.5 px-3 font-mono text-muted-foreground text-xs">
