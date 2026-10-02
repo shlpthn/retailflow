@@ -20,6 +20,12 @@ router.get('/', requirePermission('INVENTORY_VIEW'), resolveStoreScope, (req, re
     : effectiveStoreId(req);
   if (storeId === null && res.headersSent) return; // assertStoreAccess already responded 403/404
 
+  for (const product of db.products) {
+    if (!db.getInventoryRow(storeId, product.id)) {
+      db.inventory.push({ storeId, productId: product.id, quantity: 0, threshold: 10 });
+    }
+  }
+
   const rows = db.getInventoryForStore(storeId).map((row) => {
     const product = db.getProduct(row.productId);
     return {

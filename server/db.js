@@ -54,11 +54,11 @@ const seedPasswordHash = bcrypt.hashSync('password123', 8);
 seedUsers.forEach((u) => { u.passwordHash = seedPasswordHash; });
 
 const seedProducts = [
-  { id: 'P001', name: 'Classic T-Shirt',    barcode: '0001', price: 15.0, image: '👕' },
-  { id: 'P002', name: 'Denim Jeans',        barcode: '0002', price: 45.0, image: '👖' },
-  { id: 'P003', name: 'Running Sneakers',   barcode: '0003', price: 65.0, image: '👟' },
-  { id: 'P004', name: 'Rain Jacket',        barcode: '0004', price: 80.0, image: '🧥' },
-  { id: 'P005', name: 'Baseball Cap',       barcode: '0005', price: 12.0, image: '🧢' },
+  { id: 'P001', name: 'Classic T-Shirt', barcode: '0001', price: 15.0, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4So_yg7ieKf3fkLdNMDtMnMP7czD-cIzfsLvR3Ndxug&s=10' },
+  { id: 'P002', name: 'Denim Jeans', barcode: '0002', price: 45.0, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjfelHHXu5UrqET7srYK7PEOCmAjx8n8XjLkVwoTUhuw&s=10' },
+  { id: 'P003', name: 'Running Sneakers', barcode: '0003', price: 65.0, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8JqARu8g08JfSro--RtaeRSYn6A2rswM04AkTOJoQ4Q&s=10' },
+  { id: 'P004', name: 'Rain Jacket', barcode: '0004', price: 80.0, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQ0oNOBrfJAY-A6ovqMuFGY4ituaThQa_lPTdG68iTfg&s=10' },
+  { id: 'P005', name: 'Baseball Cap', barcode: '0005', price: 12.0, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSORiNRvXwy8Oh_yHzdwpRobQTr7Sj2DvyF6ApRhnQn7A&s=10' },
 ];
 
 // inventory: one row per (storeId, productId)
