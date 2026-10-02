@@ -12,16 +12,32 @@ import { Label } from '@/components/ui/label'
 import { toast } from 'sonner'
 import { api } from '@/lib/api'
 
+interface Product {
+  id: string
+  name: string
+  barcode: string
+  price: number
+  image?: string
+}
+
 interface NewProductDialogProps {
   open: boolean
   onClose: () => void
   onSuccess: () => void
+  product?: Product | null
+}
+
+function generateBarcode(): string {
+  const suffix = Date.now().toString().slice(-8)
+  const rand = Math.floor(1000 + Math.random() * 9000).toString()
+  return `${suffix}${rand}`
 }
 
 export const NewProductDialog: React.FC<NewProductDialogProps> = ({
   open,
   onClose,
   onSuccess,
+  product,
 }) => {
   const [name, setName] = useState('')
   const [barcode, setBarcode] = useState('')
@@ -29,23 +45,51 @@ export const NewProductDialog: React.FC<NewProductDialogProps> = ({
   const [image, setImage] = useState('')
   const [loading, setLoading] = useState(false)
 
-  const handleCreate = async () => {
-    if (!name.trim() || !barcode.trim() || !price) {
-      toast.error('Please fill in all required fields')
+  React.useEffect(() => {
+    if (product) {
+      setName(product.name || '')
+      setBarcode(product.barcode || '')
+      setPrice(product.price != null ? String(product.price) : '')
+      setImage(product.image || '')
+    } else {
+      setName('')
+      setBarcode('')
+      setPrice('')
+      setImage('')
+    }
+  }, [product, open])
+
+  const handleSave = async () => {
+    if (!name.trim() || !price) {
+      toast.error('Please enter name and price')
       return
     }
+    const finalBarcode = barcode.trim() || generateBarcode()
     setLoading(true)
     try {
-      await api('/products', {
-        method: 'POST',
-        body: {
-          name: name.trim(),
-          barcode: barcode.trim(),
-          price: Number(price),
-          image: image.trim() || undefined,
-        },
-      })
-      toast.success('Product created')
+      if (product) {
+        await api(`/products/${product.id}`, {
+          method: 'PUT',
+          body: {
+            name: name.trim(),
+            barcode: finalBarcode,
+            price: Number(price),
+            image: image.trim() || undefined,
+          },
+        })
+        toast.success('Product updated')
+      } else {
+        await api('/products', {
+          method: 'POST',
+          body: {
+            name: name.trim(),
+            barcode: finalBarcode,
+            price: Number(price),
+            image: image.trim() || undefined,
+          },
+        })
+        toast.success('Product created')
+      }
       setName('')
       setBarcode('')
       setPrice('')
@@ -53,7 +97,7 @@ export const NewProductDialog: React.FC<NewProductDialogProps> = ({
       onSuccess()
       onClose()
     } catch (err: any) {
-      toast.error(err.message || 'Failed to create product')
+      toast.error(err.message || (product ? 'Failed to update product' : 'Failed to create product'))
     } finally {
       setLoading(false)
     }
@@ -63,7 +107,9 @@ export const NewProductDialog: React.FC<NewProductDialogProps> = ({
     <Dialog open={open} onOpenChange={(val) => !val && onClose()}>
       <DialogContent className="max-w-md bg-white p-6">
         <DialogHeader>
-          <DialogTitle className="text-lg font-bold">New product</DialogTitle>
+          <DialogTitle className="text-lg font-bold">
+            {product ? 'Edit product' : 'New product'}
+          </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4 my-2">
@@ -79,10 +125,21 @@ export const NewProductDialog: React.FC<NewProductDialogProps> = ({
           </div>
 
           <div className="field">
-            <Label htmlFor="p-barcode">Barcode</Label>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="p-barcode">Barcode</Label>
+              {!product && (
+                <button
+                  type="button"
+                  onClick={() => setBarcode(generateBarcode())}
+                  className="text-xs text-[#E2542A] hover:underline font-medium cursor-pointer"
+                >
+                  Generate barcode
+                </button>
+              )}
+            </div>
             <Input
               id="p-barcode"
-              placeholder="e.g. 100000000001"
+              placeholder="e.g. 100000000001 (auto-generated if empty)"
               value={barcode}
               onChange={(e) => setBarcode(e.target.value)}
               className="mt-1.5 font-mono"
@@ -104,10 +161,10 @@ export const NewProductDialog: React.FC<NewProductDialogProps> = ({
           </div>
 
           <div className="field">
-            <Label htmlFor="p-image">Icon (emoji, optional)</Label>
+            <Label htmlFor="p-image">Icon or Image URL (optional)</Label>
             <Input
               id="p-image"
-              placeholder="📦"
+              placeholder="📦 or https://..."
               value={image}
               onChange={(e) => setImage(e.target.value)}
               className="mt-1.5"
@@ -120,11 +177,11 @@ export const NewProductDialog: React.FC<NewProductDialogProps> = ({
             Cancel
           </Button>
           <Button
-            onClick={handleCreate}
+            onClick={handleSave}
             disabled={loading}
             className="bg-[#E2542A] hover:bg-[#c9431c] text-white"
           >
-            {loading ? 'Creating…' : 'Create'}
+            {loading ? (product ? 'Saving…' : 'Creating…') : product ? 'Save changes' : 'Create'}
           </Button>
         </DialogFooter>
       </DialogContent>

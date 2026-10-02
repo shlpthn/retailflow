@@ -3,6 +3,7 @@ import { api } from '@/lib/api'
 import { ROLE_LABEL } from '@/lib/constants'
 import { toast } from 'sonner'
 import { PageIcon } from '@/lib/page-icons'
+import { useAuth } from '@/hooks/use-auth'
 
 interface RolesData {
   roles: string[]
@@ -11,6 +12,7 @@ interface RolesData {
 }
 
 export const RolesPage: React.FC = () => {
+  const { user, refreshUser } = useAuth()
   const [data, setData] = useState<RolesData | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -55,6 +57,9 @@ export const RolesPage: React.FC = () => {
       toast.success(
         `${perm} ${newEnabled ? 'granted to' : 'removed from'} ${ROLE_LABEL[role] || role}`
       )
+      if (user && role === user.role) {
+        await refreshUser()
+      }
     } catch (err: any) {
       toast.error(err.message || 'Failed to update permission')
       // Rollback

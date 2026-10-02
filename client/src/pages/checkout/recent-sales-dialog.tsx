@@ -31,10 +31,11 @@ export const RecentSalesDialog: React.FC<RecentSalesDialogProps> = ({
   const loadSales = async () => {
     setLoading(true)
     try {
-      const data = await api<{ sales: SaleReceipt[] }>(
-        `/sales?storeId=${encodeURIComponent(storeId || '')}`
-      )
-      setSales((data?.sales || []).slice(-30).reverse())
+      const query = storeId
+        ? `/sales/transactions?storeId=${encodeURIComponent(storeId)}&limit=30`
+        : `/sales/transactions?limit=30`
+      const data = await api<{ transactions?: SaleReceipt[]; sales?: SaleReceipt[] }>(query)
+      setSales(data?.transactions || data?.sales || [])
     } catch (err: any) {
       toast.error(err.message || 'Failed to load recent orders')
     } finally {

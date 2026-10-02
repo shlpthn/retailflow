@@ -156,7 +156,7 @@ export const CheckoutPage: React.FC = () => {
 
   return (
     <div className="checkout-layout">
-      <div className="stack" style={{ minHeight: 0 }}>
+      <div className="stack min-w-0" style={{ minHeight: 0 }}>
         <div className={`scanner-box transition-all ${isScanSuccess ? 'animate-scan-success' : ''}`}>
           <Input
             ref={scanInputRef}
@@ -184,7 +184,7 @@ export const CheckoutPage: React.FC = () => {
                     <span className="emoji">{p.image}</span>
                   )}
                 </div>
-                <div className="name truncate" title={p.name}>{p.name}</div>
+                <div className="name truncate w-full" title={p.name}>{p.name}</div>
                 <div className="price mono">{fmtMoney(p.price)}</div>
                 <div className="avail">{p.available} in stock</div>
               </div>
@@ -227,13 +227,13 @@ export const CheckoutPage: React.FC = () => {
           {cart.length > 0 ? (
             cart.map((item) => (
               <div key={item.productId} className="cart-line">
-                <div>
-                  <div className="font-medium">{item.name}</div>
+                <div className="min-w-0 flex-1 pr-2">
+                  <div className="font-medium truncate" title={item.name}>{item.name}</div>
                   <div className="mono text-xs text-muted-foreground">
                     {fmtMoney(item.price)} ea
                   </div>
                 </div>
-                <div className="qty-ctl">
+                <div className="qty-ctl shrink-0">
                   <button type="button" onClick={() => changeQty(item.productId, -1)}>
                     −
                   </button>

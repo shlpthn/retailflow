@@ -9,6 +9,7 @@ import { ProtectedRoute } from '@/components/layout/protected-route'
 
 // Pages
 import { LoginPage } from '@/pages/login/login-page'
+import { SignupPage } from '@/pages/signup/signup-page'
 import { CheckoutPage } from '@/pages/checkout/checkout-page'
 import { InventoryPage } from '@/pages/inventory/inventory-page'
 import { ProductsPage } from '@/pages/products/products-page'
@@ -39,7 +40,13 @@ const AppRoutes: React.FC = () => {
   }
 
   if (!user) {
-    return <LoginPage />
+    return (
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
+    )
   }
 
   const initialRoute = defaultRoute(user.role)

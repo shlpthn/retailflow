@@ -265,13 +265,14 @@ button { font-family: inherit; }
 .spread { display: flex; align-items: center; justify-content: space-between; }
 
 /* ---------- Checkout ----------------------------------------------------- */
-.checkout-layout { display: grid; grid-template-columns: 1.5fr 1fr; gap: 18px; height: calc(100vh - 160px); }
+.checkout-layout { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 18px; height: calc(100vh - 160px); }
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
   overflow-y: auto;
   padding: 10px 8px 14px 6px;
+  min-width: 0;
 }
 .product-tile {
   border: 1px solid var(--line);
@@ -285,6 +286,10 @@ button { font-family: inherit; }
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
   transition: border-color .15s ease, transform .15s ease, box-shadow .15s ease;
 }
 .product-tile:hover {
@@ -314,6 +319,11 @@ button { font-family: inherit; }
   font-weight: 600;
   margin-top: 4px;
   width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
 }
 .product-tile .price {
   font-size: 13px;

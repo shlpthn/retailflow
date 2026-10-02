@@ -95,6 +95,15 @@ export const LoginPage: React.FC = () => {
           >
             {loading ? 'Signing in…' : 'Sign in'}
           </Button>
+
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={() => navigate('/signup')}
+            className="w-full mt-2 text-neutral-700 hover:text-black hover:bg-black/5"
+          >
+            Create an account · Sign up
+          </Button>
         </form>
 
         <div className="demo-accounts">

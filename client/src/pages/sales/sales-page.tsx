@@ -4,18 +4,14 @@ import { useAuth } from '@/hooks/use-auth'
 import { fmtMoney, fmtDate } from '@/lib/utils'
 import { toast } from 'sonner'
 import { DollarSign, ShoppingBag, Receipt, TrendingUp } from 'lucide-react'
-
-interface SaleItem {
-  id: string
-  total: number
-  createdAt: string
-  items: any[]
-}
+import { Button } from '@/components/ui/button'
+import { ReceiptDialog, type SaleReceipt } from '@/pages/checkout/receipt-dialog'
 
 interface SalesData {
   scope: string
   storeName: string
-  sales: SaleItem[]
+  sales?: SaleReceipt[]
+  recentTransactions?: SaleReceipt[]
   summary: {
     todaysSales: number
     transactions: number
@@ -33,6 +29,13 @@ export const SalesPage: React.FC = () => {
 
   const [data, setData] = useState<SalesData | null>(null)
   const [loading, setLoading] = useState(true)
+  const [selectedReceipt, setSelectedReceipt] = useState<SaleReceipt | null>(null)
+  const [isReceiptOpen, setIsReceiptOpen] = useState(false)
+
+  const handleOpenReceipt = (receipt: SaleReceipt) => {
+    setSelectedReceipt(receipt)
+    setIsReceiptOpen(true)
+  }
 
   const loadSales = useCallback(async () => {
     if (!targetStoreId && user?.role !== 'CASHIER') return
@@ -97,7 +100,7 @@ export const SalesPage: React.FC = () => {
 
   if (data.scope === 'OWN_TRANSACTIONS') {
     const s = data.summary
-    const recentSales = data.sales.slice(-25).reverse()
+    const recentSales = (data.sales || []).slice(-25).reverse()
 
     return (
       <div>
@@ -138,6 +141,7 @@ export const SalesPage: React.FC = () => {
                   <th className="py-2.5 px-3 text-center w-28">Items Count</th>
                   <th className="py-2.5 px-3 text-right font-mono w-36">Total</th>
                   <th className="py-2.5 px-3 text-right font-mono w-40">Timestamp</th>
+                  <th className="py-2.5 px-3 text-right w-24" />
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#E4E7EA]">
@@ -147,7 +151,7 @@ export const SalesPage: React.FC = () => {
                       <td className="py-2 px-3 mono text-xs font-bold text-left">{item.id}</td>
                       <td className="py-2 px-3 text-center">
                         <span className="px-2 py-0.5 rounded-full bg-neutral-100 text-xs font-semibold">
-                          {item.items.length} items
+                          {item.items?.length || 0} items
                         </span>
                       </td>
                       <td className="py-2 px-3 text-right mono font-bold text-sm text-[#E2542A]">
@@ -156,11 +160,22 @@ export const SalesPage: React.FC = () => {
                       <td className="py-2 px-3 text-right muted font-mono text-xs">
                         {fmtDate(item.createdAt)}
                       </td>
+                      <td className="py-2 px-3 text-right">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleOpenReceipt(item)}
+                          className="h-7 px-2 text-xs gap-1 text-muted-foreground hover:text-black"
+                        >
+                          <Receipt size={13} />
+                          Receipt
+                        </Button>
+                      </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={4} className="empty py-10 text-center text-muted-foreground">
+                    <td colSpan={5} className="empty py-10 text-center text-muted-foreground">
                       No sales recorded yet.
                     </td>
                   </tr>
@@ -169,6 +184,12 @@ export const SalesPage: React.FC = () => {
             </table>
           </div>
         </div>
+
+        <ReceiptDialog
+          open={isReceiptOpen}
+          sale={selectedReceipt}
+          onClose={() => setIsReceiptOpen(false)}
+        />
       </div>
     )
   }
@@ -229,6 +250,60 @@ export const SalesPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {data.recentTransactions && data.recentTransactions.length > 0 && (
+        <div className="custom-card shadow-sm mt-4">
+          <div className="card-title pb-1 border-b border-line mb-3">Recent Transactions</div>
+          <div className="overflow-x-auto border border-line rounded-md">
+            <table className="w-full text-xs sm:text-sm">
+              <thead className="bg-neutral-50 border-b border-line text-muted-foreground font-semibold">
+                <tr>
+                  <th className="py-2.5 px-3 text-left w-36 font-mono">Receipt ID</th>
+                  <th className="py-2.5 px-3 text-center w-28">Items</th>
+                  <th className="py-2.5 px-3 text-right font-mono w-36">Total</th>
+                  <th className="py-2.5 px-3 text-right font-mono w-40">Timestamp</th>
+                  <th className="py-2.5 px-3 text-right w-24" />
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#E4E7EA]">
+                {data.recentTransactions.map((item) => (
+                  <tr key={item.id} className="row-hover">
+                    <td className="py-2 px-3 mono text-xs font-bold text-left">{item.id}</td>
+                    <td className="py-2 px-3 text-center">
+                      <span className="px-2 py-0.5 rounded-full bg-neutral-100 text-xs font-semibold">
+                        {item.items?.length || 0} items
+                      </span>
+                    </td>
+                    <td className="py-2 px-3 text-right mono font-bold text-sm text-[#E2542A]">
+                      {fmtMoney(item.total)}
+                    </td>
+                    <td className="py-2 px-3 text-right muted font-mono text-xs">
+                      {fmtDate(item.createdAt)}
+                    </td>
+                    <td className="py-2 px-3 text-right">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleOpenReceipt(item)}
+                        className="h-7 px-2 text-xs gap-1 text-muted-foreground hover:text-black"
+                      >
+                        <Receipt size={13} />
+                        Receipt
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      <ReceiptDialog
+        open={isReceiptOpen}
+        sale={selectedReceipt}
+        onClose={() => setIsReceiptOpen(false)}
+      />
     </div>
   )
 }

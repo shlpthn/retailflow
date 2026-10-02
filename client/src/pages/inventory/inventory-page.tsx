@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input'
 import { AddStockDialog } from './add-stock-dialog'
 import { RequestStockDialog } from './request-stock-dialog'
 import { StockHistoryDialog } from './stock-history-dialog'
-import { History, Search } from 'lucide-react'
+import { History, Search, ArrowDownLeft } from 'lucide-react'
 import { PageIcon } from '@/lib/page-icons'
 
 interface InventoryRow {
@@ -75,6 +75,7 @@ export const InventoryPage: React.FC = () => {
   const [stockModalMode, setStockModalMode] = useState<'add-stock' | 'dispatch-stock' | null>(null)
   const [isRequestModalOpen, setIsRequestModalOpen] = useState(false)
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false)
+  const [historyModalTab, setHistoryModalTab] = useState<'movements' | 'restocks'>('movements')
 
   const loadData = useCallback(async () => {
     if (!currentStoreId) return
@@ -229,11 +230,26 @@ export const InventoryPage: React.FC = () => {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setIsHistoryModalOpen(true)}
+              onClick={() => {
+                setHistoryModalTab('movements')
+                setIsHistoryModalOpen(true)
+              }}
               className="gap-1.5 text-xs h-8 text-neutral-700 hover:text-black font-medium"
             >
               <History size={14} className="text-[#E2542A]" />
-              Movement History
+              Movements
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setHistoryModalTab('restocks')
+                setIsHistoryModalOpen(true)
+              }}
+              className="gap-1.5 text-xs h-8 text-neutral-700 hover:text-black font-medium"
+            >
+              <ArrowDownLeft size={14} className="text-[#2F8F5B]" />
+              Restocks
             </Button>
             {has('INVENTORY_RECEIVE') && (
               <Button
@@ -426,7 +442,9 @@ export const InventoryPage: React.FC = () => {
       <StockHistoryDialog
         open={isHistoryModalOpen}
         onClose={() => setIsHistoryModalOpen(false)}
+        storeId={inventory.storeId}
         storeName={inventory.storeName}
+        initialTab={historyModalTab}
       />
     </div>
   )

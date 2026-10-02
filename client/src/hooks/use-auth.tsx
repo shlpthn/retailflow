@@ -31,6 +31,7 @@ interface AuthContextType {
   hasAny: (...perms: string[]) => boolean
   storeName: (id?: string | null) => string
   refreshStores: () => Promise<Store[] | void>
+  refreshUser: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | null>(null)
@@ -62,6 +63,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return data
     } catch {
       return []
+    }
+  }, [])
+
+  const refreshUser = useCallback(async () => {
+    try {
+      const currentUser = await api<User>('/auth/me')
+      setUser(currentUser)
+    } catch {
+      // ignore
     }
   }, [])
 
@@ -153,6 +163,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         hasAny,
         storeName,
         refreshStores,
+        refreshUser,
       }}
     >
       {children}

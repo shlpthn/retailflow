@@ -5,7 +5,7 @@ import { fmtMoney } from '@/lib/utils'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { NewPromotionDialog } from './new-promotion-dialog'
-import { Power } from 'lucide-react'
+import { Power, Trash2 } from 'lucide-react'
 import { PageIcon } from '@/lib/page-icons'
 
 interface PromotionItem {
@@ -53,6 +53,17 @@ export const PromotionsPage: React.FC = () => {
       loadPromotions()
     } catch (err: any) {
       toast.error(err.message || 'Failed to update promotion status')
+    }
+  }
+
+  const handleDelete = async (p: PromotionItem) => {
+    if (!confirm(`Are you sure you want to delete "${p.name}"?`)) return
+    try {
+      await api(`/promotions/${p.id}`, { method: 'DELETE' })
+      toast.success('Promotion deleted')
+      loadPromotions()
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to delete promotion')
     }
   }
 
@@ -117,19 +128,30 @@ export const PromotionsPage: React.FC = () => {
                     </td>
                     {canManage && (
                       <td className="py-2.5 px-3 text-right">
-                        <Button
-                          variant={p.active ? 'outline' : 'ghost'}
-                          size="sm"
-                          onClick={() => handleToggleActive(p)}
-                          className={`text-xs h-7 gap-1 px-2.5 ${
-                            p.active
-                              ? 'text-neutral-600 hover:text-black'
-                              : 'text-[#2F8F5B] hover:bg-green-50'
-                          }`}
-                        >
-                          <Power size={12} />
-                          {p.active ? 'Deactivate' : 'Activate'}
-                        </Button>
+                        <div className="flex items-center justify-end gap-1">
+                          <Button
+                            variant={p.active ? 'outline' : 'ghost'}
+                            size="sm"
+                            onClick={() => handleToggleActive(p)}
+                            className={`text-xs h-7 gap-1 px-2.5 ${
+                              p.active
+                                ? 'text-neutral-600 hover:text-black'
+                                : 'text-[#2F8F5B] hover:bg-green-50'
+                            }`}
+                          >
+                            <Power size={12} />
+                            {p.active ? 'Deactivate' : 'Activate'}
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDelete(p)}
+                            className="text-red-600 hover:text-red-700 hover:bg-red-50 text-xs h-7 px-2"
+                            title="Delete promotion"
+                          >
+                            <Trash2 size={13} />
+                          </Button>
+                        </div>
                       </td>
                     )}
                   </tr>

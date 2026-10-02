@@ -9,12 +9,17 @@ const { resolveStoreScope } = require('../middleware/storeScope');
 
 router.get('/products', requirePermission('CHECKOUT_VIEW'), resolveStoreScope, (req, res) => {
   const storeId = req.storeScope.storeId;
-  const items = db.getInventoryForStore(storeId)
-    .filter((r) => r.quantity > 0)
-    .map((r) => {
-      const p = db.getProduct(r.productId);
-      return { productId: p.id, name: p.name, image: p.image, barcode: p.barcode, price: p.price, available: r.quantity };
-    });
+  const items = db.getAllProducts().map((p) => {
+    const r = storeId ? db.getInventoryRow(storeId, p.id) : null;
+    return {
+      productId: p.id,
+      name: p.name,
+      image: p.image,
+      barcode: p.barcode,
+      price: p.price,
+      available: r ? r.quantity : 0,
+    };
+  });
   res.json(items);
 });
 
