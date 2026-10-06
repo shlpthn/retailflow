@@ -29,6 +29,14 @@ router.get('/promotions', requirePermission('CHECKOUT_VIEW'), (req, res) => {
   res.json(active);
 });
 
+function positiveWholeQuantity(value) {
+  if (typeof value === 'number') return Number.isSafeInteger(value) && value > 0 ? value : null;
+  if (typeof value === 'string' && /^[0-9]+$/.test(value)) {
+    const parsed = Number(value);
+    return Number.isSafeInteger(parsed) && parsed > 0 ? parsed : null;
+  }
+  return null;
+}
 function findValidPromotion(code, storeId) {
   if (!code) return null;
   const today = new Date().toISOString().slice(0, 10);
@@ -39,19 +47,40 @@ function findValidPromotion(code, storeId) {
   return promo;
 }
 
+function normalizeRecommendationContext(value) {
+  if (value === undefined || value === null) return null;
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+  const { modelVersion, strategy, fallback, suggestedProductIds } = value;
+  if (typeof modelVersion !== 'string' || modelVersion.length < 1 || modelVersion.length > 120) return null;
+  if (strategy !== 'user-based-knn' && strategy !== 'popularity') return null;
+  if (typeof fallback !== 'boolean' || !Array.isArray(suggestedProductIds) || suggestedProductIds.length > 50) return null;
+  if (!suggestedProductIds.every((id) => typeof id === 'string' && /^[A-Za-z0-9_-]{1,80}$/.test(id))) return null;
+  return {
+    modelVersion,
+    strategy,
+    fallback,
+    suggestedProductIds: [...new Set(suggestedProductIds)],
+  };
+}
+
 router.post('/', requirePermission('CHECKOUT_CREATE'), resolveStoreScope, (req, res) => {
-  const { items, promotionCode, paymentMethod } = req.body || {};
+  const { items, promotionCode, paymentMethod, customerId, recommendationContext } = req.body || {};
   const storeId = req.storeScope.storeId; // cashier's own store only — never client-selectable
   if (!Array.isArray(items) || items.length === 0) return res.status(400).json({ error: 'Cart is empty' });
   if (!paymentMethod) return res.status(400).json({ error: 'paymentMethod required' });
+  const normalizedCustomerId = typeof customerId === 'string' && /^[A-Za-z0-9_-]{1,80}$/.test(customerId.trim()) ? customerId.trim() : null;
+  const normalizedRecommendationContext = normalizeRecommendationContext(recommendationContext);
+  if (recommendationContext !== undefined && normalizedRecommendationContext === null) {
+    return res.status(400).json({ error: 'Invalid recommendationContext' });
+  }
 
   // Validate stock availability for every line before mutating anything.
   const resolved = [];
   for (const line of items) {
     const product = db.getProduct(line.productId);
     if (!product) return res.status(404).json({ error: `Unknown product ${line.productId}` });
-    const qty = Number(line.quantity);
-    if (!qty || qty <= 0) return res.status(400).json({ error: 'Invalid quantity' });
+    const qty = positiveWholeQuantity(line.quantity);
+    if (qty === null) return res.status(400).json({ error: 'Invalid whole quantity' });
     const row = db.getInventoryRow(storeId, line.productId);
     if (!row || row.quantity < qty) {
       return res.status(409).json({ error: `Insufficient stock for ${product.name}` });
@@ -81,6 +110,8 @@ router.post('/', requirePermission('CHECKOUT_CREATE'), resolveStoreScope, (req, 
     items: resolved.map((l) => ({ productId: l.product.id, name: l.product.name, quantity: l.qty, unitPrice: l.product.price })),
     subtotal, discount, total,
     promotionCode: promo ? promo.code : null,
+    customerId: normalizedCustomerId,
+    recommendationContext: normalizedRecommendationContext,
     paymentMethod,
     createdAt: new Date().toISOString(),
   };
@@ -90,6 +121,9 @@ router.post('/', requirePermission('CHECKOUT_CREATE'), resolveStoreScope, (req, 
     user: req.user, action: 'CHECKOUT_SALE', resource: sale.id, storeId,
     after: { total: sale.total, items: sale.items.length },
   });
+  // Persist the completed sale before acknowledging checkout. This protects the
+  // transaction from an immediate process restart after the response is sent.
+  db.maybeFlush();
 
   res.status(201).json({ receipt: sale });
 });

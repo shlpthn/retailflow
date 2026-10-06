@@ -48,6 +48,7 @@ const seedUsers = [
   { id: 'U005', name: 'Lena Kim',      username: 'manager2',   role: 'STORE_MANAGER',          storeId: 'STORE_002', disabled: false },
   { id: 'U006', name: 'Grace Adeyemi', username: 'ho1',        role: 'HEAD_OFFICE_MANAGER',    storeId: null,        disabled: false },
   { id: 'U007', name: 'Tom Becker',    username: 'admin1',     role: 'SYSTEM_ADMIN',           storeId: null,        disabled: false },
+  { id: 'U008', name: 'Jordan Lee',     username: 'scientist1', role: 'DATA_SCIENTIST',         storeId: null,        disabled: false },
 ];
 // demo password for every seed user: "password123"
 const seedPasswordHash = bcrypt.hashSync('password123', 8);

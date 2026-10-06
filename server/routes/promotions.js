@@ -12,8 +12,12 @@ router.post('/', requirePermission('PROMOTION_MANAGE'), (req, res) => {
   if (!name || !code || !type || value == null || !validFrom || !validTo) {
     return res.status(400).json({ error: 'name, code, type, value, validFrom, validTo required' });
   }
+  const numericValue = Number(value);
+  if (!Number.isFinite(numericValue) || numericValue < 0 || !['PERCENT', 'FIXED'].includes(type)) {
+    return res.status(400).json({ error: 'type must be PERCENT or FIXED and value must be finite and non-negative' });
+  }
   const promo = {
-    id: db.id('PROMO'), name, code, type, value: Number(value), active: true,
+    id: db.id('PROMO'), name, code, type, value: numericValue, active: true,
     validFrom, validTo,
     applicableProductIds: applicableProductIds || null,
     applicableStoreIds: applicableStoreIds || null,

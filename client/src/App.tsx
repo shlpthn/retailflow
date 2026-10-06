@@ -10,6 +10,7 @@ import { ProtectedRoute } from '@/components/layout/protected-route'
 // Pages
 import { LoginPage } from '@/pages/login/login-page'
 import { SignupPage } from '@/pages/signup/signup-page'
+import { WelcomePage } from '@/pages/welcome/welcome-page'
 import { CheckoutPage } from '@/pages/checkout/checkout-page'
 import { InventoryPage } from '@/pages/inventory/inventory-page'
 import { ProductsPage } from '@/pages/products/products-page'
@@ -22,6 +23,7 @@ import { StockRequestsPage } from '@/pages/stock-requests/stock-requests-page'
 import { AuditPage } from '@/pages/audit/audit-page'
 import { UsersPage } from '@/pages/users/users-page'
 import { RolesPage } from '@/pages/roles/roles-page'
+import { MlConsolePage } from '@/pages/ml/ml-console-page'
 import manUtdLogo from '@/assets/Man_Utd_FC_.svg'
 
 const AppRoutes: React.FC = () => {
@@ -42,9 +44,10 @@ const AppRoutes: React.FC = () => {
   if (!user) {
     return (
       <Routes>
+        <Route path="/welcome" element={<WelcomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        <Route path="*" element={<Navigate to="/welcome" replace />} />
       </Routes>
     )
   }
@@ -178,6 +181,14 @@ const AppRoutes: React.FC = () => {
           element={
             <ProtectedRoute requiredPermissions={['ROLE_MANAGE']}>
               <RolesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/ml"
+          element={
+            <ProtectedRoute requiredPermissions={['ML_CONSOLE_VIEW']}>
+              <MlConsolePage />
             </ProtectedRoute>
           }
         />

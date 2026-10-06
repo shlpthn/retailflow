@@ -25,6 +25,22 @@ interface Promotion {
   value: number
 }
 
+interface Recommendation {
+  productId: string
+  name: string
+  price: number
+  available: number
+  image: string
+}
+
+interface RecommendationResponse {
+  customerId: string
+  strategy: 'user-based-knn' | 'popularity'
+  fallback: boolean
+  modelVersion: string
+  recommendations: Recommendation[]
+}
+
 interface CartItem {
   productId: string
   name: string
@@ -40,6 +56,9 @@ export const CheckoutPage: React.FC = () => {
   const [promoCode, setPromoCode] = useState<string>('')
   const [paymentMethod, setPaymentMethod] = useState<string | null>(null)
   const [scanValue, setScanValue] = useState<string>('')
+  const [customerId, setCustomerId] = useState('')
+  const [recommendations, setRecommendations] = useState<RecommendationResponse | null>(null)
+  const [recommendationLoading, setRecommendationLoading] = useState(false)
   const [completedSale, setCompletedSale] = useState<SaleReceipt | null>(null)
   const [isReceiptOpen, setIsReceiptOpen] = useState(false)
   const [isRecentSalesOpen, setIsRecentSalesOpen] = useState(false)
@@ -129,6 +148,25 @@ export const CheckoutPage: React.FC = () => {
     }
   }
 
+  const loadRecommendations = async () => {
+    const id = customerId.trim()
+    if (!id || !/^[A-Za-z0-9_-]{1,80}$/.test(id)) {
+      setRecommendations(null)
+      if (id) toast.error('Customer ID must use letters, numbers, _ or -')
+      return
+    }
+    setRecommendationLoading(true)
+    try {
+      const result = await api<RecommendationResponse>(`/ml/recommendations?customerId=${encodeURIComponent(id)}&limit=5`)
+      setRecommendations(result)
+    } catch (err: any) {
+      setRecommendations(null)
+      if (err.status !== 503) toast.error(err.message || 'Recommendations unavailable')
+    } finally {
+      setRecommendationLoading(false)
+    }
+  }
+
   const handleCheckout = async () => {
     if (!cart.length || !paymentMethod) return
     setSubmitting(true)
@@ -139,6 +177,13 @@ export const CheckoutPage: React.FC = () => {
           items: cart.map((l) => ({ productId: l.productId, quantity: l.qty })),
           promotionCode: activePromo() ? activePromo()!.code : null,
           paymentMethod,
+          customerId: customerId.trim() || undefined,
+          recommendationContext: recommendations ? {
+            modelVersion: recommendations.modelVersion,
+            strategy: recommendations.strategy,
+            fallback: recommendations.fallback,
+            suggestedProductIds: recommendations.recommendations.map((p) => p.productId),
+          } : undefined,
         },
       })
       setCompletedSale(receipt)
@@ -146,6 +191,8 @@ export const CheckoutPage: React.FC = () => {
       setCart([])
       setPromoCode('')
       setPaymentMethod(null)
+      setCustomerId('')
+      setRecommendations(null)
       loadData()
     } catch (err: any) {
       toast.error(err.message || 'Checkout failed')
@@ -246,6 +293,39 @@ export const CheckoutPage: React.FC = () => {
             ))
           ) : (
             <div className="empty py-16">Cart is empty — scan or tap a product.</div>
+          )}
+        </div>
+
+        <div className="px-3.5 mb-2">
+          <div className="field mb-2">
+            <label className="text-xs font-semibold text-muted-foreground">Customer ID (optional)</label>
+            <div className="flex gap-2 mt-1">
+              <Input
+                placeholder="e.g. CUST-001"
+                value={customerId}
+                onChange={(e) => setCustomerId(e.target.value)}
+                className="font-mono"
+              />
+              <Button type="button" variant="outline" onClick={loadRecommendations} disabled={recommendationLoading}>
+                {recommendationLoading ? 'Loading…' : 'Suggest'}
+              </Button>
+            </div>
+          </div>
+          {recommendations && (
+            <div className="rounded-md border border-line bg-neutral-50 p-2">
+              <div className="mb-2 flex items-center justify-between text-xs font-semibold">
+                <span>{recommendations.fallback ? 'Popular suggestions' : 'For this customer'}</span>
+                <span className="text-muted-foreground">{recommendations.recommendations.length} available</span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {recommendations.recommendations.map((p) => (
+                  <button key={p.productId} type="button" onClick={() => addToCart({ ...p, barcode: '', image: p.image })} className="rounded border border-line bg-white px-2 py-1 text-left text-xs hover:border-[#E2542A]">
+                    <span className="block font-medium">{p.name}</span>
+                    <span className="mono text-muted-foreground">{fmtMoney(p.price)} · {p.available} left</span>
+                  </button>
+                ))}
+              </div>
+            </div>
           )}
         </div>
 
