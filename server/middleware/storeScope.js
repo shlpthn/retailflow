@@ -22,7 +22,7 @@ function resolveStoreScope(req, res, next) {
     // described in Section 25 — even if the frontend sends a different id,
     // the backend substitutes the authenticated user's own store.
     req.storeScope = { type: 'SINGLE', storeId: user.storeId };
-  } else if (user.role === ROLES.HEAD_OFFICE_MANAGER || user.role === ROLES.DATA_SCIENTIST) {
+  } else if (user.role === ROLES.HEAD_OFFICE_MANAGER) {
     const requested = req.query.storeId || (req.body && req.body.storeId) || null;
     req.storeScope = { type: 'ORG', storeId: requested };
   } else if (user.role === ROLES.SYSTEM_ADMIN) {

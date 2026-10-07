@@ -32,7 +32,7 @@ function publicUser(user) {
     role: user.role,
     storeId: user.storeId,
     scope: user.storeId ? 'STORE' : (
-      user.role === 'HEAD_OFFICE_MANAGER' || user.role === 'DATA_SCIENTIST'
+      user.role === 'HEAD_OFFICE_MANAGER'
         ? 'ALL_STORES'
         : 'SYSTEM'
     ),

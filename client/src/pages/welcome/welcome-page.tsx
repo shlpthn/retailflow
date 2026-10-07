@@ -120,25 +120,25 @@ const PROJECT_SHOWCASE_CARDS: ProjectShowcaseCard[] = [
     ctaText: 'Experience Warehouse Hub',
   },
   {
-    id: 'ai-knn',
+    id: 'promo-engine',
     number: '04',
-    tabTitle: 'AI kNN Recommendations',
-    badge: 'Machine Learning Algorithm',
-    title: 'Algorithmic Basket Recommendations Driving AOV',
-    metric: '+18.4% AOV',
-    metricSub: 'Average order value uplift',
+    tabTitle: 'Promotions & Discounts',
+    badge: 'Pricing & Campaigns',
+    title: 'Dynamic Promotion Engine & Tiered Discounts',
+    metric: '+24.5% Sales',
+    metricSub: 'Promotional campaign lift',
     image: 'https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=1200&q=80',
     summary:
-      'k-Nearest Neighbors machine learning model analyzes active shopping baskets in real time to recommend high-affinity accessories the moment a product is scanned.',
+      'Store-level and network-wide promotional campaigns, percentage discounts, coupon codes, and scheduled seasonal flash sales.',
     whyTitle: 'Strategic Solution Rationale',
     whyReason:
-      'Peak-hour cashiers cannot manually recall every complementary SKU (match kit printing, match socks, captain bands). AI serves intelligent upsell prompts at the exact moment of tender.',
+      'Retail networks need centralized, instant pricing control to launch seasonal campaigns and clear end-of-season inventory without manual register updates.',
     points: [
-      '>92% recommendation precision trained on tens of thousands of authentic historical basket records',
-      'One-tap instant addition of suggested items directly into the active cart without re-scanning',
+      'Instant discount validation at checkout with coupon code verification',
+      'Flexible percentage and fixed value promotion schedules across all branches',
     ],
-    ctaRole: 'cashier1',
-    ctaText: 'Try Recommendations on POS',
+    ctaRole: 'headoffice1',
+    ctaText: 'Experience Promotions',
   },
   {
     id: 'security-rbac',
@@ -176,7 +176,7 @@ const SYSTEM_ROLES = [
       'Sub-second barcode scan & keyboard wedge input',
       'Split tender payments (Cash, Card, QR Wallet)',
       'Thermal receipt printing & digital dispatch',
-      'Point-of-sale kNN product recommendations',
+      'Inventory checking and SKU barcode verification',
     ],
     permissions: ['POS Terminal', 'Barcode Engine', 'Split Tender', 'Receipt Generation'],
   },
@@ -224,7 +224,7 @@ const SYSTEM_ROLES = [
       'Comparative revenue analysis across all 3 branches',
       'Chain-wide pricing, markdown, and promotion engine',
       'Master catalog management and new SKU releases',
-      'kNN algorithmic recommendation tuning',
+      'Store network audit & performance monitoring',
     ],
     permissions: ['Global Analytics', 'Master Catalog', 'Chain Promotions', 'Revenue Ledger'],
   },
@@ -353,7 +353,7 @@ export const WelcomePage: React.FC = () => {
 
               <p className="text-neutral-600 text-sm sm:text-base leading-relaxed">
                 Connect fast-paced front counters with central distribution, split-second barcode processing,
-                real-time kNN product upselling, and 5-role enterprise access control.
+                promotions & discounts engine, and 5-role enterprise access control.
               </p>
 
               <div className="flex flex-wrap items-center gap-3 pt-2">
@@ -554,9 +554,9 @@ export const WelcomePage: React.FC = () => {
             </div>
             <div className="space-y-1">
               <span className="text-2xl sm:text-3xl font-extrabold text-[#0F172A] font-['Plus_Jakarta_Sans',sans-serif] block">
-                kNN Powered
+                Full Audit
               </span>
-              <span className="text-xs font-medium text-neutral-500">Machine Learning Recommendations</span>
+              <span className="text-xs font-medium text-neutral-500">Immutable Transaction Logs</span>
             </div>
           </div>
         </div>
@@ -734,14 +734,13 @@ export const WelcomePage: React.FC = () => {
 
             <div className="bg-white p-6 rounded-xl border border-neutral-200 shadow-2xs space-y-3">
               <div className="w-10 h-10 rounded-lg bg-purple-50 border border-purple-100 flex items-center justify-center text-purple-600">
-                <Cpu className="w-5 h-5" />
+                <Tag className="w-5 h-5" />
               </div>
               <h3 className="font-bold text-base font-['Plus_Jakarta_Sans',sans-serif] text-[#0F172A]">
-                kNN Upselling Intelligence
+                Dynamic Promotions & Pricing
               </h3>
               <p className="text-xs text-neutral-600 leading-relaxed">
-                k-Nearest Neighbors machine learning model suggests companion accessories at checkout based on basket
-                vectors.
+                Network-wide discount codes, percentage and fixed markdowns scheduled and validated automatically at register.
               </p>
             </div>
 

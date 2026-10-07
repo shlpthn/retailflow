@@ -23,7 +23,6 @@ import { StockRequestsPage } from '@/pages/stock-requests/stock-requests-page'
 import { AuditPage } from '@/pages/audit/audit-page'
 import { UsersPage } from '@/pages/users/users-page'
 import { RolesPage } from '@/pages/roles/roles-page'
-import { MlConsolePage } from '@/pages/ml/ml-console-page'
 import manUtdLogo from '@/assets/Man_Utd_FC_.svg'
 
 const AppRoutes: React.FC = () => {
@@ -182,14 +181,6 @@ const AppRoutes: React.FC = () => {
           element={
             <ProtectedRoute requiredPermissions={['ROLE_MANAGE']}>
               <RolesPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/ml"
-          element={
-            <ProtectedRoute requiredPermissions={['ML_CONSOLE_VIEW']}>
-              <MlConsolePage />
             </ProtectedRoute>
           }
         />

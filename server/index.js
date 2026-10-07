@@ -35,7 +35,6 @@ app.use('/api/promotions', require('./routes/promotions'));
 app.use('/api/users', require('./routes/users'));
 app.use('/api/roles', require('./routes/roles'));
 app.use('/api/audit-logs', require('./routes/auditLogs'));
-app.use('/api/ml', require('./routes/ml'));
 
 // ---- Static SPA frontend ----------------------------------------------------
 const fs = require('fs');

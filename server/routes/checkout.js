@@ -47,32 +47,12 @@ function findValidPromotion(code, storeId) {
   return promo;
 }
 
-function normalizeRecommendationContext(value) {
-  if (value === undefined || value === null) return null;
-  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
-  const { modelVersion, strategy, fallback, suggestedProductIds } = value;
-  if (typeof modelVersion !== 'string' || modelVersion.length < 1 || modelVersion.length > 120) return null;
-  if (strategy !== 'user-based-knn' && strategy !== 'popularity') return null;
-  if (typeof fallback !== 'boolean' || !Array.isArray(suggestedProductIds) || suggestedProductIds.length > 50) return null;
-  if (!suggestedProductIds.every((id) => typeof id === 'string' && /^[A-Za-z0-9_-]{1,80}$/.test(id))) return null;
-  return {
-    modelVersion,
-    strategy,
-    fallback,
-    suggestedProductIds: [...new Set(suggestedProductIds)],
-  };
-}
-
 router.post('/', requirePermission('CHECKOUT_CREATE'), resolveStoreScope, (req, res) => {
-  const { items, promotionCode, paymentMethod, customerId, recommendationContext } = req.body || {};
+  const { items, promotionCode, paymentMethod, customerId } = req.body || {};
   const storeId = req.storeScope.storeId; // cashier's own store only — never client-selectable
   if (!Array.isArray(items) || items.length === 0) return res.status(400).json({ error: 'Cart is empty' });
   if (!paymentMethod) return res.status(400).json({ error: 'paymentMethod required' });
   const normalizedCustomerId = typeof customerId === 'string' && /^[A-Za-z0-9_-]{1,80}$/.test(customerId.trim()) ? customerId.trim() : null;
-  const normalizedRecommendationContext = normalizeRecommendationContext(recommendationContext);
-  if (recommendationContext !== undefined && normalizedRecommendationContext === null) {
-    return res.status(400).json({ error: 'Invalid recommendationContext' });
-  }
 
   // Validate stock availability for every line before mutating anything.
   const resolved = [];
@@ -111,7 +91,6 @@ router.post('/', requirePermission('CHECKOUT_CREATE'), resolveStoreScope, (req, 
     subtotal, discount, total,
     promotionCode: promo ? promo.code : null,
     customerId: normalizedCustomerId,
-    recommendationContext: normalizedRecommendationContext,
     paymentMethod,
     createdAt: new Date().toISOString(),
   };
