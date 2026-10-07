@@ -21,9 +21,15 @@ function generateUniqueBarcode() {
 // Head Office Manager only — global product management (Section 18).
 router.post('/', requirePermission('PRODUCT_MANAGE'), (req, res) => {
   const { name, barcode, price, image, initialStock, quantity } = req.body || {};
-  if (!name || price == null) return res.status(400).json({ error: 'name and price required' });
+  if (!name || price == null || typeof price === 'boolean' || (typeof price === 'string' && price.trim() === '')) {
+    return res.status(400).json({ error: 'name and price required' });
+  }
+  const numericPrice = Number(price);
+  if (!Number.isFinite(numericPrice) || numericPrice < 0) {
+    return res.status(400).json({ error: 'price must be a finite non-negative number' });
+  }
   const finalBarcode = (barcode && String(barcode).trim()) || generateUniqueBarcode();
-  const product = { id: db.id('P'), name, barcode: finalBarcode, price: Number(price), image: image || '📦' };
+  const product = { id: db.id('P'), name, barcode: finalBarcode, price: numericPrice, image: image || '📦' };
   db.products.push(product);
 
   const initQty = Math.max(0, parseInt(initialStock != null ? initialStock : (quantity != null ? quantity : 0), 10) || 0);

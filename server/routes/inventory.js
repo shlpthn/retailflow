@@ -4,6 +4,15 @@ const db = require('../db');
 const { requirePermission } = require('../permissions');
 const { resolveStoreScope, assertStoreAccess, effectiveStoreId } = require('../middleware/storeScope');
 
+function positiveWholeQuantity(value) {
+  if (typeof value === 'number') return Number.isSafeInteger(value) && value > 0 ? value : null;
+  if (typeof value === 'string' && /^[0-9]+$/.test(value)) {
+    const parsed = Number(value);
+    return Number.isSafeInteger(parsed) && parsed > 0 ? parsed : null;
+  }
+  return null;
+}
+
 // ============================================================================
 // ONE inventory page, shared by Inventory Staff / Store Manager / Head Office
 // Manager (Section 8, 27). What differs is which ACTIONS the permission set
@@ -131,8 +140,8 @@ router.get('/movements', requirePermission('INVENTORY_VIEW'), resolveStoreScope,
 // Inventory Staff only, and always their OWN store — barcode-based Add Stock workflow.
 router.post('/add-stock', requirePermission('INVENTORY_RECEIVE'), resolveStoreScope, (req, res) => {
   const { productId, quantity, note } = req.body || {};
-  const qty = Number(quantity);
-  if (!productId || !qty || qty <= 0) return res.status(400).json({ error: 'productId and positive quantity required' });
+  const qty = positiveWholeQuantity(quantity);
+  if (!productId || qty === null) return res.status(400).json({ error: 'productId and positive whole quantity required' });
   const storeId = req.storeScope.storeId; // forced to the authenticated user's store
   if (!assertStoreAccess(req, res, storeId)) return;
 
@@ -159,8 +168,8 @@ router.post('/add-stock', requirePermission('INVENTORY_RECEIVE'), resolveStoreSc
 // Inventory Staff only, and always their OWN store — barcode-based Dispatch Stock workflow.
 router.post('/dispatch-stock', requirePermission('INVENTORY_DISPATCH'), resolveStoreScope, (req, res) => {
   const { productId, quantity, destinationStoreId, note } = req.body || {};
-  const qty = Number(quantity);
-  if (!productId || !qty || qty <= 0) return res.status(400).json({ error: 'productId and positive quantity required' });
+  const qty = positiveWholeQuantity(quantity);
+  if (!productId || qty === null) return res.status(400).json({ error: 'productId and positive whole quantity required' });
   const storeId = req.storeScope.storeId;
   if (!assertStoreAccess(req, res, storeId)) return;
 

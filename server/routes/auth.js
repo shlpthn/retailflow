@@ -25,6 +25,9 @@ router.post('/signup', (req, res) => {
   if (!Object.values(ROLES).includes(role)) {
     return res.status(400).json({ error: `Unknown role ${role}` });
   }
+  if (['SYSTEM_ADMIN', 'HEAD_OFFICE_MANAGER'].includes(role)) {
+    return res.status(403).json({ error: 'This role can only be created by an authorized administrator' });
+  }
   if (db.getUserByUsername(username)) {
     return res.status(409).json({ error: 'Username already exists' });
   }

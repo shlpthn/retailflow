@@ -10,6 +10,7 @@ import { ProtectedRoute } from '@/components/layout/protected-route'
 // Pages
 import { LoginPage } from '@/pages/login/login-page'
 import { SignupPage } from '@/pages/signup/signup-page'
+import { WelcomePage } from '@/pages/welcome/welcome-page'
 import { CheckoutPage } from '@/pages/checkout/checkout-page'
 import { InventoryPage } from '@/pages/inventory/inventory-page'
 import { ProductsPage } from '@/pages/products/products-page'
@@ -42,6 +43,8 @@ const AppRoutes: React.FC = () => {
   if (!user) {
     return (
       <Routes>
+        <Route path="/" element={<WelcomePage />} />
+        <Route path="/welcome" element={<WelcomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
