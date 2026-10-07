@@ -28,7 +28,6 @@ export const NAV_BY_ROLE: Record<string, NavItem[]> = {
   ],
   SYSTEM_ADMIN: [
     { key: 'users', label: 'Users', icon: '👤' },
-    { key: 'roles', label: 'Roles & Permissions', icon: '🔐' },
     { key: 'stores', label: 'Stores', icon: '🏬' },
     { key: 'audit', label: 'Audit Log', icon: '🗂️' },
   ],

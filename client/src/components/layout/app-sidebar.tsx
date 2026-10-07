@@ -29,8 +29,8 @@ export const AppSidebar: React.FC = () => {
       <aside
         className={`sidebar ${isCollapsed ? 'collapsed' : ''} ${
           isMobileOpen
-            ? 'fixed inset-y-0 left-0 z-50 flex shadow-2xl md:static md:shadow-none'
-            : 'hidden md:flex'
+            ? 'fixed inset-y-0 left-0 z-50 flex shadow-2xl md:sticky md:top-0 md:h-screen md:self-start md:shadow-none'
+            : 'hidden md:flex md:sticky md:top-0 md:h-screen md:self-start'
         }`}
       >
         <div className="sidebar-brand">

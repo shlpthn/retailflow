@@ -100,20 +100,25 @@ export const CheckoutPage: React.FC = () => {
 
   const total = () => Math.max(0, subtotal() - discount())
 
-  const addToCart = (p: CheckoutProduct) => {
+  const addToCart = (p: CheckoutProduct): boolean => {
     const existing = cartLine(p.productId)
     if (existing) {
       if (existing.qty < p.available) {
         setCart(cart.map((l) => (l.productId === p.productId ? { ...l, qty: l.qty + 1 } : l)))
+        toast.success(`Updated ${p.name} (qty: ${existing.qty + 1})`)
+        return true
       } else {
-        toast.error('No more stock available')
+        toast.error(`No more stock available for ${p.name}`)
+        return false
       }
     } else {
       if (p.available <= 0) {
-        toast.error('Item is out of stock')
-        return
+        toast.error(`${p.name} is out of stock`)
+        return false
       }
       setCart([...cart, { productId: p.productId, name: p.name, price: p.price, qty: 1 }])
+      toast.success(`Added ${p.name}`)
+      return true
     }
   }
 
@@ -139,10 +144,11 @@ export const CheckoutPage: React.FC = () => {
     setScanValue('')
     const p = products.find((x) => x.barcode === val || x.productId === val)
     if (p) {
-      addToCart(p)
-      setIsScanSuccess(true)
-      setTimeout(() => setIsScanSuccess(false), 600)
-      toast.success(`Added ${p.name}`)
+      const added = addToCart(p)
+      if (added) {
+        setIsScanSuccess(true)
+        setTimeout(() => setIsScanSuccess(false), 600)
+      }
     } else {
       toast.error(`No product matches barcode "${val}"`)
     }
@@ -218,24 +224,38 @@ export const CheckoutPage: React.FC = () => {
 
         <div className="product-grid">
           {products.length > 0 ? (
-            products.map((p) => (
-              <div
-                key={p.productId}
-                className="product-tile group hover:-translate-y-0.5 hover:shadow-md transition-all duration-150"
-                onClick={() => addToCart(p)}
-              >
-                <div className="product-img-wrap">
-                  {isImg(p.image) ? (
-                    <img src={p.image} alt={p.name} className="product-photo" />
-                  ) : (
-                    <span className="emoji">{p.image}</span>
+            products.map((p) => {
+              const isOutOfStock = p.available <= 0
+              return (
+                <div
+                  key={p.productId}
+                  className={`product-tile group transition-all duration-150 relative ${
+                    isOutOfStock
+                      ? 'opacity-60 cursor-not-allowed bg-neutral-50/80 border-dashed border-neutral-300'
+                      : 'hover:-translate-y-0.5 hover:shadow-md cursor-pointer'
+                  }`}
+                  onClick={() => addToCart(p)}
+                >
+                  {isOutOfStock && (
+                    <span className="absolute top-2 right-2 bg-red-100 text-red-700 text-[10px] font-bold px-1.5 py-0.5 rounded">
+                      Out of stock
+                    </span>
                   )}
+                  <div className="product-img-wrap">
+                    {isImg(p.image) ? (
+                      <img src={p.image} alt={p.name} className="product-photo" />
+                    ) : (
+                      <span className="emoji">{p.image}</span>
+                    )}
+                  </div>
+                  <div className="name truncate w-full" title={p.name}>{p.name}</div>
+                  <div className="price mono">{fmtMoney(p.price)}</div>
+                  <div className={`avail ${isOutOfStock ? 'text-red-600 font-semibold' : ''}`}>
+                    {p.available} in stock
+                  </div>
                 </div>
-                <div className="name truncate w-full" title={p.name}>{p.name}</div>
-                <div className="price mono">{fmtMoney(p.price)}</div>
-                <div className="avail">{p.available} in stock</div>
-              </div>
-            ))
+              )
+            })
           ) : (
             <div className="empty col-span-full">No products in stock at this store.</div>
           )}

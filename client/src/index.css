@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+@theme {
+  --font-sans: 'Inter', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-heading: 'Plus Jakarta Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Plus Jakarta Sans', monospace;
+}
+
 :root {
   --ink: #0F172A;
   --ink-soft: #1E293B;
@@ -48,11 +54,24 @@ html, body { height: 100%; margin: 0; }
 body {
   background: var(--paper);
   color: var(--text);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: 'Inter', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
-h1, h2, h3, h4 { font-family: 'Space Grotesk', sans-serif; margin: 0; letter-spacing: -0.01em; }
-code, .mono { font-family: 'IBM Plex Mono', monospace; }
+
+/* Typography chuẩn doanh nghiệp quốc tế, hỗ trợ tiếng Việt mượt mà */
+p, span, a, button, input, label, li, td, th {
+  font-family: 'Inter', 'Plus Jakarta Sans', sans-serif;
+}
+
+/* Headers và chữ bự dùng Plus Jakarta Sans hiện đại, cao cấp */
+h1, h2, h3, h4,
+.text-lg, .text-xl, .text-2xl, .text-3xl, .text-4xl, .text-5xl,
+[class*="text-lg"], [class*="text-xl"], [class*="text-2xl"], [class*="text-3xl"], [class*="text-4xl"], [class*="text-5xl"],
+.font-heading {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+}
+
+code, pre, .mono, [class*="font-mono"] { font-family: 'JetBrains Mono', 'Plus Jakarta Sans', monospace !important; font-variant-numeric: tabular-nums; }
 a { color: inherit; }
 button { font-family: inherit; }
 ::selection { background: var(--accent); color: #fff; }
@@ -67,10 +86,10 @@ button { font-family: inherit; }
 }
 .welcome-page {
   min-height: 100vh;
-  overflow: hidden;
+  overflow-x: hidden;
   color: #0F1012;
   background: #FFFFFF;
-  font-family: 'Adelaide', 'Inter', -apple-system, sans-serif;
+  font-family: 'Inter', -apple-system, sans-serif;
 }
 .welcome-header {
   width: min(1128px, calc(100% - 48px));
@@ -534,6 +553,25 @@ button { font-family: inherit; }
   width: 236px; flex-shrink: 0; background: var(--sidebar-bg); color: var(--text-inverse);
   display: flex; flex-direction: column; padding: 18px 12px;
   border-right: 1px solid var(--sidebar-border);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100dvh;
+  align-self: flex-start;
+  overflow-y: auto;
+  z-index: 30;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+.sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+.sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
 }
 .sidebar-brand { display: flex; align-items: center; gap: 10px; padding: 4px 8px 22px; }
 .sidebar-brand span {
@@ -591,6 +629,7 @@ button { font-family: inherit; }
 .topbar {
   display: flex; align-items: center; justify-content: space-between; gap: 16px;
   padding: 14px 26px; border-bottom: 1px solid var(--line); background: var(--paper-raised);
+  position: sticky; top: 0; z-index: 20;
 }
 .topbar h2 { font-size: 18px; }
 .store-selector { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-soft); }
@@ -632,7 +671,13 @@ button { font-family: inherit; }
 .spread { display: flex; align-items: center; justify-content: space-between; }
 
 /* ---------- Checkout ----------------------------------------------------- */
-.checkout-layout { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 18px; height: calc(100vh - 160px); }
+.checkout-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: 18px;
+  min-height: calc(100vh - 160px);
+  height: auto;
+}
 .product-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -702,8 +747,11 @@ button { font-family: inherit; }
   color: var(--text-soft);
   margin-top: 2px;
 }
-.cart-panel { display: flex; flex-direction: column; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); }
-.cart-items { flex: 1; overflow-y: auto; padding: 8px 14px; }
+.cart-panel {
+  display: flex; flex-direction: column; background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
+  min-height: 0;
+}
+.cart-items { flex: 1 1 0%; min-height: 80px; overflow-y: auto; padding: 8px 14px; }
 .cart-line { display: flex; align-items: center; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid var(--line-soft); font-size: 13.5px; }
 .cart-line .qty-ctl { display: flex; align-items: center; gap: 6px; }
 .cart-line .qty-ctl button { width: 22px; height: 22px; border-radius: 4px; border: 1px solid var(--line); background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; }
