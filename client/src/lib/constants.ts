@@ -24,6 +24,7 @@ export const NAV_BY_ROLE: Record<string, NavItem[]> = {
     { key: 'products', label: 'Products', icon: '🏷️' },
     { key: 'promotions', label: 'Promotions', icon: '🎟️' },
     { key: 'stock-requests', label: 'Stock Requests', icon: '🔄' },
+    { key: 'users', label: 'Users', icon: '👤' },
     { key: 'audit', label: 'Audit Log', icon: '🗂️' },
   ],
   SYSTEM_ADMIN: [

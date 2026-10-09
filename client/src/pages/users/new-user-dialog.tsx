@@ -25,8 +25,14 @@ export const NewUserDialog: React.FC<NewUserDialogProps> = ({
   onClose,
   onSuccess,
 }) => {
-  const { stores } = useAuth()
-  const roles = Object.keys(ROLE_LABEL)
+  const { user, stores } = useAuth()
+  const allRoles = Object.keys(ROLE_LABEL)
+  const roles = React.useMemo(() => {
+    if (user?.role === 'HEAD_OFFICE_MANAGER') {
+      return allRoles.filter((r) => r !== 'SYSTEM_ADMIN' && r !== 'HEAD_OFFICE_MANAGER')
+    }
+    return allRoles
+  }, [user?.role, allRoles])
 
   const [name, setName] = useState('')
   const [username, setUsername] = useState('')
@@ -34,6 +40,12 @@ export const NewUserDialog: React.FC<NewUserDialogProps> = ({
   const [role, setRole] = useState(roles[0])
   const [storeId, setStoreId] = useState(stores[0]?.id || '')
   const [loading, setLoading] = useState(false)
+
+  React.useEffect(() => {
+    if (roles.length && !roles.includes(role)) {
+      setRole(roles[0])
+    }
+  }, [roles, role])
 
   const showStoreField = ['CASHIER', 'INVENTORY_STAFF', 'STORE_MANAGER'].includes(role)
 

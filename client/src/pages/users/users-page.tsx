@@ -19,7 +19,7 @@ interface UserItem {
 }
 
 export const UsersPage: React.FC = () => {
-  const { storeName } = useAuth()
+  const { user: currentUser, storeName } = useAuth()
   const [users, setUsers] = useState<UserItem[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
@@ -54,16 +54,23 @@ export const UsersPage: React.FC = () => {
     }
   }
 
+  const visibleUsers = useMemo(() => {
+    if (currentUser?.role === 'HEAD_OFFICE_MANAGER') {
+      return users.filter((u) => u.role !== 'SYSTEM_ADMIN')
+    }
+    return users
+  }, [users, currentUser?.role])
+
   const filteredUsers = useMemo(() => {
-    if (!searchQuery.trim()) return users
+    if (!searchQuery.trim()) return visibleUsers
     const q = searchQuery.toLowerCase()
-    return users.filter(
+    return visibleUsers.filter(
       (u) =>
         u.name.toLowerCase().includes(q) ||
         u.username.toLowerCase().includes(q) ||
         u.role.toLowerCase().includes(q)
     )
-  }, [users, searchQuery])
+  }, [visibleUsers, searchQuery])
 
   return (
     <div className="custom-card shadow-sm">
