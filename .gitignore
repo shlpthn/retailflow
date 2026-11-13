@@ -8,3 +8,7 @@ dist/
 data/*
 !data/.gitkeep
 test/.tmp/
+# QC: local bug log + generated run output
+qc/bug-log.md
+qc/results/
+qc/.tmp/
