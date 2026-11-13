@@ -6,8 +6,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ChevronDown, ChevronUp } from 'lucide-react'
-import manUtdLogo from '@/assets/Man_Utd_FC_.svg'
-import manUtdPoster from '@/assets/manchester-united-f-c-poster.jpg'
+import manUtdLogo from '@/assets/logo.jpg'
+import manUtdPoster from '@/assets/background.jpeg'
 
 export const LoginPage: React.FC = () => {
   const { login, user } = useAuth()

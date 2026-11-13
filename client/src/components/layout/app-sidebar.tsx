@@ -5,7 +5,7 @@ import { useSidebar } from './sidebar-context'
 import { NAV_BY_ROLE, ROLE_LABEL } from '@/lib/constants'
 import { Button } from '@/components/ui/button'
 import { LogOut } from 'lucide-react'
-import manUtdLogo from '@/assets/Man_Utd_FC_.svg'
+import manUtdLogo from '@/assets/logo.jpg'
 import { PAGE_ICONS } from '@/lib/page-icons'
 
 export const AppSidebar: React.FC = () => {

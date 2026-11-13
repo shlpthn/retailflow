@@ -4,7 +4,7 @@
   "description": "Role-based retail store management system with centralized RBAC enforced at the API layer.",
   "main": "server/index.js",
   "scripts": {
-    "start": "node server/index.js",
+    "start": "npm run build:client && node server/index.js",
     "dev": "node server/index.js",
     "build:client": "npm --prefix client run build",
     "dev:client": "npm --prefix client run dev"
