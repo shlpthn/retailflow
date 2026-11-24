@@ -15,6 +15,7 @@ export const AppSidebar: React.FC = () => {
   if (!user) return null
 
   const navItems = NAV_BY_ROLE[user.role] || []
+  const effectiveCollapsed = isCollapsed && !isMobileOpen
 
   return (
     <>
@@ -27,10 +28,8 @@ export const AppSidebar: React.FC = () => {
       )}
 
       <aside
-        className={`sidebar ${isCollapsed ? 'collapsed' : ''} ${
-          isMobileOpen
-            ? 'fixed inset-y-0 left-0 z-50 flex shadow-2xl md:sticky md:top-0 md:h-screen md:self-start md:shadow-none'
-            : 'hidden md:flex md:sticky md:top-0 md:h-screen md:self-start'
+        className={`sidebar ${effectiveCollapsed ? 'collapsed' : ''} ${
+          isMobileOpen ? 'mobile-open' : ''
         }`}
       >
         <div className="sidebar-brand">
@@ -38,9 +37,9 @@ export const AppSidebar: React.FC = () => {
             <img
               src={manUtdLogo}
               alt="RetailFlow"
-              className={`${isCollapsed ? 'w-8 h-8' : 'w-7 h-7'} object-contain shrink-0`}
+              className={`${effectiveCollapsed ? 'w-8 h-8' : 'w-7 h-7'} object-contain shrink-0`}
             />
-            {!isCollapsed && <span className="brand-name truncate">RetailFlow</span>}
+            {!effectiveCollapsed && <span className="brand-name truncate">RetailFlow</span>}
           </div>
         </div>
 
@@ -51,7 +50,8 @@ export const AppSidebar: React.FC = () => {
               <NavLink
                 key={item.key}
                 to={`/${item.key}`}
-                title={isCollapsed ? item.label : undefined}
+                onClick={closeMobile}
+                title={effectiveCollapsed ? item.label : undefined}
                 className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
               >
                 <span className="ico flex items-center justify-center shrink-0">
@@ -59,20 +59,20 @@ export const AppSidebar: React.FC = () => {
                     <img
                       src={iconSrc}
                       alt={item.label}
-                      className={`${isCollapsed ? 'w-6 h-6' : 'w-5 h-5'} object-contain`}
+                      className={`${effectiveCollapsed ? 'w-6 h-6' : 'w-5 h-5'} object-contain`}
                     />
                   ) : (
                     <span className="text-base">{item.icon}</span>
                   )}
                 </span>
-                {!isCollapsed && <span className="truncate">{item.label}</span>}
+                {!effectiveCollapsed && <span className="truncate">{item.label}</span>}
               </NavLink>
             )
           })}
         </nav>
 
         <div className="sidebar-foot">
-          {!isCollapsed ? (
+          {!effectiveCollapsed ? (
             <>
               <div className="role-chip">{ROLE_LABEL[user.role] || user.role}</div>
               <div className="who truncate">{user.name}</div>

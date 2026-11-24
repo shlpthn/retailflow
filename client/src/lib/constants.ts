@@ -58,15 +58,6 @@ export const PAGE_TITLES: Record<string, string> = {
   'store-detail': 'Store',
 }
 
-export const DEMO_ACCOUNTS: [string, string][] = [
-  ['cashier1', 'Cashier · Downtown'],
-  ['inventory1', 'Inventory Staff · Downtown'],
-  ['manager1', 'Store Manager · Downtown'],
-  ['manager2', 'Store Manager · Uptown'],
-  ['ho1', 'Head Office Manager'],
-  ['admin1', 'System Admin'],
-]
-
 export function defaultRoute(role?: string): string {
   if (role === 'CASHIER') return '/checkout'
   if (role === 'INVENTORY_STAFF') return '/inventory'

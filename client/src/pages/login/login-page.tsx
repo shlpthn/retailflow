@@ -1,11 +1,9 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/use-auth'
-import { DEMO_ACCOUNTS, defaultRoute } from '@/lib/constants'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { ChevronDown, ChevronUp } from 'lucide-react'
 import manUtdLogo from '@/assets/logo.jpg'
 import manUtdPoster from '@/assets/background.jpeg'
 
@@ -16,7 +14,6 @@ export const LoginPage: React.FC = () => {
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
-  const [isDemoExpanded, setIsDemoExpanded] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -24,21 +21,6 @@ export const LoginPage: React.FC = () => {
     setLoading(true)
     try {
       await login(username, password)
-      navigate('/', { replace: true })
-    } catch (err: any) {
-      setError(err.message || 'Login failed')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handleDemoLogin = async (demoUser: string) => {
-    setUsername(demoUser)
-    setPassword('password123')
-    setError(null)
-    setLoading(true)
-    try {
-      await login(demoUser, 'password123')
       navigate('/', { replace: true })
     } catch (err: any) {
       setError(err.message || 'Login failed')
@@ -105,37 +87,6 @@ export const LoginPage: React.FC = () => {
             Create an account · Sign up
           </Button>
         </form>
-
-        <div className="demo-accounts">
-          <button
-            type="button"
-            onClick={() => setIsDemoExpanded((prev) => !prev)}
-            className="demo-toggle-btn"
-            aria-expanded={isDemoExpanded}
-            title={isDemoExpanded ? 'Collapse demo accounts' : 'Expand demo accounts'}
-          >
-            <span className="demo-toggle-title">Demo accounts — password123</span>
-            <span className="demo-toggle-badge">
-              <span>{isDemoExpanded ? 'Collapse' : 'Expand'}</span>
-              {isDemoExpanded ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
-            </span>
-          </button>
-
-          {isDemoExpanded && (
-            <div className="demo-list">
-              {DEMO_ACCOUNTS.map(([u, label]) => (
-                <button
-                  key={u}
-                  type="button"
-                  onClick={() => handleDemoLogin(u)}
-                  disabled={loading}
-                >
-                  <b>{u}</b> — {label}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
       </div>
     </div>
   )

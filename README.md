@@ -58,7 +58,7 @@ Open **http://localhost:5173** to access the live Vite dev server.
 
 ## Default Demo Accounts
 
-All accounts use the password: `password123`
+Use these accounts to sign in on the login page. All demo accounts use the password: `password123`
 
 | Username | Role | Scope / Assigned Store | Access Capabilities |
 |---|---|---|---|
