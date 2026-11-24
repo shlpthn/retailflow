@@ -57,6 +57,7 @@ const show = (r) => {
     if (b.error) return `HTTP ${r.status} "${b.error}"`;
     if (b.receipt) return `HTTP ${r.status} (receipt ${b.receipt.id} created, total ${b.receipt.total}, method ${b.receipt.paymentMethod})`;
     if (b.id && b.status) return `HTTP ${r.status} (${b.id} status ${b.status})`;
+    if (b.id) return `HTTP ${r.status} (${b.id} saved${b.name ? ` "${b.name}"` : ''}${b.validFrom ? ` ${b.validFrom}..${b.validTo}` : ''})`;
   }
   return `HTTP ${r.status} ${short(b)}`;
 };
@@ -134,6 +135,19 @@ class Context {
   constructor(server) {
     this.server = server;
     this.tokens = {};
+    this.stepNo = 0;          // step of the written test case currently being executed
+    this.observed = {};       // step number -> what was observed when it passed
+  }
+
+  /** Enter step n of the test case (failures from here on are reported against it). */
+  at(n, observedOfPrevious) {
+    if (observedOfPrevious !== undefined) this.saw(observedOfPrevious);
+    this.stepNo = n;
+  }
+
+  /** Record what was observed in the current step (shown in Actual Result when it passes). */
+  saw(text) {
+    this.observed[this.stepNo] = text;
   }
 
   async token(username) {
@@ -165,6 +179,35 @@ class Context {
   async restart() {
     await this.server.stop();
     await this.server.start();
+  }
+
+  /**
+   * Test-data setup only: rewrite a stored JSON row while the server is stopped
+   * (e.g. back-date createdAt to simulate a request that is 25 hours old), then
+   * restart. Tables: sales, stockRequests, transfers, auditLogs, promotions.
+   */
+  async editStored(table, id, mutate) {
+    await this.server.stop();
+    const Database = require(path.join(ROOT, 'node_modules', 'better-sqlite3'));
+    const conn = new Database(this.server.dbFile);
+    try {
+      const row = conn.prepare(`SELECT json FROM ${table} WHERE id = ?`).get(id);
+      if (!row) throw new Error(`editStored: ${table}/${id} not found`);
+      const obj = JSON.parse(row.json);
+      mutate(obj);
+      conn.prepare(`UPDATE ${table} SET json = ? WHERE id = ?`).run(JSON.stringify(obj), id);
+    } finally {
+      conn.close();
+    }
+    await this.server.start();
+  }
+
+  /** Back-date the given timestamp fields of a stored row by `hours`. */
+  async ageStored(table, id, hours, fields = ['createdAt']) {
+    await this.editStored(table, id, (o) => {
+      for (const f of fields) if (o[f]) o[f] = new Date(Date.parse(o[f]) - hours * 3600000).toISOString();
+      if (Array.isArray(o.history)) for (const h of o.history) if (h.at) h.at = new Date(Date.parse(h.at) - hours * 3600000).toISOString();
+    });
   }
 
   // ---- domain helpers (go through the API as a privileged reader) --------
