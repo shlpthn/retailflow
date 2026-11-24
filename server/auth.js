@@ -31,7 +31,11 @@ function publicUser(user) {
     username: user.username,
     role: user.role,
     storeId: user.storeId,
-    scope: user.storeId ? 'STORE' : (user.role === 'HEAD_OFFICE_MANAGER' ? 'ALL_STORES' : 'SYSTEM'),
+    scope: user.storeId ? 'STORE' : (
+      user.role === 'HEAD_OFFICE_MANAGER'
+        ? 'ALL_STORES'
+        : 'SYSTEM'
+    ),
     permissions: getPermissionsForRole(user.role),
   };
 }

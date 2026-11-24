@@ -6,7 +6,7 @@ import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { NewStoreDialog } from './new-store-dialog'
-import { Search, ArrowRight } from 'lucide-react'
+import { Search, ArrowRight, Trash2, Building2 } from 'lucide-react'
 import { PageIcon } from '@/lib/page-icons'
 
 interface StoreItem {
@@ -24,6 +24,7 @@ export const StoresPage: React.FC = () => {
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
   const [isNewDialogOpen, setIsNewDialogOpen] = useState(false)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
 
   const loadStores = async () => {
     setLoading(true)
@@ -45,6 +46,22 @@ export const StoresPage: React.FC = () => {
   const handleOpenDashboard = (storeId: string) => {
     setSelectedStoreId(storeId)
     navigate(`/store-detail/${storeId}`)
+  }
+
+  const handleDeleteStore = async (store: StoreItem) => {
+    if (!window.confirm(`Are you sure you want to delete "${store.name}"? This will remove its inventory association.`)) {
+      return
+    }
+    setDeletingId(store.id)
+    try {
+      await api(`/stores/${store.id}`, { method: 'DELETE' })
+      toast.success(`Store "${store.name}" deleted successfully`)
+      await loadStores()
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to delete store')
+    } finally {
+      setDeletingId(null)
+    }
   }
 
   const filteredStores = useMemo(() => {
@@ -98,30 +115,50 @@ export const StoresPage: React.FC = () => {
               <tr>
                 <th className="py-2.5 px-3 text-left w-64">Store Name</th>
                 <th className="py-2.5 px-3 text-left">Address</th>
-                <th className="py-2.5 px-3 text-right w-44">Actions</th>
+                <th className="py-2.5 px-3 text-right w-56">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#E4E7EA]">
               {filteredStores.length > 0 ? (
                 filteredStores.map((s) => (
                   <tr key={s.id} className="row-hover">
-                    <td className="py-2.5 px-3 font-medium text-left">{s.name}</td>
+                    <td className="py-2.5 px-3 font-medium text-left">
+                      <div className="flex items-center gap-2">
+                        <Building2 size={15} className="text-neutral-400 shrink-0" />
+                        <span>{s.name}</span>
+                      </div>
+                    </td>
                     <td className="py-2.5 px-3 text-muted-foreground text-xs text-left">
                       {s.address || '—'}
                     </td>
                     <td className="py-2.5 px-3 text-right">
-                      {hasAny('SALES_VIEW_ALL_STORES', 'INVENTORY_VIEW') &&
-                        user?.role === 'HEAD_OFFICE_MANAGER' && (
+                      <div className="flex items-center justify-end gap-1.5">
+                        {hasAny('SALES_VIEW_ALL_STORES', 'INVENTORY_VIEW') &&
+                          user?.role === 'HEAD_OFFICE_MANAGER' && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleOpenDashboard(s.id)}
+                              className="text-xs h-7 text-muted-foreground hover:text-black gap-1"
+                            >
+                              Dashboard
+                              <ArrowRight size={13} />
+                            </Button>
+                          )}
+                        {canManage && (
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => handleOpenDashboard(s.id)}
-                            className="text-xs h-7 text-muted-foreground hover:text-black gap-1"
+                            disabled={deletingId === s.id}
+                            onClick={() => handleDeleteStore(s)}
+                            className="text-xs h-7 text-red-600 hover:text-red-700 hover:bg-red-50 gap-1 px-2"
+                            title="Delete store"
                           >
-                            Open dashboard
-                            <ArrowRight size={13} />
+                            <Trash2 size={13} />
+                            <span>Delete</span>
                           </Button>
                         )}
+                      </div>
                     </td>
                   </tr>
                 ))

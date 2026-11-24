@@ -24,11 +24,11 @@ export const NAV_BY_ROLE: Record<string, NavItem[]> = {
     { key: 'products', label: 'Products', icon: '🏷️' },
     { key: 'promotions', label: 'Promotions', icon: '🎟️' },
     { key: 'stock-requests', label: 'Stock Requests', icon: '🔄' },
+    { key: 'users', label: 'Users', icon: '👤' },
     { key: 'audit', label: 'Audit Log', icon: '🗂️' },
   ],
   SYSTEM_ADMIN: [
     { key: 'users', label: 'Users', icon: '👤' },
-    { key: 'roles', label: 'Roles & Permissions', icon: '🔐' },
     { key: 'stores', label: 'Stores', icon: '🏬' },
     { key: 'audit', label: 'Audit Log', icon: '🗂️' },
   ],
@@ -57,15 +57,6 @@ export const PAGE_TITLES: Record<string, string> = {
   roles: 'Roles & Permissions',
   'store-detail': 'Store',
 }
-
-export const DEMO_ACCOUNTS: [string, string][] = [
-  ['cashier1', 'Cashier · Downtown'],
-  ['inventory1', 'Inventory Staff · Downtown'],
-  ['manager1', 'Store Manager · Downtown'],
-  ['manager2', 'Store Manager · Uptown'],
-  ['ho1', 'Head Office Manager'],
-  ['admin1', 'System Admin'],
-]
 
 export function defaultRoute(role?: string): string {
   if (role === 'CASHIER') return '/checkout'
