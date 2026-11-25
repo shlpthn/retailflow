@@ -135,7 +135,8 @@ def build_testcases(stories):
         first = r
         by_ac = defaultdict(list)
         for c in s["cases"]:
-            by_ac[c["ac"]].append(c["id"])
+            if not c.get("retired"):
+                by_ac[c["ac"]].append(c["id"])
         for a in s["acs"]:
             tcs = "\n".join(by_ac[a["id"]])
             cell(ws, r, 5, ac_label(a["id"]), center=True)
@@ -158,6 +159,8 @@ def build_testcases(stories):
         header(ws, 4, cols, widths)
         r = 5
         for c in s["cases"]:
+            if c.get("retired"):
+                continue  # removed from the suite; still rendered in historical test runs
             first = r
             for n, desc, exp in step_rows(c):
                 cell(ws, r, 6, n, center=True)
@@ -254,9 +257,9 @@ def build_bug_summary(runs, bugs):
     ws = wb.active
     ws.title = "Bug Summary"
     title(ws, 1, "RetailFlow — QC Bug Summary",
-          f"{len(bugs)} bugs on main (server code unchanged since 7babcea). Test case references give the step that exposes the bug.")
-    cols = ["Bug ID", "Title", "Severity", "PBI", "User Story", "AC ID", "Test Case(s)", "Found by", "First found", "Last seen", "Status", "Expected", "Actual", "Location"]
-    widths = [10, 44, 10, 8, 10, 10, 20, 12, 15, 15, 14, 30, 34, 26]
+          f"{len(bugs)} bugs. Status follows the latest run that executed the linked step. Test case references give the step that exposes the bug.")
+    cols = ["Bug ID", "Title", "Severity", "PBI", "User Story", "AC ID", "Test Case(s)", "Found by", "First found", "Last seen", "Status", "Expected", "Actual", "Location", "Remarks"]
+    widths = [10, 44, 10, 8, 10, 10, 20, 12, 15, 15, 16, 30, 34, 26, 36]
     header(ws, 4, cols, widths)
     order = {"Critical": 0, "High": 1, "Medium": 2, "Low": 3}
     for r, b in enumerate(sorted(bugs, key=lambda b: (order[b["severity"]], b["id"])), start=5):
@@ -269,7 +272,9 @@ def build_bug_summary(runs, bugs):
             states = [s for s in (last_exec.get((b["id"], ref)) for ref in b["testCases"]) if s]
             latest = max((s[:2] for s in states), default=None)
             current = [s for s in states if s[:2] == latest]
-            if any(s[2] for s in current):
+            if b.get("testRemoved"):
+                status = "Open — test case removed"
+            elif any(s[2] for s in current):
                 status = "Open"
             elif current and all(s[3] for s in current):
                 status = "Fixed — verify"
@@ -277,10 +282,10 @@ def build_bug_summary(runs, bugs):
                 status = "Open (not reached)"
         else:
             found_by, first, last, status = "Exploratory", b.get("found", "—"), "—", "Open"
-        vals = [b["id"], b["title"], b["severity"], b["pbi"], b["us"], b["ac"], tcs or "—", found_by, first, last, status, b["expected"], b["actual"], b.get("where", "")]
+        vals = [b["id"], b["title"], b["severity"], b["pbi"], b["us"], b["ac"], tcs or "—", found_by, first, last, status, b["expected"], b["actual"], b.get("where", ""), b.get("remarks", "")]
         for c, v in enumerate(vals, 1):
             cell(ws, r, c, v, center=c in (1, 3, 4, 5, 6, 8, 9, 10, 11), bold=(c == 1))
-        ws.row_dimensions[r].height = height(b["title"], tcs, b["actual"], b["expected"], widths=[44, 20, 34, 30])
+        ws.row_dimensions[r].height = height(b["title"], tcs, b["actual"], b["expected"], b.get("remarks", ""), widths=[44, 20, 34, 30, 36])
     ws.freeze_panes = "C5"
     ws.auto_filter.ref = f"A4:{get_column_letter(len(cols))}{len(bugs) + 4}"
     out = TESTRUN / "Bug_Summary.xlsx"
