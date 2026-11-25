@@ -96,6 +96,7 @@ function gitInfo() {
   for (const s of stories.filter(inScope)) {
     for (const tc of s.cases) {
       if (args.ids.length && !args.ids.includes(tc.id)) continue;
+      if (tc.retired) continue; // removed from the suite (reason kept in the catalog)
       const base = { id: tc.id, pbi: s.pbi, us: s.id, ac: tc.ac, executedAt: stamp() };
       if (!tc.auto) {
         counts.MANUAL++;
