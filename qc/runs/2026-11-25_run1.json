@@ -1,0 +1,3374 @@
+{
+  "date": "2026-11-25",
+  "run": 1,
+  "title": "Regression on main after PR #6 (before fixes)",
+  "scope": [
+    "RF-06",
+    "RF-07",
+    "RF-08",
+    "RF-09",
+    "RF-10"
+  ],
+  "startedAt": "2026-11-25T12:00:36.499Z",
+  "finishedAt": "2026-11-25T12:01:35.922Z",
+  "simulatedDate": false,
+  "actuallyExecutedAt": "2026-11-25T12:00:36.499Z",
+  "build": "101664f",
+  "git": {
+    "commit": "101664f",
+    "branch": "qc/sprint-5-rf09-rf10"
+  },
+  "node": "v24.9.0",
+  "results": [
+    {
+      "id": "TC-06.4-01",
+      "pbi": "RF-06",
+      "us": "US-06.4",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:00:36.499Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — receipt SALE1001, method CASH"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — receipt SALE1004, method BANK_TRANSFER_QR"
+        },
+        {
+          "n": 3,
+          "actual": "As expected — receipt SALE1007, method CARD"
+        }
+      ],
+      "durationMs": 433
+    },
+    {
+      "id": "TC-06.4-02",
+      "pbi": "RF-06",
+      "us": "US-06.4",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:00:36.944Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "HTTP 201 (receipt SALE1001 created, total 12, method BITCOIN)",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — HTTP 201 (receipt SALE1001 created, total 12, method BITCOIN)"
+        },
+        {
+          "n": 2,
+          "actual": "Not executed (stopped at step 1)"
+        }
+      ],
+      "durationMs": 257
+    },
+    {
+      "id": "TC-06.4-03",
+      "pbi": "RF-06",
+      "us": "US-06.4",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:00:37.201Z",
+      "status": "FAIL",
+      "failedStep": 2,
+      "message": "HTTP 201 (receipt SALE1001 created, total 45, method CASH) — sale completed although tendered 20 < total 45",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — cart total 45, tendered 20"
+        },
+        {
+          "n": 2,
+          "actual": "Failed — HTTP 201 (receipt SALE1001 created, total 45, method CASH) — sale completed although tendered 20 < total 45"
+        },
+        {
+          "n": 3,
+          "actual": "Not executed (stopped at step 2)"
+        }
+      ],
+      "durationMs": 263
+    },
+    {
+      "id": "TC-06.4-04",
+      "pbi": "RF-06",
+      "us": "US-06.4",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:00:37.464Z",
+      "status": "FAIL",
+      "failedStep": 2,
+      "message": "receipt stores tendered=undefined, change=undefined",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — receipt SALE1001"
+        },
+        {
+          "n": 2,
+          "actual": "Failed — receipt stores tendered=undefined, change=undefined"
+        }
+      ],
+      "durationMs": 255
+    },
+    {
+      "id": "TC-06.4-05",
+      "pbi": "RF-06",
+      "us": "US-06.4",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:00:37.720Z",
+      "status": "FAIL",
+      "failedStep": 2,
+      "message": "receipt stores tendered=undefined, change=undefined",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — change is computed by the client (UI check)"
+        },
+        {
+          "n": 2,
+          "actual": "Failed — receipt stores tendered=undefined, change=undefined"
+        }
+      ],
+      "durationMs": 258
+    },
+    {
+      "id": "TC-06.4-06",
+      "pbi": "RF-06",
+      "us": "US-06.4",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:00:37.978Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — receipt SALE1002, total 42"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — T-Shirt 38, Cap 49"
+        },
+        {
+          "n": 3,
+          "actual": "As expected — 1 receipt"
+        }
+      ],
+      "durationMs": 292
+    },
+    {
+      "id": "TC-06.4-07",
+      "pbi": "RF-06",
+      "us": "US-06.4",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:00:38.271Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — receipt SALE1002"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — SALE T-Shirt 2, SALE Cap 1, by U001"
+        }
+      ],
+      "durationMs": 301
+    },
+    {
+      "id": "TC-06.4-08",
+      "pbi": "RF-06",
+      "us": "US-06.4",
+      "ac": "AC4",
+      "executedAt": "2026-11-25T12:00:38.572Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — cart prepared"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — sale B completed, Rain Jacket 2"
+        },
+        {
+          "n": 3,
+          "actual": "As expected — HTTP 409 \"Insufficient stock for Rain Jacket\""
+        },
+        {
+          "n": 4,
+          "actual": "As expected — Rain Jacket 2, T-Shirt 40, only sale B movement"
+        }
+      ],
+      "durationMs": 537
+    },
+    {
+      "id": "TC-06.4-09",
+      "pbi": "RF-06",
+      "us": "US-06.4",
+      "ac": "AC4",
+      "executedAt": "2026-11-25T12:00:39.109Z",
+      "status": "FAIL",
+      "failedStep": 3,
+      "message": "HTTP 409 \"Insufficient stock for Denim Jeans\"",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — cart prepared"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — Denim 7, Rain Jacket 2"
+        },
+        {
+          "n": 3,
+          "actual": "Failed — HTTP 409 \"Insufficient stock for Denim Jeans\""
+        }
+      ],
+      "durationMs": 349
+    },
+    {
+      "id": "TC-06.4-10",
+      "pbi": "RF-06",
+      "us": "US-06.4",
+      "ac": "AC4",
+      "executedAt": "2026-11-25T12:00:39.458Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "HTTP 201 (receipt SALE1002 created, total 320, method CASH); Rain Jacket on-hand now -1",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — HTTP 201 (receipt SALE1002 created, total 320, method CASH); Rain Jacket on-hand now -1"
+        },
+        {
+          "n": 2,
+          "actual": "Not executed (stopped at step 1)"
+        }
+      ],
+      "durationMs": 292
+    },
+    {
+      "id": "TC-06.4-11",
+      "pbi": "RF-06",
+      "us": "US-06.4",
+      "ac": "AC4",
+      "executedAt": "2026-11-25T12:00:39.750Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 201×3, 409×3"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — Rain Jacket 0, 3 movements"
+        }
+      ],
+      "durationMs": 456
+    },
+    {
+      "id": "TC-06.4-12",
+      "pbi": "RF-06",
+      "us": "US-06.4",
+      "ac": "AC5",
+      "executedAt": "2026-11-25T12:00:40.206Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "3 different receipts: SALE1001, SALE1004, SALE1007",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — 3 different receipts: SALE1001, SALE1004, SALE1007"
+        },
+        {
+          "n": 2,
+          "actual": "Not executed (stopped at step 1)"
+        }
+      ],
+      "durationMs": 330
+    },
+    {
+      "id": "TC-06.4-13",
+      "pbi": "RF-06",
+      "us": "US-06.4",
+      "ac": "AC5",
+      "executedAt": "2026-11-25T12:00:40.536Z",
+      "status": "FAIL",
+      "failedStep": 2,
+      "message": "3 receipts, Cap 47",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — requests answered"
+        },
+        {
+          "n": 2,
+          "actual": "Failed — 3 receipts, Cap 47"
+        }
+      ],
+      "durationMs": 454
+    },
+    {
+      "id": "TC-07.1-01",
+      "pbi": "RF-07",
+      "us": "US-07.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:00:40.990Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "default list shows 3 receipts (incl. the one from 3 days ago)",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — default list shows 3 receipts (incl. the one from 3 days ago)"
+        },
+        {
+          "n": 2,
+          "actual": "Not executed (stopped at step 1)"
+        },
+        {
+          "n": 3,
+          "actual": "Not executed (stopped at step 1)"
+        }
+      ],
+      "durationMs": 536
+    },
+    {
+      "id": "TC-07.1-02",
+      "pbi": "RF-07",
+      "us": "US-07.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:00:41.526Z",
+      "status": "FAIL",
+      "failedStep": 2,
+      "message": "filter receiptNo=SALE1006 returned 3 rows",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — receipt SALE1006"
+        },
+        {
+          "n": 2,
+          "actual": "Failed — filter receiptNo=SALE1006 returned 3 rows"
+        }
+      ],
+      "durationMs": 390
+    },
+    {
+      "id": "TC-07.1-03",
+      "pbi": "RF-07",
+      "us": "US-07.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:00:41.916Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "cashier filter returned 3 rows",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — cashier filter returned 3 rows"
+        },
+        {
+          "n": 2,
+          "actual": "Not executed (stopped at step 1)"
+        }
+      ],
+      "durationMs": 467
+    },
+    {
+      "id": "TC-07.1-04",
+      "pbi": "RF-07",
+      "us": "US-07.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:00:42.383Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "3 rows",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — 3 rows"
+        }
+      ],
+      "durationMs": 411
+    },
+    {
+      "id": "TC-07.1-05",
+      "pbi": "RF-07",
+      "us": "US-07.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:00:42.794Z",
+      "status": "FAIL",
+      "failedStep": 2,
+      "message": "page 2: 20 rows, 20 repeated from page 1",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 20 rows, newest first, total 25"
+        },
+        {
+          "n": 2,
+          "actual": "Failed — page 2: 20 rows, 20 repeated from page 1"
+        },
+        {
+          "n": 3,
+          "actual": "Not executed (stopped at step 2)"
+        }
+      ],
+      "durationMs": 346
+    },
+    {
+      "id": "TC-07.1-06",
+      "pbi": "RF-07",
+      "us": "US-07.1",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:00:43.141Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "cashier1 sees 2 receipts; cashier1b's receipt listed: false",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — cashier1 sees 2 receipts; cashier1b's receipt listed: false"
+        }
+      ],
+      "durationMs": 437
+    },
+    {
+      "id": "TC-07.1-07",
+      "pbi": "RF-07",
+      "us": "US-07.1",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:00:43.578Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 3 Downtown receipts"
+        }
+      ],
+      "durationMs": 463
+    },
+    {
+      "id": "TC-07.1-08",
+      "pbi": "RF-07",
+      "us": "US-07.1",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:00:44.041Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "HO sees 3 receipts",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — HO sees 3 receipts"
+        }
+      ],
+      "durationMs": 451
+    },
+    {
+      "id": "TC-07.1-09",
+      "pbi": "RF-07",
+      "us": "US-07.1",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:00:44.492Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — only the Uptown receipt"
+        }
+      ],
+      "durationMs": 457
+    },
+    {
+      "id": "TC-07.1-10",
+      "pbi": "RF-07",
+      "us": "US-07.1",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:00:44.949Z",
+      "status": "BLOCKED",
+      "failedStep": 0,
+      "message": "A user can be assigned to only one store (storeId); multi-store assignment does not exist",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Blocked — A user can be assigned to only one store (storeId); multi-store assignment does not exist"
+        },
+        {
+          "n": 1,
+          "actual": "Not executed (stopped at step 0)"
+        },
+        {
+          "n": 2,
+          "actual": "Not executed (stopped at step 0)"
+        }
+      ],
+      "durationMs": 466
+    },
+    {
+      "id": "TC-07.1-11",
+      "pbi": "RF-07",
+      "us": "US-07.1",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:00:45.415Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "HTTP 200: own-store (STORE_001) data returned instead of 403",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — HTTP 200: own-store (STORE_001) data returned instead of 403"
+        },
+        {
+          "n": 2,
+          "actual": "Not executed (stopped at step 1)"
+        }
+      ],
+      "durationMs": 504
+    },
+    {
+      "id": "TC-07.1-12",
+      "pbi": "RF-07",
+      "us": "US-07.1",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:00:45.919Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "HTTP 200: own-store (STORE_001) data returned instead of 403",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — HTTP 200: own-store (STORE_001) data returned instead of 403"
+        },
+        {
+          "n": 2,
+          "actual": "Not executed (stopped at step 1)"
+        }
+      ],
+      "durationMs": 457
+    },
+    {
+      "id": "TC-07.1-13",
+      "pbi": "RF-07",
+      "us": "US-07.1",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:00:46.376Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 403"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — 403"
+        },
+        {
+          "n": 3,
+          "actual": "As expected — 401"
+        }
+      ],
+      "durationMs": 287
+    },
+    {
+      "id": "TC-07.1-14",
+      "pbi": "RF-07",
+      "us": "US-07.1",
+      "ac": "AC4",
+      "executedAt": "2026-11-25T12:00:46.664Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — all refused (404)"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — unchanged"
+        }
+      ],
+      "durationMs": 429
+    },
+    {
+      "id": "TC-07.1-15",
+      "pbi": "RF-07",
+      "us": "US-07.1",
+      "ac": "AC4",
+      "executedAt": "2026-11-25T12:00:47.093Z",
+      "status": "NOT_RUN",
+      "failedStep": null,
+      "message": "",
+      "durationMs": null,
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Not executed — manual UI test, pending tester"
+        },
+        {
+          "n": 1,
+          "actual": "Not executed — manual UI test, pending tester"
+        }
+      ]
+    },
+    {
+      "id": "TC-08.1-01",
+      "pbi": "RF-08",
+      "us": "US-08.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:00:47.093Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — REQ1000, Downtown, Denim Jeans 10"
+        }
+      ],
+      "durationMs": 258
+    },
+    {
+      "id": "TC-08.1-02",
+      "pbi": "RF-08",
+      "us": "US-08.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:00:47.351Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "request REQ1000 stored without lines; only P002 x10 kept (Rain Jacket line dropped)",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — request REQ1000 stored without lines; only P002 x10 kept (Rain Jacket line dropped)"
+        }
+      ],
+      "durationMs": 256
+    },
+    {
+      "id": "TC-08.1-03",
+      "pbi": "RF-08",
+      "us": "US-08.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:00:47.607Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 400, 400"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — 400, 400"
+        },
+        {
+          "n": 3,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 298
+    },
+    {
+      "id": "TC-08.1-04",
+      "pbi": "RF-08",
+      "us": "US-08.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:00:47.905Z",
+      "status": "FAIL",
+      "failedStep": 2,
+      "message": "HTTP 201 (REQ1001 status REQUESTED) — inactive product accepted",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — HTTP 404 \"Unknown product\""
+        },
+        {
+          "n": 2,
+          "actual": "Failed — HTTP 201 (REQ1001 status REQUESTED) — inactive product accepted"
+        }
+      ],
+      "durationMs": 311
+    },
+    {
+      "id": "TC-08.1-05",
+      "pbi": "RF-08",
+      "us": "US-08.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:00:48.216Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 201, destination STORE_001, no source store"
+        }
+      ],
+      "durationMs": 311
+    },
+    {
+      "id": "TC-08.1-06",
+      "pbi": "RF-08",
+      "us": "US-08.1",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:00:48.527Z",
+      "status": "NOT_RUN",
+      "failedStep": null,
+      "message": "",
+      "durationMs": null,
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Not executed — manual UI test, pending tester"
+        },
+        {
+          "n": 1,
+          "actual": "Not executed — manual UI test, pending tester"
+        },
+        {
+          "n": 2,
+          "actual": "Not executed — manual UI test, pending tester"
+        }
+      ]
+    },
+    {
+      "id": "TC-08.1-07",
+      "pbi": "RF-08",
+      "us": "US-08.1",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:00:48.527Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — REQ1000, REQ1003 Submitted"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — both in queue"
+        },
+        {
+          "n": 3,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 293
+    },
+    {
+      "id": "TC-08.1-08",
+      "pbi": "RF-08",
+      "us": "US-08.1",
+      "ac": "AC4",
+      "executedAt": "2026-11-25T12:00:48.821Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 351
+    },
+    {
+      "id": "TC-08.1-09",
+      "pbi": "RF-08",
+      "us": "US-08.1",
+      "ac": "AC5",
+      "executedAt": "2026-11-25T12:00:49.172Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "HTTP 404 (route does not exist: POST /api/stock-requests/REQ1000/cancel) — no cancel action",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — HTTP 404 (route does not exist: POST /api/stock-requests/REQ1000/cancel) — no cancel action"
+        },
+        {
+          "n": 2,
+          "actual": "Not executed (stopped at step 1)"
+        }
+      ],
+      "durationMs": 256
+    },
+    {
+      "id": "TC-08.1-10",
+      "pbi": "RF-08",
+      "us": "US-08.1",
+      "ac": "AC5",
+      "executedAt": "2026-11-25T12:00:49.429Z",
+      "status": "BLOCKED",
+      "failedStep": 1,
+      "message": "Cancel-request action does not exist (see TC-08.1-09)",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Blocked — Cancel-request action does not exist (see TC-08.1-09)"
+        },
+        {
+          "n": 2,
+          "actual": "Not executed (stopped at step 1)"
+        }
+      ],
+      "durationMs": 289
+    },
+    {
+      "id": "TC-08.2-01",
+      "pbi": "RF-08",
+      "us": "US-08.2",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:00:49.718Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "queue order R4, R3, R2, R1",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — queue order R4, R3, R2, R1"
+        }
+      ],
+      "durationMs": 318
+    },
+    {
+      "id": "TC-08.2-02",
+      "pbi": "RF-08",
+      "us": "US-08.2",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:00:50.036Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "HTTP 404 \"Not found\" — no availability view",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — HTTP 404 \"Not found\" — no availability view"
+        }
+      ],
+      "durationMs": 397
+    },
+    {
+      "id": "TC-08.2-03",
+      "pbi": "RF-08",
+      "us": "US-08.2",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:00:50.433Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — Rejected with reason"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — REJECT_STOCK_REQUEST"
+        },
+        {
+          "n": 3,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 300
+    },
+    {
+      "id": "TC-08.2-04",
+      "pbi": "RF-08",
+      "us": "US-08.2",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:00:50.733Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "HTTP 200 (REQ1006 status REJECTED); status REJECTED",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — HTTP 200 (REQ1006 status REJECTED); status REJECTED"
+        },
+        {
+          "n": 2,
+          "actual": "Not executed (stopped at step 1)"
+        }
+      ],
+      "durationMs": 293
+    },
+    {
+      "id": "TC-08.3-01",
+      "pbi": "RF-08",
+      "us": "US-08.3",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:00:51.026Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — order XFER1003 Issued"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — In Progress"
+        },
+        {
+          "n": 3,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 295
+    },
+    {
+      "id": "TC-08.3-02",
+      "pbi": "RF-08",
+      "us": "US-08.3",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:00:51.321Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "HTTP 400 \"sourceStoreId required for a transfer\"; 0 orders",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — HTTP 400 \"sourceStoreId required for a transfer\"; 0 orders"
+        }
+      ],
+      "durationMs": 407
+    },
+    {
+      "id": "TC-08.3-03",
+      "pbi": "RF-08",
+      "us": "US-08.3",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:00:51.729Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — HTTP 409 \"Source store does not have enough stock for this transfer\""
+        },
+        {
+          "n": 2,
+          "actual": "As expected — 400, 404"
+        },
+        {
+          "n": 3,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 296
+    },
+    {
+      "id": "TC-08.3-04",
+      "pbi": "RF-08",
+      "us": "US-08.3",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:00:52.025Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "HTTP 200 (REQ1000 status FULFILLMENT_PENDING) — issued without a warning",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — HTTP 200 (REQ1000 status FULFILLMENT_PENDING) — issued without a warning"
+        }
+      ],
+      "durationMs": 287
+    },
+    {
+      "id": "TC-08.3-05",
+      "pbi": "RF-08",
+      "us": "US-08.3",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:00:52.313Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "HTTP 200 (REQ1000 status FULFILLMENT_PENDING); order quantity 10 (allocation quantity ignored)",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — HTTP 200 (REQ1000 status FULFILLMENT_PENDING); order quantity 10 (allocation quantity ignored)"
+        }
+      ],
+      "durationMs": 287
+    },
+    {
+      "id": "TC-08.3-06",
+      "pbi": "RF-08",
+      "us": "US-08.3",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:00:52.600Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "HTTP 200 (REQ1000 status FULFILLMENT_PENDING); order quantity 10",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — HTTP 200 (REQ1000 status FULFILLMENT_PENDING); order quantity 10"
+        }
+      ],
+      "durationMs": 288
+    },
+    {
+      "id": "TC-08.3-07",
+      "pbi": "RF-08",
+      "us": "US-08.3",
+      "ac": "AC4",
+      "executedAt": "2026-11-25T12:00:52.888Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — listed"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — listed, source Uptown Store"
+        },
+        {
+          "n": 3,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 432
+    },
+    {
+      "id": "TC-08.3-08",
+      "pbi": "RF-08",
+      "us": "US-08.3",
+      "ac": "AC5",
+      "executedAt": "2026-11-25T12:00:53.320Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "HTTP 404 (route does not exist: POST /api/transfers/XFER1003/cancel) — no cancel action",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — HTTP 404 (route does not exist: POST /api/transfers/XFER1003/cancel) — no cancel action"
+        },
+        {
+          "n": 2,
+          "actual": "Not executed (stopped at step 1)"
+        }
+      ],
+      "durationMs": 290
+    },
+    {
+      "id": "TC-08.3-09",
+      "pbi": "RF-08",
+      "us": "US-08.3",
+      "ac": "AC5",
+      "executedAt": "2026-11-25T12:00:53.610Z",
+      "status": "BLOCKED",
+      "failedStep": 1,
+      "message": "Cancel-order action does not exist (see TC-08.3-08)",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Blocked — Cancel-order action does not exist (see TC-08.3-08)"
+        }
+      ],
+      "durationMs": 323
+    },
+    {
+      "id": "TC-08.3-10",
+      "pbi": "RF-08",
+      "us": "US-08.3",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:00:53.933Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 345
+    },
+    {
+      "id": "TC-08.4-01",
+      "pbi": "RF-08",
+      "us": "US-08.4",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:00:54.278Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — In Transit"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — Uptown 15, Downtown 8"
+        },
+        {
+          "n": 3,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 324
+    },
+    {
+      "id": "TC-08.4-02",
+      "pbi": "RF-08",
+      "us": "US-08.4",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:00:54.602Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "HTTP 403 \"Forbidden: role STORE_MANAGER lacks permission TRANSFER_DISPATCH\"",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — HTTP 403 \"Forbidden: role STORE_MANAGER lacks permission TRANSFER_DISPATCH\""
+        }
+      ],
+      "durationMs": 339
+    },
+    {
+      "id": "TC-08.4-03",
+      "pbi": "RF-08",
+      "us": "US-08.4",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:00:54.942Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 339
+    },
+    {
+      "id": "TC-08.4-04",
+      "pbi": "RF-08",
+      "us": "US-08.4",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:00:55.281Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — HTTP 409 \"Insufficient stock at source store\""
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 429
+    },
+    {
+      "id": "TC-08.4-05",
+      "pbi": "RF-08",
+      "us": "US-08.4",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:00:55.710Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — UI check"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 328
+    },
+    {
+      "id": "TC-08.4-06",
+      "pbi": "RF-08",
+      "us": "US-08.4",
+      "ac": "AC4",
+      "executedAt": "2026-11-25T12:00:56.038Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 200 then 409"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — one succeeded"
+        },
+        {
+          "n": 3,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 561
+    },
+    {
+      "id": "TC-08.4-07",
+      "pbi": "RF-08",
+      "us": "US-08.4",
+      "ac": "INT",
+      "executedAt": "2026-11-25T12:00:56.599Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 200 + 409"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 331
+    },
+    {
+      "id": "TC-08.4-08",
+      "pbi": "RF-08",
+      "us": "US-08.4",
+      "ac": "INT",
+      "executedAt": "2026-11-25T12:00:56.931Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 409, 403, 409"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — 200, 409"
+        },
+        {
+          "n": 3,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 744
+    },
+    {
+      "id": "TC-08.4-09",
+      "pbi": "RF-08",
+      "us": "US-08.4",
+      "ac": "INT",
+      "executedAt": "2026-11-25T12:00:57.675Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "HTTP 200 {\"storeId\":\"STORE_001\",\"productId\":\"P001\",\"quantity\":35} — Downtown stock reduced without a transfer order; chain total 65",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — HTTP 200 {\"storeId\":\"STORE_001\",\"productId\":\"P001\",\"quantity\":35} — Downtown stock reduced without a transfer order; chain total 65"
+        },
+        {
+          "n": 2,
+          "actual": "Not executed (stopped at step 1)"
+        }
+      ],
+      "durationMs": 417
+    },
+    {
+      "id": "TC-08.5-01",
+      "pbi": "RF-08",
+      "us": "US-08.5",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:00:58.093Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "HTTP 404 (route does not exist: POST /api/transfers/XFER1003/unfulfillable) — no unfulfillable action",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — HTTP 404 (route does not exist: POST /api/transfers/XFER1003/unfulfillable) — no unfulfillable action"
+        },
+        {
+          "n": 2,
+          "actual": "Not executed (stopped at step 1)"
+        }
+      ],
+      "durationMs": 412
+    },
+    {
+      "id": "TC-08.5-02",
+      "pbi": "RF-08",
+      "us": "US-08.5",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:00:58.505Z",
+      "status": "BLOCKED",
+      "failedStep": 1,
+      "message": "Unfulfillable action does not exist (see TC-08.5-01)",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Blocked — Unfulfillable action does not exist (see TC-08.5-01)"
+        },
+        {
+          "n": 2,
+          "actual": "Not executed (stopped at step 1)"
+        },
+        {
+          "n": 3,
+          "actual": "Not executed (stopped at step 1)"
+        }
+      ],
+      "durationMs": 382
+    },
+    {
+      "id": "TC-08.6-01",
+      "pbi": "RF-08",
+      "us": "US-08.6",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:00:58.887Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — Received"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — Downtown 18, 1 TRANSFER_IN"
+        },
+        {
+          "n": 3,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 355
+    },
+    {
+      "id": "TC-08.6-02",
+      "pbi": "RF-08",
+      "us": "US-08.6",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:00:59.242Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "HTTP 403 \"Forbidden: role STORE_MANAGER lacks permission TRANSFER_RECEIVE\"",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — HTTP 403 \"Forbidden: role STORE_MANAGER lacks permission TRANSFER_RECEIVE\""
+        }
+      ],
+      "durationMs": 321
+    },
+    {
+      "id": "TC-08.6-03",
+      "pbi": "RF-08",
+      "us": "US-08.6",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:00:59.563Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 409"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — 200 then 409"
+        },
+        {
+          "n": 3,
+          "actual": "As expected — one succeeded"
+        },
+        {
+          "n": 4,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 360
+    },
+    {
+      "id": "TC-08.6-04",
+      "pbi": "RF-08",
+      "us": "US-08.6",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:00:59.924Z",
+      "status": "FAIL",
+      "failedStep": 2,
+      "message": "HTTP 404 (route does not exist: POST /api/inventory/adjust) — no stock adjustment action",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — Received, 18"
+        },
+        {
+          "n": 2,
+          "actual": "Failed — HTTP 404 (route does not exist: POST /api/inventory/adjust) — no stock adjustment action"
+        }
+      ],
+      "durationMs": 354
+    },
+    {
+      "id": "TC-08.6-05",
+      "pbi": "RF-08",
+      "us": "US-08.6",
+      "ac": "AC4",
+      "executedAt": "2026-11-25T12:01:00.278Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 353
+    },
+    {
+      "id": "TC-08.6-06",
+      "pbi": "RF-08",
+      "us": "US-08.6",
+      "ac": "AC4",
+      "executedAt": "2026-11-25T12:01:00.631Z",
+      "status": "BLOCKED",
+      "failedStep": 0,
+      "message": "Partial allocation is not possible — the API always ships the full request (see TC-08.3-05)",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Blocked — Partial allocation is not possible — the API always ships the full request (see TC-08.3-05)"
+        },
+        {
+          "n": 1,
+          "actual": "Not executed (stopped at step 0)"
+        }
+      ],
+      "durationMs": 289
+    },
+    {
+      "id": "TC-08.6-07",
+      "pbi": "RF-08",
+      "us": "US-08.6",
+      "ac": "AC5",
+      "executedAt": "2026-11-25T12:01:00.920Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 329
+    },
+    {
+      "id": "TC-08.6-08",
+      "pbi": "RF-08",
+      "us": "US-08.6",
+      "ac": "INT",
+      "executedAt": "2026-11-25T12:01:01.249Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 33"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — 23"
+        },
+        {
+          "n": 3,
+          "actual": "As expected — 33"
+        }
+      ],
+      "durationMs": 358
+    },
+    {
+      "id": "TC-08.6-09",
+      "pbi": "RF-08",
+      "us": "US-08.6",
+      "ac": "INT",
+      "executedAt": "2026-11-25T12:01:01.607Z",
+      "status": "FAIL",
+      "failedStep": 2,
+      "message": "10 rows have no opening movement, e.g. STORE_001/P001: on-hand 45, Σ movements 5; STORE_001/P002: on-hand 18, Σ movements 10",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — all rows match"
+        },
+        {
+          "n": 2,
+          "actual": "Failed — 10 rows have no opening movement, e.g. STORE_001/P001: on-hand 45, Σ movements 5; STORE_001/P002: on-hand 18, Σ movements 10"
+        }
+      ],
+      "durationMs": 369
+    },
+    {
+      "id": "TC-08.6-10",
+      "pbi": "RF-08",
+      "us": "US-08.6",
+      "ac": "INT",
+      "executedAt": "2026-11-25T12:01:01.976Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — In Transit, Uptown 15"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 617
+    },
+    {
+      "id": "TC-08.7-01",
+      "pbi": "RF-08",
+      "us": "US-08.7",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:01:02.593Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "HTTP 404 (route does not exist: POST /api/stock-requests/REQ1000/close) — no close action",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — HTTP 404 (route does not exist: POST /api/stock-requests/REQ1000/close) — no close action"
+        }
+      ],
+      "durationMs": 287
+    },
+    {
+      "id": "TC-08.7-02",
+      "pbi": "RF-08",
+      "us": "US-08.7",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:01:02.880Z",
+      "status": "BLOCKED",
+      "failedStep": 1,
+      "message": "Close-request action does not exist (see TC-08.7-01)",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Blocked — Close-request action does not exist (see TC-08.7-01)"
+        }
+      ],
+      "durationMs": 289
+    },
+    {
+      "id": "TC-08.7-03",
+      "pbi": "RF-08",
+      "us": "US-08.7",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:01:03.169Z",
+      "status": "NOT_RUN",
+      "failedStep": null,
+      "message": "",
+      "durationMs": null,
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Not executed — manual UI test, pending tester"
+        },
+        {
+          "n": 1,
+          "actual": "Not executed — manual UI test, pending tester"
+        }
+      ]
+    },
+    {
+      "id": "TC-08.8-01",
+      "pbi": "RF-08",
+      "us": "US-08.8",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:01:03.169Z",
+      "status": "FAIL",
+      "failedStep": 2,
+      "message": "line requested/allocated/received = — / — / —",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 1 Downtown request(s)"
+        },
+        {
+          "n": 2,
+          "actual": "Failed — line requested/allocated/received = — / — / —"
+        }
+      ],
+      "durationMs": 383
+    },
+    {
+      "id": "TC-08.8-02",
+      "pbi": "RF-08",
+      "us": "US-08.8",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:01:03.552Z",
+      "status": "FAIL",
+      "failedStep": 2,
+      "message": "status filter returned 3 requests",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — only C"
+        },
+        {
+          "n": 2,
+          "actual": "Failed — status filter returned 3 requests"
+        },
+        {
+          "n": 3,
+          "actual": "Not executed (stopped at step 2)"
+        }
+      ],
+      "durationMs": 331
+    },
+    {
+      "id": "TC-08.8-03",
+      "pbi": "RF-08",
+      "us": "US-08.8",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:01:03.883Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "timeline REQUESTED → APPROVED → FULFILLMENT_PENDING → COMPLETED — no dispatch step, order has no dispatchedBy/At",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — timeline REQUESTED → APPROVED → FULFILLMENT_PENDING → COMPLETED — no dispatch step, order has no dispatchedBy/At"
+        },
+        {
+          "n": 2,
+          "actual": "Not executed (stopped at step 1)"
+        }
+      ],
+      "durationMs": 354
+    },
+    {
+      "id": "TC-09.1-01",
+      "pbi": "RF-09",
+      "us": "US-09.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:01:04.237Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "HTTP 201, status undefined (only active=true)",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — HTTP 201, status undefined (only active=true)"
+        }
+      ],
+      "durationMs": 259
+    },
+    {
+      "id": "TC-09.1-02",
+      "pbi": "RF-09",
+      "us": "US-09.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:01:04.496Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "HTTP 201, status undefined",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — HTTP 201, status undefined"
+        }
+      ],
+      "durationMs": 261
+    },
+    {
+      "id": "TC-09.1-03",
+      "pbi": "RF-09",
+      "us": "US-09.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:01:04.757Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 1 % saved"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 260
+    },
+    {
+      "id": "TC-09.1-04",
+      "pbi": "RF-09",
+      "us": "US-09.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:01:05.017Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "0 → 201, 101 → 201 (saved)",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — 0 → 201, 101 → 201 (saved)"
+        },
+        {
+          "n": 2,
+          "actual": "Not executed (stopped at step 1)"
+        },
+        {
+          "n": 3,
+          "actual": "Not executed (stopped at step 1)"
+        }
+      ],
+      "durationMs": 312
+    },
+    {
+      "id": "TC-09.1-05",
+      "pbi": "RF-09",
+      "us": "US-09.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:01:05.329Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "HTTP 201 (PROMO1001 saved \"QC promo\" 2026-12-05..2026-11-30)",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — HTTP 201 (PROMO1001 saved \"QC promo\" 2026-12-05..2026-11-30)"
+        },
+        {
+          "n": 2,
+          "actual": "Not executed (stopped at step 1)"
+        }
+      ],
+      "durationMs": 260
+    },
+    {
+      "id": "TC-09.1-06",
+      "pbi": "RF-09",
+      "us": "US-09.1",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:01:05.589Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "HTTP 201 (PROMO1000 saved \"QC promo\" 2026-11-30..2026-12-10)",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — HTTP 201 (PROMO1000 saved \"QC promo\" 2026-11-30..2026-12-10)"
+        }
+      ],
+      "durationMs": 258
+    },
+    {
+      "id": "TC-09.1-07",
+      "pbi": "RF-09",
+      "us": "US-09.1",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:01:05.847Z",
+      "status": "FAIL",
+      "failedStep": 2,
+      "message": "B 201, C 201, D 201 (saved)",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — A saved"
+        },
+        {
+          "n": 2,
+          "actual": "Failed — B 201, C 201, D 201 (saved)"
+        }
+      ],
+      "durationMs": 268
+    },
+    {
+      "id": "TC-09.1-08",
+      "pbi": "RF-09",
+      "us": "US-09.1",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:01:06.115Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — both saved"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 260
+    },
+    {
+      "id": "TC-09.1-09",
+      "pbi": "RF-09",
+      "us": "US-09.1",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:01:06.375Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "HTTP 201 (PROMO1001 saved \"QC promo\" 2026-11-15..2026-11-23)",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — HTTP 201 (PROMO1001 saved \"QC promo\" 2026-11-15..2026-11-23)"
+        }
+      ],
+      "durationMs": 260
+    },
+    {
+      "id": "TC-09.1-10",
+      "pbi": "RF-09",
+      "us": "US-09.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:01:06.637Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "HTTP 201 (PROMO1001 saved \"QC promo\" 2026-12-15..2026-12-16)",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — HTTP 201 (PROMO1001 saved \"QC promo\" 2026-12-15..2026-12-16)"
+        },
+        {
+          "n": 2,
+          "actual": "Not executed (stopped at step 1)"
+        }
+      ],
+      "durationMs": 259
+    },
+    {
+      "id": "TC-09.1-11",
+      "pbi": "RF-09",
+      "us": "US-09.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:01:06.896Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 377
+    },
+    {
+      "id": "TC-09.1-12",
+      "pbi": "RF-09",
+      "us": "US-09.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:01:07.273Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "status undefined",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — status undefined"
+        },
+        {
+          "n": 2,
+          "actual": "Not executed (stopped at step 1)"
+        },
+        {
+          "n": 3,
+          "actual": "Not executed (stopped at step 1)"
+        }
+      ],
+      "durationMs": 264
+    },
+    {
+      "id": "TC-09.2-01",
+      "pbi": "RF-09",
+      "us": "US-09.2",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:01:07.537Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 266
+    },
+    {
+      "id": "TC-09.2-02",
+      "pbi": "RF-09",
+      "us": "US-09.2",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:01:07.803Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "HTTP 200 (PROMO1003 saved \"QC B\" 2026-12-19..2026-12-30); B start 2026-12-25 → 2026-12-19",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — HTTP 200 (PROMO1003 saved \"QC B\" 2026-12-19..2026-12-30); B start 2026-12-25 → 2026-12-19"
+        }
+      ],
+      "durationMs": 261
+    },
+    {
+      "id": "TC-09.2-03",
+      "pbi": "RF-09",
+      "us": "US-09.2",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:01:08.064Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "End early: HTTP 404 (route does not exist: POST /api/promotions/PROMO001/end); status undefined",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — End early: HTTP 404 (route does not exist: POST /api/promotions/PROMO001/end); status undefined"
+        },
+        {
+          "n": 2,
+          "actual": "Not executed (stopped at step 1)"
+        }
+      ],
+      "durationMs": 256
+    },
+    {
+      "id": "TC-09.2-04",
+      "pbi": "RF-09",
+      "us": "US-09.2",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:01:08.320Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "HTTP 200; stored 50 %",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — HTTP 200; stored 50 %"
+        }
+      ],
+      "durationMs": 259
+    },
+    {
+      "id": "TC-09.2-05",
+      "pbi": "RF-09",
+      "us": "US-09.2",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:01:08.579Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "HTTP 200; now \"Revived\", 30 %, active true",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — HTTP 200; now \"Revived\", 30 %, active true"
+        }
+      ],
+      "durationMs": 261
+    },
+    {
+      "id": "TC-09.2-06",
+      "pbi": "RF-09",
+      "us": "US-09.2",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:01:08.840Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "HTTP 204 null; still listed false",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — HTTP 204 null; still listed false"
+        }
+      ],
+      "durationMs": 289
+    },
+    {
+      "id": "TC-09.3-01",
+      "pbi": "RF-09",
+      "us": "US-09.3",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:01:09.129Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "discount 0, total 80 (promotion null)",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — discount 0, total 80 (promotion null)"
+        }
+      ],
+      "durationMs": 291
+    },
+    {
+      "id": "TC-09.3-02",
+      "pbi": "RF-09",
+      "us": "US-09.3",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:01:09.420Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "discount 12, total 68",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — discount 12, total 68"
+        }
+      ],
+      "durationMs": 294
+    },
+    {
+      "id": "TC-09.3-03",
+      "pbi": "RF-09",
+      "us": "US-09.3",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:01:09.714Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "discount 21.700000000000003",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — discount 21.700000000000003"
+        },
+        {
+          "n": 2,
+          "actual": "Not executed (stopped at step 1)"
+        }
+      ],
+      "durationMs": 316
+    },
+    {
+      "id": "TC-09.3-04",
+      "pbi": "RF-09",
+      "us": "US-09.3",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:01:10.030Z",
+      "status": "FAIL",
+      "failedStep": 3,
+      "message": "HTTP 201 (receipt SALE1002 created, total 65, method CASH); Sneakers 21 — completed without telling the cashier",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — cart total 59"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — ended"
+        },
+        {
+          "n": 3,
+          "actual": "Failed — HTTP 201 (receipt SALE1002 created, total 65, method CASH); Sneakers 21 — completed without telling the cashier"
+        },
+        {
+          "n": 4,
+          "actual": "Not executed (stopped at step 3)"
+        }
+      ],
+      "durationMs": 292
+    },
+    {
+      "id": "TC-09.3-05",
+      "pbi": "RF-09",
+      "us": "US-09.3",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:01:10.322Z",
+      "status": "FAIL",
+      "failedStep": 2,
+      "message": "discount 9.75, total 55.25 — still applied after its end time",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — discount displayed"
+        },
+        {
+          "n": 2,
+          "actual": "Failed — discount 9.75, total 55.25 — still applied after its end time"
+        }
+      ],
+      "durationMs": 4310
+    },
+    {
+      "id": "TC-09.3-06",
+      "pbi": "RF-09",
+      "us": "US-09.3",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:01:14.632Z",
+      "status": "FAIL",
+      "failedStep": 2,
+      "message": "receipt lacks percentage (none), line discounts ([null,null])",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — receipt SALE1002"
+        },
+        {
+          "n": 2,
+          "actual": "Failed — receipt lacks percentage (none), line discounts ([null,null])"
+        }
+      ],
+      "durationMs": 292
+    },
+    {
+      "id": "TC-09.3-07",
+      "pbi": "RF-09",
+      "us": "US-09.3",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:01:14.924Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — noted"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        },
+        {
+          "n": 3,
+          "actual": "As expected — identical"
+        }
+      ],
+      "durationMs": 317
+    },
+    {
+      "id": "TC-09.3-08",
+      "pbi": "RF-09",
+      "us": "US-09.3",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:01:15.241Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — noted"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — unchanged"
+        },
+        {
+          "n": 3,
+          "actual": "As expected — unchanged"
+        }
+      ],
+      "durationMs": 549
+    },
+    {
+      "id": "TC-09.3-09",
+      "pbi": "RF-09",
+      "us": "US-09.3",
+      "ac": "AC4",
+      "executedAt": "2026-11-25T12:01:15.790Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 0 / 65"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — 0 / 65"
+        }
+      ],
+      "durationMs": 289
+    },
+    {
+      "id": "TC-09.3-10",
+      "pbi": "RF-09",
+      "us": "US-09.3",
+      "ac": "AC4",
+      "executedAt": "2026-11-25T12:01:16.079Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — UI check"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 287
+    },
+    {
+      "id": "TC-10.1-01",
+      "pbi": "RF-10",
+      "us": "US-10.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:01:16.367Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "count 2 (receipt from 8 days ago included)",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — count 2 (receipt from 8 days ago included)"
+        },
+        {
+          "n": 2,
+          "actual": "Not executed (stopped at step 1)"
+        },
+        {
+          "n": 3,
+          "actual": "Not executed (stopped at step 1)"
+        }
+      ],
+      "durationMs": 530
+    },
+    {
+      "id": "TC-10.1-02",
+      "pbi": "RF-10",
+      "us": "US-10.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:01:16.897Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "group by month → [\"2026-10-16\",\"2026-11-25\"]",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — group by month → [\"2026-10-16\",\"2026-11-25\"]"
+        },
+        {
+          "n": 2,
+          "actual": "Not executed (stopped at step 1)"
+        }
+      ],
+      "durationMs": 585
+    },
+    {
+      "id": "TC-10.1-03",
+      "pbi": "RF-10",
+      "us": "US-10.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:01:17.482Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "count 3, revenue 199 (store STORE_001 only)",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — count 3, revenue 199 (store STORE_001 only)"
+        },
+        {
+          "n": 2,
+          "actual": "Not executed (stopped at step 1)"
+        }
+      ],
+      "durationMs": 392
+    },
+    {
+      "id": "TC-10.1-04",
+      "pbi": "RF-10",
+      "us": "US-10.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:01:17.874Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "HTTP 200: Downtown figures (3 receipts) returned instead of 403",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — HTTP 200: Downtown figures (3 receipts) returned instead of 403"
+        }
+      ],
+      "durationMs": 391
+    },
+    {
+      "id": "TC-10.1-05",
+      "pbi": "RF-10",
+      "us": "US-10.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:01:18.265Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "HTTP 200 — cashier sees revenue 15",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — HTTP 200 — cashier sees revenue 15"
+        },
+        {
+          "n": 2,
+          "actual": "Not executed (stopped at step 1)"
+        }
+      ],
+      "durationMs": 270
+    },
+    {
+      "id": "TC-10.1-06",
+      "pbi": "RF-10",
+      "us": "US-10.1",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:01:18.535Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "gross missing; discount missing; average missing",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — gross missing; discount missing; average missing"
+        }
+      ],
+      "durationMs": 357
+    },
+    {
+      "id": "TC-10.1-07",
+      "pbi": "RF-10",
+      "us": "US-10.1",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:01:18.893Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 303
+    },
+    {
+      "id": "TC-10.1-08",
+      "pbi": "RF-10",
+      "us": "US-10.1",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:01:19.196Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 3 / 199"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — 3 / 199"
+        }
+      ],
+      "durationMs": 502
+    },
+    {
+      "id": "TC-10.1-09",
+      "pbi": "RF-10",
+      "us": "US-10.1",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:01:19.699Z",
+      "status": "FAIL",
+      "failedStep": 2,
+      "message": "report 3 / 199 (covers STORE_001 only)",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 5 / 509"
+        },
+        {
+          "n": 2,
+          "actual": "Failed — report 3 / 199 (covers STORE_001 only)"
+        }
+      ],
+      "durationMs": 459
+    },
+    {
+      "id": "TC-10.2-01",
+      "pbi": "RF-10",
+      "us": "US-10.2",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:01:20.158Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "5 rows: 12, 11, 10, 9, 8",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — 5 rows: 12, 11, 10, 9, 8"
+        }
+      ],
+      "durationMs": 407
+    },
+    {
+      "id": "TC-10.2-02",
+      "pbi": "RF-10",
+      "us": "US-10.2",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:01:20.565Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "first row {\"name\":\"Baseball Cap\",\"qty\":5}",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — first row {\"name\":\"Baseball Cap\",\"qty\":5}"
+        }
+      ],
+      "durationMs": 369
+    },
+    {
+      "id": "TC-10.2-03",
+      "pbi": "RF-10",
+      "us": "US-10.2",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:01:20.934Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — Denim Jeans 3, Rain Jacket 2, Classic T-Shirt 1"
+        }
+      ],
+      "durationMs": 409
+    },
+    {
+      "id": "TC-10.3-01",
+      "pbi": "RF-10",
+      "us": "US-10.3",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:01:21.344Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — T-Shirt LOW_STOCK, Cap OK, Rain Jacket OUT_OF_STOCK"
+        }
+      ],
+      "durationMs": 342
+    },
+    {
+      "id": "TC-10.3-02",
+      "pbi": "RF-10",
+      "us": "US-10.3",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:01:21.686Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "minimum 10, flag LOW_STOCK",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — minimum 10, flag LOW_STOCK"
+        }
+      ],
+      "durationMs": 315
+    },
+    {
+      "id": "TC-10.3-03",
+      "pbi": "RF-10",
+      "us": "US-10.3",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:01:22.001Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "5 rows: P001, P002, P003, P004, P005",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — 5 rows: P001, P002, P003, P004, P005"
+        },
+        {
+          "n": 2,
+          "actual": "Not executed (stopped at step 1)"
+        }
+      ],
+      "durationMs": 292
+    },
+    {
+      "id": "TC-10.3-04",
+      "pbi": "RF-10",
+      "us": "US-10.3",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:01:22.293Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "HTTP 404 \"Not found\" — HO can only open one store at a time",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — HTTP 404 \"Not found\" — HO can only open one store at a time"
+        }
+      ],
+      "durationMs": 261
+    },
+    {
+      "id": "TC-10.3-05",
+      "pbi": "RF-10",
+      "us": "US-10.3",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:01:22.554Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 258
+    },
+    {
+      "id": "TC-10.3-06",
+      "pbi": "RF-10",
+      "us": "US-10.3",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:01:22.812Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — Downtown 2, Uptown 1"
+        }
+      ],
+      "durationMs": 357
+    },
+    {
+      "id": "TC-10.4-01",
+      "pbi": "RF-10",
+      "us": "US-10.4",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:01:23.169Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "HTTP 404 \"Not found\" — no transfer report",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — HTTP 404 \"Not found\" — no transfer report"
+        }
+      ],
+      "durationMs": 353
+    },
+    {
+      "id": "TC-10.4-02",
+      "pbi": "RF-10",
+      "us": "US-10.4",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:01:23.522Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "HTTP 404 \"Not found\" — no transfer report",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — HTTP 404 \"Not found\" — no transfer report"
+        }
+      ],
+      "durationMs": 1746
+    },
+    {
+      "id": "TC-10.4-03",
+      "pbi": "RF-10",
+      "us": "US-10.4",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:01:25.268Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "404, 404, 404 — the report does not exist",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — 404, 404, 404 — the report does not exist"
+        }
+      ],
+      "durationMs": 352
+    },
+    {
+      "id": "TC-10.5-01",
+      "pbi": "RF-10",
+      "us": "US-10.5",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:01:25.620Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "missing: objectType, result, ip",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — missing: objectType, result, ip"
+        }
+      ],
+      "durationMs": 402
+    },
+    {
+      "id": "TC-10.5-02",
+      "pbi": "RF-10",
+      "us": "US-10.5",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:01:26.024Z",
+      "status": "FAIL",
+      "failedStep": 2,
+      "message": "0 sign-in entries",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 401"
+        },
+        {
+          "n": 2,
+          "actual": "Failed — 0 sign-in entries"
+        }
+      ],
+      "durationMs": 423
+    },
+    {
+      "id": "TC-10.5-03",
+      "pbi": "RF-10",
+      "us": "US-10.5",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:01:26.447Z",
+      "status": "FAIL",
+      "failedStep": 2,
+      "message": "0 DENIED entries",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 403, 403"
+        },
+        {
+          "n": 2,
+          "actual": "Failed — 0 DENIED entries"
+        }
+      ],
+      "durationMs": 415
+    },
+    {
+      "id": "TC-10.5-04",
+      "pbi": "RF-10",
+      "us": "US-10.5",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:01:26.862Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "3 entries from 3 users",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — 3 entries from 3 users"
+        },
+        {
+          "n": 2,
+          "actual": "Not executed (stopped at step 1)"
+        },
+        {
+          "n": 3,
+          "actual": "Not executed (stopped at step 1)"
+        }
+      ],
+      "durationMs": 420
+    },
+    {
+      "id": "TC-10.5-05",
+      "pbi": "RF-10",
+      "us": "US-10.5",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:01:27.283Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "HTTP 403 \"Forbidden: role STORE_MANAGER lacks permission AUDIT_VIEW\"",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — HTTP 403 \"Forbidden: role STORE_MANAGER lacks permission AUDIT_VIEW\""
+        }
+      ],
+      "durationMs": 687
+    },
+    {
+      "id": "TC-10.5-06",
+      "pbi": "RF-10",
+      "us": "US-10.5",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:01:27.970Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — both stores"
+        }
+      ],
+      "durationMs": 2455
+    },
+    {
+      "id": "TC-10.5-07",
+      "pbi": "RF-10",
+      "us": "US-10.5",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:01:30.426Z",
+      "status": "FAIL",
+      "failedStep": 1,
+      "message": "admin sees ADD_STOCK, CHECKOUT_SALE",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "Failed — admin sees ADD_STOCK, CHECKOUT_SALE"
+        }
+      ],
+      "durationMs": 1065
+    },
+    {
+      "id": "TC-10.5-08",
+      "pbi": "RF-10",
+      "us": "US-10.5",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:01:31.491Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 775
+    },
+    {
+      "id": "TC-10.5-09",
+      "pbi": "RF-10",
+      "us": "US-10.5",
+      "ac": "AC4",
+      "executedAt": "2026-11-25T12:01:32.268Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — UI check"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — all refused"
+        },
+        {
+          "n": 3,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 660
+    },
+    {
+      "id": "TC-10.5-10",
+      "pbi": "RF-10",
+      "us": "US-10.5",
+      "ac": "AC4",
+      "executedAt": "2026-11-25T12:01:32.929Z",
+      "status": "FAIL",
+      "failedStep": 2,
+      "message": "page 1 has 200 entries, page 2 adds 0; the oldest entries are unreachable",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 3 entries preserved"
+        },
+        {
+          "n": 2,
+          "actual": "Failed — page 1 has 200 entries, page 2 adds 0; the oldest entries are unreachable"
+        }
+      ],
+      "durationMs": 2993
+    }
+  ]
+}
