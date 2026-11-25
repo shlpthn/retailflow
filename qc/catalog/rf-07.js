@@ -172,7 +172,7 @@ module.exports = [{
       },
     },
     {
-      id: 'TC-07.1-10', ac: 'AC2', type: 'Functional', name: 'User assigned to two stores starts on the active store and can switch',
+      id: 'TC-07.1-10', retired: 'Needs multi-store user assignment (D-04): users carry a single storeId; adding store lists and an active-store switch is a data-model change (BUG-063).', ac: 'AC2', type: 'Functional', name: 'User assigned to two stores starts on the active store and can switch',
       description: 'Multi-store assignment (D-04): default to the active store, switch among assigned stores only.',
       pre: need(FRESH_DATA, accounts('manager1', 'admin1'), "manager1 assigned to both Downtown Store and Uptown Store by admin1 on the Users screen.", "Completed sales at Downtown Store: cashier1 sold 1 Classic T-Shirt (Cash) and 2 Baseball Caps (Card); cashier1b, a second Downtown cashier created by admin1, sold 1 pair of Running Sneakers (Cash).", "A completed sale at Uptown Store: cashier2, an Uptown cashier created by admin1, sold 1 pair of Denim Jeans (Cash)."), preExpect: READY,
       steps: [
