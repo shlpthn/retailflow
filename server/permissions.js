@@ -28,7 +28,8 @@ const PERMISSIONS = [
   'PROMOTION_VIEW', 'PROMOTION_MANAGE',
   'STORE_VIEW', 'STORE_MANAGE',
   'STOCK_REQUEST_CREATE', 'STOCK_REQUEST_APPROVE', 'STOCK_REQUEST_REJECT',
-  'TRANSFER_CREATE', 'TRANSFER_DISPATCH', 'TRANSFER_RECEIVE',
+  'TRANSFER_CREATE', 'TRANSFER_DISPATCH', 'TRANSFER_RECEIVE', 'TRANSFER_ORDER_REPORT',
+  'REPORT_VIEW',
   'USER_VIEW', 'USER_MANAGE',
   'ROLE_VIEW', 'ROLE_MANAGE',
   'PERMISSION_VIEW', 'PERMISSION_MANAGE',
@@ -48,11 +49,14 @@ const rolePermissions = {
   [ROLES.STORE_MANAGER]: new Set([
     'SALES_VIEW_OWN_STORE', 'INVENTORY_VIEW', 'INVENTORY_REQUEST', 'PRODUCT_VIEW',
     'STOCK_REQUEST_CREATE',
+    // BA §2.2: the Store Manager also executes transfer orders, adjusts stock, reports
+    // unfulfillable orders and reads own-store reports and audit log.
+    'TRANSFER_DISPATCH', 'TRANSFER_RECEIVE', 'TRANSFER_ORDER_REPORT', 'INVENTORY_ADJUST', 'REPORT_VIEW', 'AUDIT_VIEW',
   ]),
   [ROLES.HEAD_OFFICE_MANAGER]: new Set([
     'SALES_VIEW_ALL_STORES', 'INVENTORY_VIEW', 'PRODUCT_VIEW', 'PRODUCT_MANAGE',
     'PROMOTION_VIEW', 'PROMOTION_MANAGE', 'STOCK_REQUEST_APPROVE', 'STOCK_REQUEST_REJECT',
-    'TRANSFER_CREATE', 'STORE_VIEW', 'STORE_MANAGE', 'AUDIT_VIEW',
+    'TRANSFER_CREATE', 'STORE_VIEW', 'STORE_MANAGE', 'AUDIT_VIEW', 'REPORT_VIEW',
     'USER_VIEW', 'USER_MANAGE',
   ]),
   [ROLES.SYSTEM_ADMIN]: new Set([
@@ -89,10 +93,20 @@ function getFullRoleMatrix() {
 }
 
 /** Express middleware factory: centralized authorization gate. */
+/** Record a refused request in the audit log (FR-AUD-01 "denied access"). */
+function auditDenied(req, missing) {
+  const db = require('./db'); // lazy: db does not depend on this module, but keep the load order simple
+  db.logAudit({
+    user: req.user, action: 'ACCESS_DENIED', resource: `${req.method} ${req.originalUrl}`, storeId: req.user.storeId,
+    result: 'DENIED', entityType: 'Endpoint', after: { missingPermission: missing },
+  });
+}
+
 function requirePermission(permission) {
   return (req, res, next) => {
     if (!req.user) return res.status(401).json({ error: 'Unauthenticated' });
     if (!hasPermission(req.user, permission)) {
+      auditDenied(req, permission);
       return res.status(403).json({
         error: `Forbidden: role ${req.user.role} lacks permission ${permission}`,
       });
@@ -106,6 +120,7 @@ function requireAnyPermission(...perms) {
   return (req, res, next) => {
     if (!req.user) return res.status(401).json({ error: 'Unauthenticated' });
     if (!perms.some((p) => hasPermission(req.user, p))) {
+      auditDenied(req, perms.join(' | '));
       return res.status(403).json({
         error: `Forbidden: role ${req.user.role} lacks any of [${perms.join(', ')}]`,
       });
