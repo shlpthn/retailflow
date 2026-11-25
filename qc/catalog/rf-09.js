@@ -281,7 +281,7 @@ module.exports = [
     ],
     cases: [
       {
-        id: 'TC-09.3-01', ac: 'AC1', type: 'Functional', name: 'The active promotion is applied automatically without a code',
+        id: 'TC-09.3-01', retired: 'Automatic promotion without a code changes every sale total in the catalog and the POS screen (BUG-033).', ac: 'AC1', type: 'Functional', name: 'The active promotion is applied automatically without a code',
         description: 'No code entry: the active promotion applies on its own.', pre: need(FRESH_DATA, signedIn('cashier1', 'Checkout'), PROMO_OFF, "An Active 15 % promotion created by ho1, running from one hour ago to five days from now.", stock('Downtown', ["Classic T-Shirt", 40], ["Running Sneakers", 22])), preExpect: READY,
         steps: [['As cashier1 add T-Shirt x1 and Sneakers x1 without entering any code; complete the sale.', 'Cart shows the promotion name and discount 11 (2 + 9); total 69.']],
         auto: async (ctx) => {
