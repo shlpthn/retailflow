@@ -100,8 +100,7 @@ export const NewPromotionDialog: React.FC<NewPromotionDialogProps> = ({
               onChange={(e) => setType(e.target.value as 'PERCENT' | 'FIXED')}
               className="w-full mt-1.5 p-2 border rounded-md font-medium bg-white"
             >
-              <option value="PERCENT">Percent off</option>
-              <option value="FIXED">Fixed amount off</option>
+              <option value="PERCENT">Percent off (all products, every store)</option>
             </select>
           </div>
 
