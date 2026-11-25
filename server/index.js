@@ -8,6 +8,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Remember the caller's IP for the duration of the request so audit entries can record it.
+app.use((req, res, next) => db.requestContext.run({ ip: req.ip }, next));
+
 // Persist any data changes to SQLite once the response has been fully sent.
 // db.maybeFlush() writes only when the in-memory state actually changed, so
 // no-op requests (GET, failed auth, etc.) incur zero SQL work.
@@ -35,6 +38,7 @@ app.use('/api/promotions', require('./routes/promotions'));
 app.use('/api/users', require('./routes/users'));
 app.use('/api/roles', require('./routes/roles'));
 app.use('/api/audit-logs', require('./routes/auditLogs'));
+app.use('/api/reports', require('./routes/reports'));
 
 // ---- Static SPA frontend ----------------------------------------------------
 const fs = require('fs');
