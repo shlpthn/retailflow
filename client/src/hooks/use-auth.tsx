@@ -145,7 +145,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(null)
     setStores([])
     setSelectedStoreId(null)
-    window.location.hash = ''
+    window.location.hash = '#/login'
   }
 
   return (

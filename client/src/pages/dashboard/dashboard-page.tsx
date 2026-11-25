@@ -134,19 +134,19 @@ export const DashboardPage: React.FC = () => {
     <div>
       <div className="grid-4 mb-4">
         <div className="custom-card stat">
-          <div className="num">{fmtMoney(salesSummary.todaysSales)}</div>
+          <div className="num text-2xl font-bold">{fmtMoney(salesSummary.todaysSales)}</div>
           <div className="label">Today's sales</div>
         </div>
         <div className="custom-card stat">
-          <div className="num">{salesSummary.transactions}</div>
+          <div className="num text-2xl font-bold">{salesSummary.transactions}</div>
           <div className="label">Transactions (all time)</div>
         </div>
         <div className="custom-card stat">
-          <div className="num">{salesSummary.itemsSold}</div>
+          <div className="num text-2xl font-bold">{salesSummary.itemsSold}</div>
           <div className="label">Items sold</div>
         </div>
         <div className="custom-card stat">
-          <div className="num">{fmtMoney(salesSummary.revenue)}</div>
+          <div className="num text-2xl font-bold">{fmtMoney(salesSummary.revenue)}</div>
           <div className="label">Total revenue</div>
         </div>
       </div>

@@ -4,11 +4,11 @@ import { useAuth } from '@/hooks/use-auth'
 import { useSidebar } from './sidebar-context'
 import { PAGE_TITLES } from '@/lib/constants'
 import { PAGE_ICONS } from '@/lib/page-icons'
-import { Menu, PanelLeft } from 'lucide-react'
+import { PanelLeft } from 'lucide-react'
 
 export const Topbar: React.FC = () => {
   const { user, stores, selectedStoreId, setSelectedStoreId, storeName } = useAuth()
-  const { isCollapsed, toggleCollapsed, toggleMobile } = useSidebar()
+  const { isCollapsed, isMobileOpen, toggleCollapsed, toggleMobile } = useSidebar()
   const location = useLocation()
 
   // Extract path key from pathname: e.g. /sales -> sales, /store-detail/123 -> store-detail
@@ -32,10 +32,10 @@ export const Topbar: React.FC = () => {
         {/* Mobile menu trigger */}
         <button
           onClick={toggleMobile}
-          className="md:hidden p-1.5 -ml-1 text-neutral-600 hover:text-black rounded hover:bg-neutral-100 transition-colors"
-          title="Open menu"
+          className="md:hidden p-1.5 -ml-1 text-neutral-500 hover:text-black rounded hover:bg-neutral-100 transition-colors"
+          title={isMobileOpen ? 'Close sidebar' : 'Open sidebar'}
         >
-          <Menu size={20} />
+          <PanelLeft size={18} />
         </button>
 
         {/* Desktop collapse toggle button */}

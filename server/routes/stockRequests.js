@@ -4,6 +4,15 @@ const db = require('../db');
 const { requirePermission, requireAnyPermission, hasPermission } = require('../permissions');
 const { resolveStoreScope, assertStoreAccess } = require('../middleware/storeScope');
 
+function positiveWholeQuantity(value) {
+  if (typeof value === 'number') return Number.isSafeInteger(value) && value > 0 ? value : null;
+  if (typeof value === 'string' && /^[0-9]+$/.test(value)) {
+    const parsed = Number(value);
+    return Number.isSafeInteger(parsed) && parsed > 0 ? parsed : null;
+  }
+  return null;
+}
+
 // Section 7 lifecycle: REQUESTED -> UNDER_REVIEW -> APPROVED/REJECTED
 // -> FULFILLMENT_PENDING -> DISPATCHED -> IN_TRANSIT -> RECEIVED -> COMPLETED
 // Every transition is recorded, never a silent inventory mutation (mistake #15).
@@ -33,8 +42,8 @@ function enrich(r) {
 
 router.post('/', requirePermission('STOCK_REQUEST_CREATE'), resolveStoreScope, (req, res) => {
   const { productId, quantity, note } = req.body || {};
-  const qty = Number(quantity);
-  if (!productId || !qty || qty <= 0) return res.status(400).json({ error: 'productId and positive quantity required' });
+  const qty = positiveWholeQuantity(quantity);
+  if (!productId || qty === null) return res.status(400).json({ error: 'productId and positive whole quantity required' });
   const storeId = req.storeScope.storeId; // always the requesting manager's own store
   if (!db.getProduct(productId)) return res.status(404).json({ error: 'Unknown product' });
 
@@ -85,15 +94,20 @@ router.post('/:requestId/approve', requirePermission('STOCK_REQUEST_APPROVE'), (
     return res.status(400).json({ error: 'fulfillmentType must be TRANSFER or FACTORY' });
   }
 
-  transition(request, 'APPROVED', req.user);
-
   if (fulfillmentType === 'TRANSFER') {
     if (!sourceStoreId) return res.status(400).json({ error: 'sourceStoreId required for a transfer' });
     if (sourceStoreId === request.storeId) return res.status(400).json({ error: 'Source store cannot equal destination store' });
+    if (!db.getStore(sourceStoreId)) return res.status(404).json({ error: 'Source store not found' });
     const sourceRow = db.getInventoryRow(sourceStoreId, request.productId);
     if (!sourceRow || sourceRow.quantity < request.quantity) {
       return res.status(409).json({ error: 'Source store does not have enough stock for this transfer' });
     }
+  }
+
+  transition(request, 'APPROVED', req.user);
+
+  if (fulfillmentType === 'TRANSFER') {
+    const sourceRow = db.getInventoryRow(sourceStoreId, request.productId);
     const transfer = {
       id: db.id('XFER'),
       stockRequestId: request.id,

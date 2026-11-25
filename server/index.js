@@ -38,8 +38,7 @@ app.use('/api/audit-logs', require('./routes/auditLogs'));
 
 // ---- Static SPA frontend ----------------------------------------------------
 const fs = require('fs');
-const clientDist = path.join(__dirname, '..', 'client', 'dist');
-const staticDir = fs.existsSync(clientDist) ? clientDist : path.join(__dirname, '..', 'public');
+const staticDir = path.join(__dirname, '..', 'client', 'dist');
 
 app.use(express.static(staticDir));
 app.get('*', (req, res) => {
