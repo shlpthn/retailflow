@@ -245,9 +245,9 @@ class Context {
   }
 
   /**
-   * Reconcile every (store, product): seed qty + Σ signed movements must equal
-   * current on-hand, and on-hand must be a finite integer ≥ 0. Returns the
-   * list of mismatches (empty = consistent).
+   * Reconcile every (store, product): Σ signed movements (opening balances
+   * included) must equal current on-hand, and on-hand must be a finite integer ≥ 0.
+   * Returns the list of mismatches (empty = consistent).
    */
   async reconcile() {
     const problems = [];
@@ -261,10 +261,10 @@ class Context {
         delta[m.productId] = (delta[m.productId] || 0) + sign * m.quantity;
       }
       for (const [pid, qty] of Object.entries(current)) {
-        const base = (SEED_STOCK[storeId] || {})[pid] || 0;
+        const base = 0; // opening stock is itself a movement (BR-12)
         const expected = base + (delta[pid] || 0);
         if (typeof qty !== 'number' || !Number.isInteger(qty) || qty < 0) problems.push(`${storeId}/${pid}: invalid on-hand ${JSON.stringify(qty)}`);
-        else if (qty !== expected) problems.push(`${storeId}/${pid}: on-hand ${qty} ≠ seed ${base} + movements ${delta[pid] || 0}`);
+        else if (qty !== expected) problems.push(`${storeId}/${pid}: on-hand ${qty} ≠ Σ movements ${delta[pid] || 0}`);
       }
     }
     return problems;
