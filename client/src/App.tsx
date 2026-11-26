@@ -22,6 +22,7 @@ import { StockRequestsPage } from '@/pages/stock-requests/stock-requests-page'
 import { AuditPage } from '@/pages/audit/audit-page'
 import { UsersPage } from '@/pages/users/users-page'
 import { RolesPage } from '@/pages/roles/roles-page'
+import { SalesReportPage } from '@/pages/reports/sales-report-page'
 import manUtdLogo from '@/assets/logo.jpg'
 
 const AppRoutes: React.FC = () => {
@@ -117,6 +118,17 @@ const AppRoutes: React.FC = () => {
               ]}
             >
               <SalesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/reports"
+          element={
+            <ProtectedRoute
+              allowedRoles={['STORE_MANAGER', 'HEAD_OFFICE_MANAGER']}
+              requiredPermissions={['REPORT_VIEW']}
+            >
+              <SalesReportPage />
             </ProtectedRoute>
           }
         />

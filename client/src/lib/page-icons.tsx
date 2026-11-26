@@ -11,6 +11,7 @@ import stockRequestsIcon from '@/assets/icons/request-duotone-regular.svg'
 import auditIcon from '@/assets/icons/audit-duotone-bold.svg'
 import usersIcon from '@/assets/icons/users.svg'
 import rolesIcon from '@/assets/icons/roles.svg'
+import reportsIcon from '@/assets/icons/dashboard.svg'
 
 export const PAGE_ICONS: Record<string, string> = {
   checkout: checkoutIcon,
@@ -25,6 +26,7 @@ export const PAGE_ICONS: Record<string, string> = {
   audit: auditIcon,
   users: usersIcon,
   roles: rolesIcon,
+  reports: reportsIcon,
 }
 
 export const PageIcon: React.FC<{

@@ -13,6 +13,7 @@ export const NAV_BY_ROLE: Record<string, NavItem[]> = {
   STORE_MANAGER: [
     { key: 'dashboard', label: 'Dashboard', icon: '📊' },
     { key: 'sales', label: 'Sales', icon: '💵' },
+    { key: 'reports', label: 'Reports', icon: '📈' },
     { key: 'inventory', label: 'Inventory', icon: '📦' },
     { key: 'products', label: 'Products', icon: '🏷️' },
   ],
@@ -20,6 +21,7 @@ export const NAV_BY_ROLE: Record<string, NavItem[]> = {
     { key: 'home', label: 'Home', icon: '🏢' },
     { key: 'stores', label: 'Stores', icon: '🏬' },
     { key: 'sales', label: 'Sales', icon: '💵' },
+    { key: 'reports', label: 'Reports', icon: '📈' },
     { key: 'inventory', label: 'Inventory', icon: '📦' },
     { key: 'products', label: 'Products', icon: '🏷️' },
     { key: 'promotions', label: 'Promotions', icon: '🎟️' },
@@ -48,6 +50,7 @@ export const PAGE_TITLES: Record<string, string> = {
   products: 'Products',
   dashboard: 'Store Dashboard',
   sales: 'Sales',
+  reports: 'Sales Report',
   home: 'Organization Overview',
   stores: 'Stores',
   promotions: 'Promotions',
