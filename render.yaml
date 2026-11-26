@@ -1,0 +1,21 @@
+# Render Blueprint for RetailFlow (free demo instance).
+#
+# A free instance has no persistent disk: the SQLite database is recreated with
+# the sample data after every restart, redeploy or sleep.
+services:
+  - type: web
+    name: retailflow
+    runtime: node
+    plan: free
+    region: singapore
+    # --ignore-scripts: better-sqlite3 ships a ready-built binary, so nothing
+    # needs compiling. --include=dev: the client build needs Vite and TypeScript.
+    buildCommand: npm ci --ignore-scripts && npm --prefix client ci --include=dev && npm run build:client
+    startCommand: node server/index.js
+    healthCheckPath: /api/auth/stores
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      # Render creates a random value, replacing the default that is public in the code.
+      - key: RETAILFLOW_JWT_SECRET
+        generateValue: true
