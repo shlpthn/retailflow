@@ -15,7 +15,7 @@ router.post('/', requirePermission('STORE_MANAGE'), (req, res) => {
 
   for (const product of db.products) {
     if (!db.getInventoryRow(store.id, product.id)) {
-      db.inventory.push({ storeId: store.id, productId: product.id, quantity: 0, threshold: 10 });
+      db.inventory.push({ storeId: store.id, productId: product.id, quantity: 0, threshold: 0 });
     }
   }
 

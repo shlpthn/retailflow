@@ -1,328 +1,315 @@
 #!/usr/bin/env python3
 """
-Build qc/RetailFlow_QC_TestCases.xlsx from the QC catalog + last run.
+Build the QC workbooks (needs: pip install openpyxl).
 
-    node qc/run.js                 # run automated cases -> qc/results/latest.json
-    python3 qc/build_excel.py      # needs: pip install openpyxl
+    python3 qc/build_excel.py
 
-Inputs : qc/results/latest.json (catalog, results, script code)
-         qc/bug-log.md (optional, git-ignored) -> fills the Bug ID column
-         qc/lib/harness.js, qc/run.js          -> embedded in "Automation Scripts"
-Output : qc/RetailFlow_QC_TestCases.xlsx
+Outputs
+  qc/RetailFlow_QC_TestCases.xlsx      sheet 1 = all user stories and acceptance criteria,
+                                       then one sheet of test cases per user story
+  qc/TestRun/TestRun_<date>.xlsx       one file per day, one sheet per run of that day
+  qc/TestRun/Bug_Summary.xlsx          all logged bugs with first / last run they were seen in
+
+Inputs
+  qc/catalog/*.js (via node qc/catalog/export.js), qc/runs/<date>_run<n>.json, qc/bug-register.json
 """
 import json
 import re
+import subprocess
 import sys
-from collections import OrderedDict
+from collections import defaultdict
 from pathlib import Path
 
 from openpyxl import Workbook
-from openpyxl.formatting.rule import FormulaRule
 from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.utils import get_column_letter
-from openpyxl.worksheet.datavalidation import DataValidation
 
 QC = Path(__file__).resolve().parent
-RESULTS = QC / "results" / "latest.json"
-BUG_LOG = QC / "bug-log.md"
-OUT = QC / "RetailFlow_QC_TestCases.xlsx"
+ROOT = QC.parent
+RUNS = QC / "runs"
+TESTRUN = QC / "TestRun"
+REGISTER = QC / "bug-register.json"
 
 FONT = "Arial"
-HEAD_FILL = PatternFill("solid", fgColor="1F3864")
-SUB_FILL = PatternFill("solid", fgColor="D9E1F2")
-INPUT_FILL = PatternFill("solid", fgColor="FFF2CC")
-THIN = Side(style="thin", color="BFBFBF")
+HEAD_FILL = PatternFill("solid", fgColor="EDEDED")   # light grey header — the only fill used
+THIN = Side(style="thin", color="A6A6A6")
 BORDER = Border(left=THIN, right=THIN, top=THIN, bottom=THIN)
-STATUS_STYLE = {
-    "PASS": ("C6EFCE", "006100"),
-    "FAIL": ("FFC7CE", "9C0006"),
-    "BLOCKED": ("FFEB9C", "9C5700"),
-    "NOT RUN": ("EDEDED", "595959"),
-}
-STATUS_LABEL = {"PASS": "PASS", "FAIL": "FAIL", "BLOCKED": "BLOCKED", "ERROR": "FAIL", "NOT_RUN": "NOT RUN"}
-BACKLOG = OrderedDict([
-    ("US-06.4", ("S3", "Payment and sale completion — US-06.4 AC1–AC5, BR-06/07, FR-POS-05..09, SD-01")),
-    ("US-06.6", ("S3", "Sales history filters + store scope — BA US-07.1, BR-09, FR-POS-10, SD-02, activity 8.4")),
-    ("RF-08", ("S4", "HO-coordinated stock transfer + stock integrity — US-08.1..08.8, BR-12..15, BR-20..22")),
-])
-REQ_RE = re.compile(r"\b(US-\d\d\.\d|BR-\d\d|FR-[A-Z]{3}-\d\d|NFR-\d\d)\b")
+TOP = Alignment(vertical="center", wrap_text=True)                      # every cell is centred vertically
+TOP_C = Alignment(vertical="center", horizontal="center", wrap_text=True)
 
-def font(**kw):
+
+# ----------------------------------------------------------------------------- helpers
+def f(**kw):
     return Font(name=FONT, size=kw.pop("size", 10), **kw)
 
-def load_bug_map():
-    """TC id -> [BUG ids] from the summary table of the (git-ignored) bug log."""
-    m = {}
-    if not BUG_LOG.exists():
-        return m
-    for line in BUG_LOG.read_text(encoding="utf-8").splitlines():
-        cells = [c.strip() for c in line.strip().strip("|").split("|")]
-        if len(cells) >= 4 and re.fullmatch(r"BUG-\d{3}", cells[0]):
-            for tc in re.findall(r"TC-[A-Z0-9-]+", cells[3]):
-                m.setdefault(tc, []).append(cells[0])
-    return m
 
-def header_row(ws, row, labels, widths=None):
-    for i, label in enumerate(labels, 1):
+def header(ws, row, labels, widths):
+    for i, (label, w) in enumerate(zip(labels, widths), 1):
         c = ws.cell(row=row, column=i, value=label)
-        c.font = font(bold=True, color="FFFFFF")
+        c.font = f(bold=True)
         c.fill = HEAD_FILL
-        c.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
         c.border = BORDER
-        if widths:
-            ws.column_dimensions[get_column_letter(i)].width = widths[i - 1]
+        c.alignment = Alignment(vertical="center", horizontal="center", wrap_text=True)
+        ws.column_dimensions[get_column_letter(i)].width = w
+    ws.row_dimensions[row].height = 30
 
-def body_cell(ws, row, col, value, **align):
+
+def cell(ws, row, col, value, center=False, bold=False):
     c = ws.cell(row=row, column=col, value=value)
-    c.font = font()
-    c.alignment = Alignment(vertical="top", wrap_text=True, **align)
+    c.font = f(bold=bold)
+    c.alignment = TOP_C if center else TOP
     c.border = BORDER
     return c
 
-def status_formatting(ws, rng, first_cell):
-    for label, (bg, fg) in STATUS_STYLE.items():
-        ws.conditional_formatting.add(rng, FormulaRule(
-            formula=[f'{first_cell}="{label}"'],
-            fill=PatternFill("solid", fgColor=bg), font=Font(name=FONT, color=fg, bold=True)))
 
-# --------------------------------------------------------------------------- sheets
-def sheet_readme(wb, data):
+def merge_down(ws, col, first, last):
+    """Merge a block of rows in one column (value already written in the first row)."""
+    for r in range(first, last + 1):
+        ws.cell(row=r, column=col).border = BORDER
+    if last > first:
+        ws.merge_cells(start_row=first, start_column=col, end_row=last, end_column=col)
+
+
+def height(*texts, widths):
+    lines = 1
+    for t, w in zip(texts, widths):
+        t = str(t or "")
+        lines = max(lines, sum(len(part) // max(1, int(w * 1.1)) + 1 for part in t.split("\n")))
+    return min(400, 13 * lines + 4)
+
+
+def title(ws, row, text, sub=None):
+    ws.cell(row=row, column=1, value=text).font = f(size=13, bold=True)
+    if sub:
+        ws.cell(row=row + 1, column=1, value=sub).font = f(italic=True)
+
+
+
+def load_catalog():
+    out = subprocess.run(["node", str(QC / "catalog" / "export.js")], cwd=ROOT, capture_output=True, text=True, check=True)
+    return json.loads(out.stdout)
+
+
+def load_runs():
+    runs = []
+    for p in sorted(RUNS.glob("*_run*.json")):
+        if re.match(r"(\d{4}-\d{2}-\d{2})_run(\d+)$", p.stem):
+            runs.append(json.loads(p.read_text(encoding="utf-8")))
+    runs.sort(key=lambda r: (r["date"], r["run"]))
+    return runs
+
+
+def load_bugs():
+    if not REGISTER.exists():
+        return []
+    return json.loads(REGISTER.read_text(encoding="utf-8"))["bugs"]
+
+
+def prerequisite(tc):
+    items = tc["pre"] if isinstance(tc["pre"], list) else [tc["pre"]]
+    return "Prerequisite — we need:\n" + "\n".join(f"• {x}" for x in items)
+
+
+def step_rows(tc):
+    rows = [(0, prerequisite(tc), tc.get("preExpect", ""))]
+    rows += [(i, s[0], s[1]) for i, s in enumerate(tc["steps"], 1)]
+    return rows
+
+
+def ac_label(ac):
+    return "Stock integrity" if ac == "INT" else ac
+
+
+# ----------------------------------------------------------------------------- test cases
+def build_testcases(stories):
+    wb = Workbook()
     ws = wb.active
-    ws.title = "Read Me"
-    ws.column_dimensions["A"].width = 26
-    ws.column_dimensions["B"].width = 110
-    ws["A1"] = "RetailFlow — QC Test Cases (Sprint 3 & Sprint 4)"
-    ws["A1"].font = font(size=14, bold=True)
-    git = data.get("git", {})
-    rows = [
-        ("Scope", "S3: US-06.4 (payment & sale completion), US-06.6 (sales history filters + store scope). "
-                  "S4: RF-08 (HO-coordinated stock transfer + stock integrity)."),
-        ("Requirement baseline", "RetailFlow Business Requirements Specification (BA). Every case traces to BA IDs (US / BR / FR / NFR / SD / ST). "
-                                 "Backlog item US-06.6 is not in the BA: it maps to BA US-07.1 (+ BR-09, FR-POS-10)."),
-        ("Build under test", f"branch {git.get('branch', '?')} @ {git.get('commit', '?')}"
-                             + (" (server/ had local changes)" if git.get("dirty") else "")),
-        ("Last automated run", f"{data.get('generatedAt', '?')} (UTC), Node {data.get('node', '?')}"),
-        ("Sheets", "Summary — counts and pass rate per backlog item (formulas over Test Cases).\n"
-                   "Test Cases — every case, automated and manual, with expected / actual / status / bug.\n"
-                   "Traceability — BA requirement → number of cases and their status (formulas).\n"
-                   "Automation Scripts — source of every automated case plus the shared harness and runner."),
-        ("Status values", "PASS — actual matches expected.\n"
-                          "FAIL — actual differs from expected (a bug is logged).\n"
-                          "BLOCKED — cannot run because a prerequisite feature/endpoint is missing (linked to the blocking bug).\n"
-                          "NOT RUN — manual case not executed yet."),
-        ("Re-run automation", "From the repo root:\n"
-                              "  npm ci\n"
-                              "  node qc/run.js                       # all automated cases\n"
-                              "  node qc/run.js --suite rf-08         # one suite: us-06.4 | us-06.6 | rf-08\n"
-                              "  node qc/run.js --id TC-RF08-020      # one case (repeat --id for more)\n"
-                              "  python3 qc/build_excel.py            # rebuild this workbook (pip install openpyxl)"),
-        ("How the scripts work", "Each automated case boots its own server on a freshly seeded SQLite file (qc/.tmp), drives the REST API as the "
-                                 "seed users (cashier1, inventory1/2, manager1/2, ho1, admin1; password password123) and asserts the BA expectation. "
-                                 "Cases are independent and can run in any order."),
-        ("Assumptions", "1. API paths for BA features that have no endpoint yet follow the existing resources (see PATHS in qc/suites/rf-08.js); "
-                        "sales history filters use SD-02 names (from, to, receiptNo, cashier, paymentMethod, page).\n"
-                        "2. Current request/order status names are mapped to BA enums inside the RF-08 suite so the flow can be tested; "
-                        "TC-RF08-050 checks the raw names separately.\n"
-                        "3. TC-0604-025 depends on the seed promotion being active (valid until 2026-12-31).\n"
-                        "4. Malformed numbers such as 1e309 are sent as strings because JSON cannot encode Infinity."),
-        ("Manual cases", "IDs ending in -Mxx. Execute in the browser and fill Status / Actual result / Executed at (yellow cells). "
-                         "Notes hold static-review observations made while writing the case."),
-        ("Bug IDs", "Refer to the QC bug log (qc/bug-log.md, kept out of git)."),
-    ]
-    r = 3
-    for k, v in rows:
-        a = ws.cell(row=r, column=1, value=k)
-        a.font = font(bold=True)
-        a.alignment = Alignment(vertical="top")
-        b = ws.cell(row=r, column=2, value=v)
-        b.font = font()
-        b.alignment = Alignment(vertical="top", wrap_text=True)
-        ws.row_dimensions[r].height = max(15, 14 * (v.count("\n") + 1 + len(v) // 120))
-        r += 1
-
-def sheet_test_cases(wb, cases, bug_map):
-    ws = wb.create_sheet("Test Cases")
-    cols = ["TC ID", "Sprint", "Backlog item", "BA trace", "Area", "Title", "Type", "Priority", "Preconditions",
-            "Test steps", "Test data", "Expected result", "Execution", "Automation script", "Status", "Actual result",
-            "Bug ID", "Executed at", "Notes"]
-    widths = [15, 7, 10, 22, 15, 38, 11, 9, 30, 44, 22, 40, 11, 20, 10, 44, 13, 17, 30]
-    header_row(ws, 1, cols, widths)
-    ws.row_dimensions[1].height = 30
-    for i, c in enumerate(cases, start=2):
-        steps = "\n".join(f"{n}. {s}" for n, s in enumerate(c.get("steps", []), 1))
-        status = STATUS_LABEL.get(c["status"], c["status"])
-        executed = c.get("executedAt", "")
-        executed = executed.replace("T", " ")[:16] + " UTC" if executed else ""
-        values = [c["id"], c["sprint"], c["backlog"], c["trace"], c["area"], c["title"], c["type"], c["priority"],
-                  c.get("pre", ""), steps, c.get("data", ""), c["expected"],
-                  "Automated" if c["automated"] else "Manual", c.get("script", ""), status, c.get("actual", ""),
-                  ", ".join(bug_map.get(c["id"], [])), executed, c.get("notes", "")]
-        for j, v in enumerate(values, 1):
-            body_cell(ws, i, j, v, horizontal="center" if j in (2, 3, 7, 8, 13, 15) else None)
-        if not c["automated"]:
-            for j in (15, 16, 18):  # manual results are filled in by the tester
-                ws.cell(row=i, column=j).fill = INPUT_FILL
-        lines = max(len(steps) // 42 + steps.count("\n") + 1, len(c["expected"]) // 38 + 1, len(c.get("actual", "")) // 42 + 1)
-        ws.row_dimensions[i].height = min(400, 13 * max(2, lines))
-    last = len(cases) + 1
-    ws.freeze_panes = "B2"
-    ws.auto_filter.ref = f"A1:{get_column_letter(len(cols))}{last}"
-    status_formatting(ws, f"O2:O{last}", "O2")
-    dv = DataValidation(type="list", formula1='"PASS,FAIL,BLOCKED,NOT RUN"', allow_blank=True)
-    ws.add_data_validation(dv)
-    dv.add(f"O2:O{last}")
-    return last
-
-def sheet_summary(wb, data, last):
-    ws = wb.create_sheet("Summary", 1)
-    tc = "'Test Cases'"
-    ws["A1"] = "QC Summary — Sprint 3 & Sprint 4"
-    ws["A1"].font = font(size=14, bold=True)
-    git = data.get("git", {})
-    ws["A2"] = f"Build {git.get('branch', '?')} @ {git.get('commit', '?')} · automated run {data.get('generatedAt', '?')[:16].replace('T', ' ')} UTC · counts are formulas over the Test Cases sheet"
-    ws["A2"].font = font(italic=True, color="595959")
-
-    labels = ["Sprint", "Backlog item", "BA mapping", "Total", "Automated", "Manual", "PASS", "FAIL", "BLOCKED", "NOT RUN", "Pass rate (executed)"]
-    header_row(ws, 4, labels, [8, 12, 62, 8, 11, 9, 8, 8, 10, 10, 14])
-    ws.row_dimensions[4].height = 30
+    ws.title = "User Stories & AC"
+    title(ws, 1, "RetailFlow — User stories and acceptance criteria in QC scope",
+          "Source: RetailFlow Business Requirements Specification (BA). One test case sheet per user story follows.")
+    cols = ["PBI", "Sprint", "User Story ID", "User Story", "AC ID", "Acceptance Criteria", "Related rules", "Test Cases"]
+    widths = [8, 8, 13, 40, 10, 60, 24, 16]
+    header(ws, 4, cols, widths)
     r = 5
-    for item, (sprint, mapping) in BACKLOG.items():
-        body_cell(ws, r, 1, sprint, horizontal="center")
-        body_cell(ws, r, 2, item, horizontal="center")
-        body_cell(ws, r, 3, mapping)
-        rng = f"{tc}!$C$2:$C${last}"
-        formulas = {
-            4: f"=COUNTIFS({rng},$B{r})",
-            5: f'=COUNTIFS({rng},$B{r},{tc}!$M$2:$M${last},"Automated")',
-            6: f'=COUNTIFS({rng},$B{r},{tc}!$M$2:$M${last},"Manual")',
-            7: f'=COUNTIFS({rng},$B{r},{tc}!$O$2:$O${last},"PASS")',
-            8: f'=COUNTIFS({rng},$B{r},{tc}!$O$2:$O${last},"FAIL")',
-            9: f'=COUNTIFS({rng},$B{r},{tc}!$O$2:$O${last},"BLOCKED")',
-            10: f'=COUNTIFS({rng},$B{r},{tc}!$O$2:$O${last},"NOT RUN")',
-            11: f'=IF(SUM(G{r}:I{r})=0,"-",G{r}/SUM(G{r}:I{r}))',
-        }
-        for col, f in formulas.items():
-            body_cell(ws, r, col, f, horizontal="center")
-        ws.cell(row=r, column=11).number_format = "0.0%"
-        r += 1
-    body_cell(ws, r, 1, "")
-    body_cell(ws, r, 2, "Total", horizontal="center").font = font(bold=True)
-    body_cell(ws, r, 3, "")
-    for col in range(4, 11):
-        L = get_column_letter(col)
-        body_cell(ws, r, col, f"=SUM({L}5:{L}{r - 1})", horizontal="center").font = font(bold=True)
-    body_cell(ws, r, 11, f'=IF(SUM(G{r}:I{r})=0,"-",G{r}/SUM(G{r}:I{r}))', horizontal="center").font = font(bold=True)
-    ws.cell(row=r, column=11).number_format = "0.0%"
-    for col in range(1, 12):
-        ws.cell(row=r, column=col).fill = SUB_FILL
-    total_row = r
-
-    r += 2
-    ws.cell(row=r, column=1, value="By test type").font = font(bold=True, size=11)
-    r += 1
-    header_row(ws, r, ["", "Type", "", "Total", "", "", "PASS", "FAIL", "BLOCKED", "NOT RUN", "Pass rate (executed)"])
-    r += 1
-    first_type = r
-    for t in ["Functional", "Negative", "Security", "Integrity", "UI"]:
-        body_cell(ws, r, 1, "")
-        body_cell(ws, r, 2, t, horizontal="center")
-        body_cell(ws, r, 3, "")
-        rng = f"{tc}!$G$2:$G${last}"
-        body_cell(ws, r, 4, f"=COUNTIFS({rng},$B{r})", horizontal="center")
-        body_cell(ws, r, 5, "")
-        body_cell(ws, r, 6, "")
-        for col, st in zip(range(7, 11), ["PASS", "FAIL", "BLOCKED", "NOT RUN"]):
-            body_cell(ws, r, col, f'=COUNTIFS({rng},$B{r},{tc}!$O$2:$O${last},"{st}")', horizontal="center")
-        body_cell(ws, r, 11, f'=IF(SUM(G{r}:I{r})=0,"-",G{r}/SUM(G{r}:I{r}))', horizontal="center")
-        ws.cell(row=r, column=11).number_format = "0.0%"
-        r += 1
-
-    r += 1
-    ws.cell(row=r, column=1, value="Pass rate (executed) = PASS / (PASS + FAIL + BLOCKED). Manual cases count as NOT RUN until a tester records a result.").font = font(italic=True, color="595959")
-    ws.cell(row=r + 1, column=1, value="Failed and blocked cases map to bugs in the QC bug log (Bug ID column on Test Cases).").font = font(italic=True, color="595959")
+    for s in stories:
+        first = r
+        by_ac = defaultdict(list)
+        for c in s["cases"]:
+            if not c.get("retired"):
+                by_ac[c["ac"]].append(c["id"])
+        for a in s["acs"]:
+            tcs = "\n".join(by_ac[a["id"]])
+            cell(ws, r, 5, ac_label(a["id"]), center=True)
+            cell(ws, r, 6, a["text"])
+            cell(ws, r, 7, a["rules"])
+            cell(ws, r, 8, tcs)
+            ws.row_dimensions[r].height = height(a["text"], tcs, a["rules"], widths=[60, 16, 24])
+            r += 1
+        us_label = s["id"] + (f"\n(backlog {s['backlog']})" if s["backlog"] not in (s["id"], s["pbi"]) else "")
+        for col, v, center in ((1, s["pbi"], True), (2, s["sprint"], True), (3, us_label, True), (4, f"{s['name']}\n\n{s['story']}", False)):
+            cell(ws, first, col, v, center=center, bold=(col == 3))
+            merge_down(ws, col, first, r - 1)
     ws.freeze_panes = "A5"
-    return total_row, first_type
 
-def sheet_traceability(wb, cases, last):
-    ws = wb.create_sheet("Traceability")
-    reqs = OrderedDict()
-    for c in cases:
-        for tok in REQ_RE.findall(c["trace"]):
-            reqs.setdefault(tok, []).append(c["id"])
-    order = {"US": 0, "BR": 1, "FR": 2, "NFR": 3}
+    cols = ["Testcase ID", "Testcase Name", "Test Type", "Acceptance Criteria ID", "Description", "Step #", "Step Description", "Expected Result"]
+    widths = [13, 30, 11, 12, 34, 7, 56, 46]
+    for s in stories:
+        ws = wb.create_sheet(s["id"])
+        title(ws, 1, f"{s['id']} — {s['name']}  ({s['pbi']}, sprint {s['sprint']})", s["story"])
+        header(ws, 4, cols, widths)
+        r = 5
+        for c in s["cases"]:
+            if c.get("retired"):
+                continue  # removed from the suite; still rendered in historical test runs
+            first = r
+            for n, desc, exp in step_rows(c):
+                cell(ws, r, 6, n, center=True)
+                cell(ws, r, 7, desc)
+                cell(ws, r, 8, exp)
+                ws.row_dimensions[r].height = height(desc, exp, widths=[56, 46])
+                r += 1
+            descr = c["description"] + (f"\nNote: {c['notes']}" if c.get("notes") else "") + ("\nManual test (not automated)." if not c["automated"] else "")
+            for col, v, center in ((1, c["id"], True), (2, c["name"], False), (3, c["type"], True), (4, ac_label(c["ac"]), True), (5, descr, False)):
+                cell(ws, first, col, v, center=center, bold=(col == 1))
+                merge_down(ws, col, first, r - 1)
+        ws.freeze_panes = "B5"
+    out = QC / "RetailFlow_QC_TestCases.xlsx"
+    wb.save(out)
+    return out
 
-    def key(t):
-        kind = t.split("-")[0]
-        nums = [int(x) for x in re.findall(r"\d+", t)]
-        return (order[kind], t.split("-")[1] if kind == "FR" else "", nums)
 
-    labels = ["BA requirement", "Kind", "Cases", "PASS", "FAIL", "BLOCKED", "NOT RUN", "Coverage", "Test case IDs"]
-    header_row(ws, 1, labels, [16, 8, 8, 8, 8, 10, 10, 12, 90])
-    tc = "'Test Cases'"
-    kinds = {"US": "Story", "BR": "Rule", "FR": "Func. req.", "NFR": "Non-func."}
-    for r, tok in enumerate(sorted(reqs, key=key), start=2):
-        body_cell(ws, r, 1, tok, horizontal="center")
-        body_cell(ws, r, 2, kinds[tok.split("-")[0]], horizontal="center")
-        crit = f'"*"&$A{r}&"*"'
-        trace = f"{tc}!$D$2:$D${last}"
-        body_cell(ws, r, 3, f"=COUNTIFS({trace},{crit})", horizontal="center")
-        for col, st in zip(range(4, 8), ["PASS", "FAIL", "BLOCKED", "NOT RUN"]):
-            body_cell(ws, r, col, f'=COUNTIFS({trace},{crit},{tc}!$O$2:$O${last},"{st}")', horizontal="center")
-        body_cell(ws, r, 8, f'=IF(E{r}+F{r}>0,"Defects",IF(G{r}=C{r},"Not run",IF(D{r}=C{r},"Passed","Partial")))', horizontal="center")
-        body_cell(ws, r, 9, ", ".join(reqs[tok]))
-    last_r = len(reqs) + 1
-    ws.freeze_panes = "B2"
-    ws.auto_filter.ref = f"A1:I{last_r}"
-    for label, color in (("Defects", "FFC7CE"), ("Passed", "C6EFCE"), ("Partial", "FFEB9C"), ("Not run", "EDEDED")):
-        ws.conditional_formatting.add(f"H2:H{last_r}", FormulaRule(formula=[f'H2="{label}"'], fill=PatternFill("solid", fgColor=color)))
-    return last_r
+# ----------------------------------------------------------------------------- test runs
+def bug_index(bugs):
+    idx = defaultdict(list)  # (tc, step) -> [bug]
+    for b in bugs:
+        for ref in b["testCases"]:
+            tc, _, step = ref.partition("#")
+            idx[(tc, int(step or 1))].append(b)
+    return idx
 
-def sheet_scripts(wb, cases):
-    ws = wb.create_sheet("Automation Scripts")
-    header_row(ws, 1, ["TC ID", "Script file", "Title", "Automated check (JavaScript)"], [15, 22, 36, 130])
-    r = 2
-    mono = Font(name="Courier New", size=9)
-    for c in cases:
-        if not c["automated"]:
-            continue
-        body_cell(ws, r, 1, c["id"])
-        body_cell(ws, r, 2, c["script"])
-        body_cell(ws, r, 3, c["title"])
-        cell = body_cell(ws, r, 4, c["code"])
-        cell.font = mono
-        ws.row_dimensions[r].height = min(409, 12 * (c["code"].count("\n") + 1))
-        r += 1
-    for path, title in (("lib/harness.js", "Shared harness: server per case, API clients, reconciliation"),
-                        ("run.js", "Runner: executes cases, writes qc/results/latest.json")):
-        src = (QC / path).read_text(encoding="utf-8")
-        body_cell(ws, r, 1, "(shared)")
-        body_cell(ws, r, 2, f"qc/{path}")
-        body_cell(ws, r, 3, title)
-        cell = body_cell(ws, r, 4, src[:32000])
-        cell.font = mono
-        ws.row_dimensions[r].height = 409
-        r += 1
-    ws.freeze_panes = "B2"
+
+def build_testruns(stories, runs, bugs):
+    TESTRUN.mkdir(exist_ok=True)
+    cases = {c["id"]: c for s in stories for c in s["cases"]}
+    idx = bug_index(bugs)
+    unmapped = []
+    by_date = defaultdict(list)
+    for run in runs:
+        by_date[run["date"]].append(run)
+    written = []
+    cols = ["Testcase ID", "Step #", "Test Step Description", "Expected Result", "Actual Result", "Note"]
+    widths = [13, 7, 56, 44, 50, 34]
+    for date, day_runs in sorted(by_date.items()):
+        wb = Workbook()
+        wb.remove(wb.active)
+        for run in day_runs:
+            ws = wb.create_sheet(f"Run {run['run']}")
+            title(ws, 1, f"Test Run {date} · Run {run['run']} — {run['title']}")
+            header(ws, 3, cols, widths)
+            r = 4
+            for res in run["results"]:
+                tc = cases.get(res["id"])
+                if tc is None:
+                    continue
+                first = r
+                actual = {s["n"]: s["actual"] for s in res["steps"]}
+                for n, desc, exp in step_rows(tc):
+                    note = ""
+                    if res["status"] in ("FAIL", "BLOCKED", "ERROR") and n == res["failedStep"]:
+                        found = idx.get((res["id"], n), [])
+                        note = "\n".join(f"{b['id']} — {b['title']}" for b in found)
+                        if not found:
+                            unmapped.append(f"{date} run {run['run']} {res['id']} step {n}")
+                    cell(ws, r, 2, n, center=True)
+                    cell(ws, r, 3, desc)
+                    cell(ws, r, 4, exp)
+                    cell(ws, r, 5, actual.get(n, ""))
+                    cell(ws, r, 6, note)
+                    ws.row_dimensions[r].height = height(desc, exp, actual.get(n, ""), note, widths=[56, 44, 50, 34])
+                    r += 1
+                cell(ws, first, 1, res["id"], center=True, bold=True)
+                merge_down(ws, 1, first, r - 1)
+            ws.freeze_panes = "B4"
+        out = TESTRUN / f"TestRun_{date}.xlsx"
+        wb.save(out)
+        written.append(out)
+    return written, sorted(set(unmapped))
+
+
+# ----------------------------------------------------------------------------- bug summary
+def build_bug_summary(runs, bugs):
+    seen = defaultdict(list)  # bug id -> [(date, run)] where its step failed
+    last_exec = {}            # (bug, ref) -> (date, run, failed_here, passed)
+    for run in runs:
+        for res in run["results"]:
+            if res["status"] == "NOT_RUN":
+                continue
+            for b in bugs:
+                for ref in b["testCases"]:
+                    tc, _, step = ref.partition("#")
+                    if tc != res["id"]:
+                        continue
+                    failed_here = res["status"] != "PASS" and res["failedStep"] == int(step or 1)
+                    last_exec[(b["id"], ref)] = (run["date"], run["run"], failed_here, res["status"] == "PASS")
+                    if failed_here:
+                        seen[b["id"]].append((run["date"], run["run"]))
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Bug Summary"
+    title(ws, 1, "RetailFlow — QC Bug Summary",
+          f"{len(bugs)} bugs. Status follows the latest run that executed the linked step. Test case references give the step that exposes the bug.")
+    cols = ["Bug ID", "Title", "Severity", "PBI", "User Story", "AC ID", "Test Case(s)", "Found by", "First found", "Last seen", "Status", "Expected", "Actual", "Location", "Remarks"]
+    widths = [10, 44, 10, 8, 10, 10, 20, 12, 15, 15, 16, 30, 34, 26, 36]
+    header(ws, 4, cols, widths)
+    order = {"Critical": 0, "High": 1, "Medium": 2, "Low": 3}
+    for r, b in enumerate(sorted(bugs, key=lambda b: (order[b["severity"]], b["id"])), start=5):
+        hits = sorted(seen.get(b["id"], []))
+        tcs = "\n".join(sorted({ref.split("#")[0] + (f" (step {ref.split('#')[1]})" if "#" in ref else "") for ref in b["testCases"]}))
+        if b["testCases"]:
+            found_by = "Test run"
+            first = f"{hits[0][0]} · Run {hits[0][1]}" if hits else "—"
+            last = f"{hits[-1][0]} · Run {hits[-1][1]}" if hits else "—"
+            states = [s for s in (last_exec.get((b["id"], ref)) for ref in b["testCases"]) if s]
+            latest = max((s[:2] for s in states), default=None)
+            current = [s for s in states if s[:2] == latest]
+            if b.get("testRemoved"):
+                status = "Open — test case removed"
+            elif any(s[2] for s in current):
+                status = "Open"
+            elif current and all(s[3] for s in current):
+                status = "Fixed — verify"
+            else:
+                status = "Open (not reached)"
+        else:
+            found_by, first, last, status = "Exploratory", b.get("found", "—"), "—", "Open"
+        vals = [b["id"], b["title"], b["severity"], b["pbi"], b["us"], b["ac"], tcs or "—", found_by, first, last, status, b["expected"], b["actual"], b.get("where", ""), b.get("remarks", "")]
+        for c, v in enumerate(vals, 1):
+            cell(ws, r, c, v, center=c in (1, 3, 4, 5, 6, 8, 9, 10, 11), bold=(c == 1))
+        ws.row_dimensions[r].height = height(b["title"], tcs, b["actual"], b["expected"], b.get("remarks", ""), widths=[44, 20, 34, 30, 36])
+    ws.freeze_panes = "C5"
+    ws.auto_filter.ref = f"A4:{get_column_letter(len(cols))}{len(bugs) + 4}"
+    out = TESTRUN / "Bug_Summary.xlsx"
+    wb.save(out)
+    return out
+
 
 def main():
-    if not RESULTS.exists():
-        sys.exit("qc/results/latest.json not found — run `node qc/run.js` first.")
-    data = json.loads(RESULTS.read_text(encoding="utf-8"))
-    cases = data["cases"]
-    bug_map = load_bug_map()
-    missing = [c["id"] for c in cases if c["status"] in ("FAIL", "BLOCKED", "ERROR") and c["id"] not in bug_map]
-    if bug_map and missing:
-        print("warning: failed/blocked cases without a bug id:", ", ".join(missing))
+    stories = load_catalog()
+    runs = load_runs()
+    bugs = load_bugs()
+    print("wrote", build_testcases(stories).relative_to(ROOT))
+    if not runs:
+        print("no recorded runs in qc/runs — TestRun files not built")
+        return 0
+    files, unmapped = build_testruns(stories, runs, bugs)
+    for p in files:
+        print("wrote", p.relative_to(ROOT))
+    if unmapped:
+        print("warning: failed steps without a bug in the register:\n  " + "\n  ".join(unmapped))
+    if bugs:
+        print("wrote", build_bug_summary(runs, bugs).relative_to(ROOT))
+    return 0
 
-    wb = Workbook()
-    sheet_readme(wb, data)
-    last = sheet_test_cases(wb, cases, bug_map)
-    sheet_summary(wb, data, last)
-    sheet_traceability(wb, cases, last)
-    sheet_scripts(wb, cases)
-    wb.calculation.fullCalcOnLoad = True  # Excel / Sheets compute the formulas on open
-    wb.save(OUT)
-    print(f"wrote {OUT.relative_to(QC.parent)}  ({len(cases)} cases, {len(bug_map)} with bug ids)")
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

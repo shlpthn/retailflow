@@ -25,8 +25,12 @@ export interface SaleReceipt {
   subtotal: number
   discount: number
   promotionCode?: string | null
+  promotionPercent?: number | null
   total: number
   paymentMethod: string
+  receiptNo?: string
+  amountTendered?: number | null
+  change?: number | null
 }
 
 interface ReceiptDialogProps {
@@ -44,7 +48,7 @@ export const ReceiptDialog: React.FC<ReceiptDialogProps> = ({ open, sale, onClos
   }
 
   const receiptText = `RetailFlow — ${storeName(sale.storeId)}
-Receipt #${sale.id}
+Receipt #${sale.receiptNo || sale.id}
 Cashier: ${sale.cashierName}
 ${new Date(sale.createdAt).toLocaleString()}
 ------------------------------------------
@@ -57,10 +61,12 @@ ${sale.items
 ------------------------------------------
 Subtotal        ${fmtMoney(sale.subtotal)}
 Discount        -${fmtMoney(sale.discount)}${
-    sale.promotionCode ? ` (${sale.promotionCode})` : ''
+    sale.promotionCode ? ` (${sale.promotionCode}${sale.promotionPercent ? `, ${sale.promotionPercent}%` : ''})` : ''
   }
 TOTAL           ${fmtMoney(sale.total)}
-Paid via ${sale.paymentMethod}
+Paid via ${sale.paymentMethod}${
+    sale.amountTendered != null ? `\nTendered        ${fmtMoney(sale.amountTendered)}\nChange          ${fmtMoney(sale.change ?? 0)}` : ''
+  }
 Thank you!`
 
   return (

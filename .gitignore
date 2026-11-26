@@ -10,5 +10,8 @@ data/*
 test/.tmp/
 # QC: local bug log + generated run output
 qc/bug-log.md
+qc/bug-register.json
+qc/TestRun/Bug_Summary.xlsx
 qc/results/
 qc/.tmp/
+__pycache__/

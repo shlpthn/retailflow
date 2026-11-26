@@ -44,38 +44,56 @@ function getLatestTransactions(salesList, limit = 20) {
 }
 
 /**
- * GET /api/sales/transactions (alias: /api/sales/history)
- * Returns the latest transactions for a store (default: 20 transactions).
- * Supports query parameters:
- *   - storeId: target store (for roles with SALES_VIEW_ALL_STORES)
- *   - limit: number of transactions to return (default 20, max 100)
+ * GET /api/sales/transactions (alias: /api/sales/history) — completed sales history (BA US-07.1).
+ * Query: storeId (HO only; store-level roles may only name their own store), from / to (yyyy-MM-dd,
+ * default today), receiptNo, cashier (user id), paymentMethod, page (1-based), limit (default 20, max 100).
+ * Scope (BR-09): Cashier / Store Manager — their store; HO Manager — the whole chain or one store.
  */
 const handleTransactions = (req, res) => {
-  let storeId;
+  const q = req.query;
+  let storeIds;
   if (hasPermission(req.user, 'SALES_VIEW_ALL_STORES')) {
-    storeId = req.query.storeId
-      ? (assertStoreAccess(req, res, req.query.storeId) ? req.query.storeId : null)
-      : effectiveStoreId(req);
-    if (storeId === null && res.headersSent) return;
+    if (q.storeId) {
+      if (!assertStoreAccess(req, res, q.storeId)) return;
+      storeIds = [q.storeId];
+    } else {
+      storeIds = db.getAllStores().map((s) => s.id);
+    }
   } else {
-    storeId = effectiveStoreId(req);
-    if (!assertStoreAccess(req, res, storeId)) return;
+    const own = effectiveStoreId(req);
+    if (q.storeId && q.storeId !== own) {
+      db.logAudit({ user: req.user, action: 'ACCESS_DENIED', resource: `sales-history:${q.storeId}`, storeId: own, result: 'DENIED', after: { requestedStoreId: q.storeId } });
+      return res.status(403).json({ error: `Forbidden: no access to store ${q.storeId}` });
+    }
+    if (!assertStoreAccess(req, res, own)) return;
+    storeIds = [own];
   }
 
-  const limit = Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 20));
+  const today = new Date().toISOString().slice(0, 10);
+  const from = q.from || today;
+  const to = q.to || (q.from ? '9999-12-31' : today);
+  const limit = Math.min(100, Math.max(1, parseInt(q.limit, 10) || 20));
+  const page = Math.max(1, parseInt(q.page, 10) || 1);
 
-  let matching = db.sales.filter((s) => s.storeId === storeId);
-  if (req.user.role === 'CASHIER') {
-    matching = matching.filter((s) => s.cashierId === req.user.id);
-  }
-
-  const transactions = getLatestTransactions(matching, limit);
+  const matching = db.sales.filter((s) => {
+    if (!storeIds.includes(s.storeId)) return false;
+    const day = (s.createdAt || '').slice(0, 10);
+    if (day < from || day > to) return false;
+    if (q.receiptNo && s.receiptNo !== q.receiptNo && s.id !== q.receiptNo) return false;
+    if (q.cashier && s.cashierId !== q.cashier) return false;
+    if (q.paymentMethod && s.paymentMethod !== q.paymentMethod) return false;
+    return true;
+  });
+  const sorted = [...matching].sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
+  const transactions = sorted.slice((page - 1) * limit, page * limit)
+    .map((s) => ({ ...s, itemCount: s.items.reduce((a, i) => a + i.quantity, 0) }));
+  const storeId = storeIds.length === 1 ? storeIds[0] : null;
 
   res.json({
     storeId,
-    storeName: db.getStore(storeId)?.name || storeId,
+    storeName: storeId ? (db.getStore(storeId)?.name || storeId) : 'All stores',
+    from, to, page, limit,
     totalCount: matching.length,
-    limit,
     transactions,
     sales: transactions,
   });

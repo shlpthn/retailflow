@@ -36,7 +36,11 @@ router.post('/', requirePermission('PRODUCT_MANAGE'), (req, res) => {
 
   for (const store of db.stores) {
     if (!db.getInventoryRow(store.id, product.id)) {
-      db.inventory.push({ storeId: store.id, productId: product.id, quantity: initQty, threshold: 10 });
+      db.inventory.push({ storeId: store.id, productId: product.id, quantity: initQty, threshold: 0 });
+      if (initQty > 0) { // opening stock goes through the movement ledger too (BR-12)
+        db.stockMovements.push({ id: db.id('MOV'), storeId: store.id, productId: product.id, type: 'ADJUST', quantity: initQty,
+          reasonCode: 'OPENING_BALANCE', actorId: req.user.id, note: 'Opening balance', createdAt: new Date().toISOString() });
+      }
     }
   }
 

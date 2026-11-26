@@ -25,6 +25,15 @@ interface Promotion {
   value: number
 }
 
+// BA D-01 / FR-POS-05: the only payment methods, recorded as these codes.
+const PAYMENT_METHODS: { code: string; label: string }[] = [
+  { code: 'CASH', label: 'Cash' },
+  { code: 'BANK_TRANSFER_QR', label: 'Bank transfer / QR' },
+  { code: 'CARD', label: 'Card' },
+]
+
+const newCartKey = () => `cart-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
+
 interface CartItem {
   productId: string
   name: string
@@ -46,6 +55,9 @@ export const CheckoutPage: React.FC = () => {
   const [isRecentSalesOpen, setIsRecentSalesOpen] = useState(false)
   const [isScanSuccess, setIsScanSuccess] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+  const [amountTendered, setAmountTendered] = useState('')
+  // One idempotency key per cart: a retried or double-clicked checkout never creates a second receipt.
+  const cartKey = useRef<string>(newCartKey())
   const scanInputRef = useRef<HTMLInputElement>(null)
 
   const loadData = async () => {
@@ -74,13 +86,17 @@ export const CheckoutPage: React.FC = () => {
     return promos.find((p) => p.code.toUpperCase() === promoCode.trim().toUpperCase())
   }
 
+  // Same rule as the server (BR-17): each line's discount is rounded down on its own.
   const discount = () => {
     const p = activePromo()
     if (!p) return 0
-    return p.type === 'PERCENT' ? subtotal() * (p.value / 100) : p.value
+    if (p.type !== 'PERCENT') return Math.min(subtotal(), p.value)
+    return cart.reduce((s, l) => s + Math.floor((l.price * l.qty * p.value) / 100), 0)
   }
 
   const total = () => Math.max(0, subtotal() - discount())
+  const tendered = () => (amountTendered.trim() === '' ? null : Number(amountTendered))
+  const cashShort = () => paymentMethod === 'CASH' && (tendered() === null || Number.isNaN(tendered()!) || tendered()! < total())
 
   const addToCart = (p: CheckoutProduct): boolean => {
     const existing = cartLine(p.productId)
@@ -137,7 +153,7 @@ export const CheckoutPage: React.FC = () => {
   }
 
   const handleCheckout = async () => {
-    if (!cart.length || !paymentMethod) return
+    if (!cart.length || !paymentMethod || cashShort()) return
     setSubmitting(true)
     try {
       const { receipt } = await api<{ receipt: SaleReceipt }>('/checkout', {
@@ -146,6 +162,9 @@ export const CheckoutPage: React.FC = () => {
           items: cart.map((l) => ({ productId: l.productId, quantity: l.qty })),
           promotionCode: activePromo() ? activePromo()!.code : null,
           paymentMethod,
+          amountTendered: paymentMethod === 'CASH' ? tendered() : undefined,
+          expectedTotal: total(),
+          idempotencyKey: cartKey.current,
           customerId: customerId.trim() || undefined,
         },
       })
@@ -154,9 +173,17 @@ export const CheckoutPage: React.FC = () => {
       setCart([])
       setPromoCode('')
       setPaymentMethod(null)
+      setAmountTendered('')
       setCustomerId('')
+      cartKey.current = newCartKey()
       loadData()
     } catch (err: any) {
+      if (err.status === 409 && /total changed/i.test(err.message || '')) {
+        // The promotion changed while the cart was open (US-09.3 AC2): show the new total, cashier confirms again.
+        toast.warning(`${err.message}. Check the new total with the customer, then complete again.`)
+        loadData()
+        return
+      }
       toast.error(err.message || 'Checkout failed')
     } finally {
       setSubmitting(false)
@@ -314,22 +341,41 @@ export const CheckoutPage: React.FC = () => {
         </div>
 
         <div className="payment-methods">
-          {['Card', 'Cash', 'Mobile Wallet'].map((m) => (
+          {PAYMENT_METHODS.map((m) => (
             <button
-              key={m}
+              key={m.code}
               type="button"
-              className={paymentMethod === m ? 'selected' : ''}
-              onClick={() => setPaymentMethod(m)}
+              className={paymentMethod === m.code ? 'selected' : ''}
+              onClick={() => setPaymentMethod(m.code)}
             >
-              {m}
+              {m.label}
             </button>
           ))}
         </div>
 
+        {paymentMethod === 'CASH' && (
+          <div className="px-3.5 mb-2">
+            <label className="text-xs font-semibold text-muted-foreground" htmlFor="amount-tendered">Amount tendered</label>
+            <Input
+              id="amount-tendered"
+              inputMode="decimal"
+              placeholder={String(total())}
+              value={amountTendered}
+              onChange={(e) => setAmountTendered(e.target.value)}
+              className="mt-1 font-mono"
+            />
+            <div className="mono text-xs mt-1">
+              {cashShort()
+                ? 'Amount tendered must cover the total'
+                : `Change due: ${fmtMoney((tendered() ?? 0) - total())}`}
+            </div>
+          </div>
+        )}
+
         <div className="p-3.5 pt-0">
           <Button
             onClick={handleCheckout}
-            disabled={!cart.length || !paymentMethod || submitting}
+            disabled={!cart.length || !paymentMethod || cashShort() || submitting}
             className="w-full bg-[#E2542A] hover:bg-[#c9431c] text-white py-2.5 font-bold transition-all"
           >
             {submitting ? 'Processing…' : `Complete checkout · ${fmtMoney(total())}`}

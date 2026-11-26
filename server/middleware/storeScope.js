@@ -42,6 +42,10 @@ function assertStoreAccess(req, res, storeId) {
     return false;
   }
   if (scope.type === 'SINGLE' && scope.storeId !== storeId) {
+    db.logAudit({
+      user: req.user, action: 'ACCESS_DENIED', resource: `${req.method} ${req.originalUrl}`, storeId: scope.storeId,
+      result: 'DENIED', entityType: 'Store', after: { requestedStoreId: storeId },
+    });
     res.status(403).json({ error: `Forbidden: no access to store ${storeId}` });
     return false;
   }

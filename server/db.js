@@ -309,6 +309,17 @@ function _seedDatabase() {
     const insPromo = conn.prepare('INSERT INTO promotions (id, json) VALUES (?, ?)');
     for (const pr of seedPromotions) insPromo.run(pr.id, JSON.stringify(pr));
 
+    // Opening balances are recorded as movements so on-hand always equals the
+    // movement ledger (BR-12, FR-INV-08).
+    const insMov = conn.prepare('INSERT INTO stockMovements (id, json) VALUES (?, ?)');
+    const openedAt = new Date().toISOString();
+    for (const r of seedInventory) {
+      if (!r.quantity) continue;
+      const mov = { id: id('MOV'), storeId: r.storeId, productId: r.productId, type: 'ADJUST', quantity: r.quantity,
+        actorId: null, note: 'Opening balance', reasonCode: 'OPENING_BALANCE', createdAt: openedAt };
+      insMov.run(mov.id, JSON.stringify(mov));
+    }
+
     conn.prepare('INSERT OR REPLACE INTO meta (key, value) VALUES (?, ?)').run('schema_version', String(SCHEMA_VERSION));
     conn.prepare('INSERT OR REPLACE INTO meta (key, value) VALUES (?, ?)').run('nextId', String(nextId));
   })();
@@ -363,17 +374,37 @@ function maybeFlush() {
 // Audit + notifications
 // ============================================================================
 
-function logAudit({ user, action, resource, storeId, before, after }) {
+// Per-request context (client IP) so every audit entry can record where it came from.
+const { AsyncLocalStorage } = require('async_hooks');
+const requestContext = new AsyncLocalStorage();
+
+/** Object type of an audited resource, derived from its id (US-10.5 AC1). */
+function entityTypeOf(resource, action) {
+  const r = String(resource || '');
+  if (/^LOGIN_|SIGNUP/.test(action || '')) return 'User';
+  const prefixes = [['SALE', 'Sale'], ['REQ', 'ReplenishmentRequest'], ['XFER', 'TransferOrder'], ['PO', 'FactoryOrder'],
+    ['PROMO', 'Promotion'], ['STORE_', r.includes('/') ? 'Inventory' : 'Store'], ['LOG', 'AuditLog'], ['U', 'User'], ['P', 'Product']];
+  for (const [prefix, type] of prefixes) if (r.startsWith(prefix)) return type;
+  if (['CASHIER', 'INVENTORY_STAFF', 'STORE_MANAGER', 'HEAD_OFFICE_MANAGER', 'SYSTEM_ADMIN'].includes(r)) return 'Role';
+  return r.startsWith('/') || r.includes(':') ? 'Endpoint' : 'Other';
+}
+
+function logAudit({ user, action, resource, storeId, before, after, result = 'SUCCESS', entityType, userName }) {
+  const ctx = requestContext.getStore();
   auditLogs.push({
     id: id('LOG'),
     userId:   user ? user.id   : null,
-    userName: user ? user.name : 'system',
+    userName: user ? user.name : (userName || 'system'),
     role:     user ? user.role : 'SYSTEM',
     action,
     resource,
+    entityType: entityType || entityTypeOf(resource, action),
+    entityId: resource ?? null,
     storeId:  storeId || null,
     before:   before  ?? null,
     after:    after   ?? null,
+    result,
+    ip: (ctx && ctx.ip) || null,
     createdAt: new Date().toISOString(),
   });
 }
@@ -396,7 +427,7 @@ module.exports = {
   id,
   stores, users, products, inventory, promotions, sales,
   stockMovements, stockRequests, transfers, factoryOrders, auditLogs, notifications,
-  logAudit, notify,
+  logAudit, notify, requestContext,
   getStore, getAllStores, getUserByUsername, getUserById,
   getProduct, getAllProducts, getInventoryRow, getInventoryForStore,
 

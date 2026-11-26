@@ -17,6 +17,7 @@ interface PromotionItem {
   validFrom: string
   validTo: string
   active: boolean
+  status?: 'SCHEDULED' | 'ACTIVE' | 'EXPIRED' | 'INACTIVE'
 }
 
 export const PromotionsPage: React.FC = () => {
@@ -43,16 +44,15 @@ export const PromotionsPage: React.FC = () => {
     loadPromotions()
   }, [])
 
+  // BA US-09.2: an Active (or Scheduled) promotion can only be ended early; ended / expired ones are read-only.
   const handleToggleActive = async (p: PromotionItem) => {
+    if (!confirm(`End "${p.name}" now? This cannot be undone.`)) return
     try {
-      await api(`/promotions/${p.id}`, {
-        method: 'PUT',
-        body: { active: !p.active },
-      })
-      toast.success(`Promotion ${!p.active ? 'activated' : 'deactivated'}`)
+      await api(`/promotions/${p.id}/end`, { method: 'POST' })
+      toast.success('Promotion ended')
       loadPromotions()
     } catch (err: any) {
-      toast.error(err.message || 'Failed to update promotion status')
+      toast.error(err.message || 'Failed to end promotion')
     }
   }
 
@@ -120,10 +120,12 @@ export const PromotionsPage: React.FC = () => {
                       {p.validFrom} → {p.validTo}
                     </td>
                     <td className="py-2.5 px-3 text-center">
-                      {p.active ? (
+                      {(p.status ?? (p.active ? 'ACTIVE' : 'INACTIVE')) === 'ACTIVE' ? (
                         <span className="pill pill-ok">Active</span>
                       ) : (
-                        <span className="pill pill-neutral">Inactive</span>
+                        <span className="pill pill-neutral">
+                          {p.status === 'SCHEDULED' ? 'Scheduled' : p.status === 'EXPIRED' ? 'Expired' : 'Inactive'}
+                        </span>
                       )}
                     </td>
                     {canManage && (
@@ -132,6 +134,7 @@ export const PromotionsPage: React.FC = () => {
                           <Button
                             variant={p.active ? 'outline' : 'ghost'}
                             size="sm"
+                            disabled={!['ACTIVE', 'SCHEDULED'].includes(p.status ?? (p.active ? 'ACTIVE' : 'INACTIVE'))}
                             onClick={() => handleToggleActive(p)}
                             className={`text-xs h-7 gap-1 px-2.5 ${
                               p.active
@@ -140,7 +143,7 @@ export const PromotionsPage: React.FC = () => {
                             }`}
                           >
                             <Power size={12} />
-                            {p.active ? 'Deactivate' : 'Activate'}
+                            {['ACTIVE', 'SCHEDULED'].includes(p.status ?? '') ? 'End early' : 'Ended'}
                           </Button>
                           <Button
                             variant="ghost"

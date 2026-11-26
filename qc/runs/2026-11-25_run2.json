@@ -1,0 +1,3198 @@
+{
+  "date": "2026-11-25",
+  "run": 2,
+  "title": "Regression after fixes (main @ b862089 + QC fixes)",
+  "scope": [
+    "RF-06",
+    "RF-07",
+    "RF-08",
+    "RF-09",
+    "RF-10"
+  ],
+  "startedAt": "2026-11-25T12:15:14.982Z",
+  "finishedAt": "2026-11-25T12:16:13.467Z",
+  "simulatedDate": false,
+  "actuallyExecutedAt": "2026-11-25T12:15:14.982Z",
+  "build": "101664f+fixes",
+  "git": {
+    "commit": "101664f",
+    "branch": "qc/sprint-5-rf09-rf10"
+  },
+  "node": "v24.9.0",
+  "results": [
+    {
+      "id": "TC-06.4-01",
+      "pbi": "RF-06",
+      "us": "US-06.4",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:15:14.982Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — receipt SALE1012, method CASH"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — receipt SALE1015, method BANK_TRANSFER_QR"
+        },
+        {
+          "n": 3,
+          "actual": "As expected — receipt SALE1018, method CARD"
+        }
+      ],
+      "durationMs": 456
+    },
+    {
+      "id": "TC-06.4-02",
+      "pbi": "RF-06",
+      "us": "US-06.4",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:15:15.451Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — HTTP 400 \"paymentMethod must be one of CASH, BANK_TRANSFER_QR, CARD\""
+        },
+        {
+          "n": 2,
+          "actual": "As expected — on-hand 50"
+        }
+      ],
+      "durationMs": 291
+    },
+    {
+      "id": "TC-06.4-03",
+      "pbi": "RF-06",
+      "us": "US-06.4",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:15:15.742Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — cart total 45, tendered 20"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — HTTP 400 \"Amount tendered 20 is less than the total 45\""
+        },
+        {
+          "n": 3,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 290
+    },
+    {
+      "id": "TC-06.4-04",
+      "pbi": "RF-06",
+      "us": "US-06.4",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:15:16.032Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — receipt SALE1012"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 256
+    },
+    {
+      "id": "TC-06.4-05",
+      "pbi": "RF-06",
+      "us": "US-06.4",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:15:16.288Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — change is computed by the client (UI check)"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 256
+    },
+    {
+      "id": "TC-06.4-06",
+      "pbi": "RF-06",
+      "us": "US-06.4",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:15:16.544Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — receipt SALE1013, total 42"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — T-Shirt 38, Cap 49"
+        },
+        {
+          "n": 3,
+          "actual": "As expected — 1 receipt"
+        }
+      ],
+      "durationMs": 290
+    },
+    {
+      "id": "TC-06.4-07",
+      "pbi": "RF-06",
+      "us": "US-06.4",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:15:16.834Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — receipt SALE1013"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — SALE T-Shirt 2, SALE Cap 1, by U001"
+        }
+      ],
+      "durationMs": 290
+    },
+    {
+      "id": "TC-06.4-08",
+      "pbi": "RF-06",
+      "us": "US-06.4",
+      "ac": "AC4",
+      "executedAt": "2026-11-25T12:15:17.124Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — cart prepared"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — sale B completed, Rain Jacket 2"
+        },
+        {
+          "n": 3,
+          "actual": "As expected — HTTP 409 \"Insufficient stock: Rain Jacket (2 left)\""
+        },
+        {
+          "n": 4,
+          "actual": "As expected — Rain Jacket 2, T-Shirt 40, only sale B movement"
+        }
+      ],
+      "durationMs": 378
+    },
+    {
+      "id": "TC-06.4-09",
+      "pbi": "RF-06",
+      "us": "US-06.4",
+      "ac": "AC4",
+      "executedAt": "2026-11-25T12:15:17.502Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — cart prepared"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — Denim 7, Rain Jacket 2"
+        },
+        {
+          "n": 3,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 347
+    },
+    {
+      "id": "TC-06.4-10",
+      "pbi": "RF-06",
+      "us": "US-06.4",
+      "ac": "AC4",
+      "executedAt": "2026-11-25T12:15:17.849Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — HTTP 409 \"Insufficient stock: Rain Jacket (3 left)\""
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 287
+    },
+    {
+      "id": "TC-06.4-11",
+      "pbi": "RF-06",
+      "us": "US-06.4",
+      "ac": "AC4",
+      "executedAt": "2026-11-25T12:15:18.136Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 201×3, 409×3"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — Rain Jacket 0, 3 movements"
+        }
+      ],
+      "durationMs": 388
+    },
+    {
+      "id": "TC-06.4-12",
+      "pbi": "RF-06",
+      "us": "US-06.4",
+      "ac": "AC5",
+      "executedAt": "2026-11-25T12:15:18.524Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — same receipt returned"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 291
+    },
+    {
+      "id": "TC-06.4-13",
+      "pbi": "RF-06",
+      "us": "US-06.4",
+      "ac": "AC5",
+      "executedAt": "2026-11-25T12:15:18.816Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — requests answered"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 391
+    },
+    {
+      "id": "TC-07.1-01",
+      "pbi": "RF-07",
+      "us": "US-07.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:15:19.208Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 2 receipts"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — 3 receipts"
+        },
+        {
+          "n": 3,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 558
+    },
+    {
+      "id": "TC-07.1-02",
+      "pbi": "RF-07",
+      "us": "US-07.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:15:19.766Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — receipt SALE1018"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 402
+    },
+    {
+      "id": "TC-07.1-03",
+      "pbi": "RF-07",
+      "us": "US-07.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:15:20.168Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 1 row"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — 0 rows, no Uptown receipt"
+        }
+      ],
+      "durationMs": 535
+    },
+    {
+      "id": "TC-07.1-04",
+      "pbi": "RF-07",
+      "us": "US-07.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:15:20.703Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 402
+    },
+    {
+      "id": "TC-07.1-05",
+      "pbi": "RF-07",
+      "us": "US-07.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:15:21.105Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 20 rows, newest first, total 25"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — 5 rows"
+        },
+        {
+          "n": 3,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 338
+    },
+    {
+      "id": "TC-07.1-06",
+      "pbi": "RF-07",
+      "us": "US-07.1",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:15:21.443Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 428
+    },
+    {
+      "id": "TC-07.1-07",
+      "pbi": "RF-07",
+      "us": "US-07.1",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:15:21.871Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 3 Downtown receipts"
+        }
+      ],
+      "durationMs": 450
+    },
+    {
+      "id": "TC-07.1-08",
+      "pbi": "RF-07",
+      "us": "US-07.1",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:15:22.321Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 449
+    },
+    {
+      "id": "TC-07.1-09",
+      "pbi": "RF-07",
+      "us": "US-07.1",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:15:22.770Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — only the Uptown receipt"
+        }
+      ],
+      "durationMs": 435
+    },
+    {
+      "id": "TC-07.1-11",
+      "pbi": "RF-07",
+      "us": "US-07.1",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:15:23.205Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 403"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 464
+    },
+    {
+      "id": "TC-07.1-12",
+      "pbi": "RF-07",
+      "us": "US-07.1",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:15:23.669Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 403"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 479
+    },
+    {
+      "id": "TC-07.1-13",
+      "pbi": "RF-07",
+      "us": "US-07.1",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:15:24.149Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 403"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — 403"
+        },
+        {
+          "n": 3,
+          "actual": "As expected — 401"
+        }
+      ],
+      "durationMs": 290
+    },
+    {
+      "id": "TC-07.1-14",
+      "pbi": "RF-07",
+      "us": "US-07.1",
+      "ac": "AC4",
+      "executedAt": "2026-11-25T12:15:24.439Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — all refused (404)"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — unchanged"
+        }
+      ],
+      "durationMs": 425
+    },
+    {
+      "id": "TC-07.1-15",
+      "pbi": "RF-07",
+      "us": "US-07.1",
+      "ac": "AC4",
+      "executedAt": "2026-11-25T12:15:24.864Z",
+      "status": "NOT_RUN",
+      "failedStep": null,
+      "message": "",
+      "durationMs": null,
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Not executed — manual UI test, pending tester"
+        },
+        {
+          "n": 1,
+          "actual": "Not executed — manual UI test, pending tester"
+        }
+      ]
+    },
+    {
+      "id": "TC-08.1-01",
+      "pbi": "RF-08",
+      "us": "US-08.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:15:24.864Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — REQ1011, Downtown, Denim Jeans 10"
+        }
+      ],
+      "durationMs": 255
+    },
+    {
+      "id": "TC-08.1-03",
+      "pbi": "RF-08",
+      "us": "US-08.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:15:25.119Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 400, 400"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — 400, 400"
+        },
+        {
+          "n": 3,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 344
+    },
+    {
+      "id": "TC-08.1-04",
+      "pbi": "RF-08",
+      "us": "US-08.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:15:25.463Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — HTTP 404 \"Unknown product\""
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 299
+    },
+    {
+      "id": "TC-08.1-05",
+      "pbi": "RF-08",
+      "us": "US-08.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:15:25.762Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 201, destination STORE_001, no source store"
+        }
+      ],
+      "durationMs": 269
+    },
+    {
+      "id": "TC-08.1-06",
+      "pbi": "RF-08",
+      "us": "US-08.1",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:15:26.031Z",
+      "status": "NOT_RUN",
+      "failedStep": null,
+      "message": "",
+      "durationMs": null,
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Not executed — manual UI test, pending tester"
+        },
+        {
+          "n": 1,
+          "actual": "Not executed — manual UI test, pending tester"
+        },
+        {
+          "n": 2,
+          "actual": "Not executed — manual UI test, pending tester"
+        }
+      ]
+    },
+    {
+      "id": "TC-08.1-07",
+      "pbi": "RF-08",
+      "us": "US-08.1",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:15:26.031Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — REQ1011, REQ1014 Submitted"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — both in queue"
+        },
+        {
+          "n": 3,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 293
+    },
+    {
+      "id": "TC-08.1-08",
+      "pbi": "RF-08",
+      "us": "US-08.1",
+      "ac": "AC4",
+      "executedAt": "2026-11-25T12:15:26.324Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 358
+    },
+    {
+      "id": "TC-08.1-09",
+      "pbi": "RF-08",
+      "us": "US-08.1",
+      "ac": "AC5",
+      "executedAt": "2026-11-25T12:15:26.682Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — Cancelled"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 288
+    },
+    {
+      "id": "TC-08.1-10",
+      "pbi": "RF-08",
+      "us": "US-08.1",
+      "ac": "AC5",
+      "executedAt": "2026-11-25T12:15:26.970Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 409"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 323
+    },
+    {
+      "id": "TC-08.2-01",
+      "pbi": "RF-08",
+      "us": "US-08.2",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:15:27.293Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 333
+    },
+    {
+      "id": "TC-08.2-02",
+      "pbi": "RF-08",
+      "us": "US-08.2",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:15:27.626Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 377
+    },
+    {
+      "id": "TC-08.2-03",
+      "pbi": "RF-08",
+      "us": "US-08.2",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:15:28.003Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — Rejected with reason"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — REJECT_STOCK_REQUEST"
+        },
+        {
+          "n": 3,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 305
+    },
+    {
+      "id": "TC-08.2-04",
+      "pbi": "RF-08",
+      "us": "US-08.2",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:15:28.309Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 400"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 320
+    },
+    {
+      "id": "TC-08.3-01",
+      "pbi": "RF-08",
+      "us": "US-08.3",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:15:28.629Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — order XFER1015 Issued"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — In Progress"
+        },
+        {
+          "n": 3,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 358
+    },
+    {
+      "id": "TC-08.3-03",
+      "pbi": "RF-08",
+      "us": "US-08.3",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:15:28.988Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — HTTP 409 \"Source store does not have enough stock for this transfer\""
+        },
+        {
+          "n": 2,
+          "actual": "As expected — 400, 404"
+        },
+        {
+          "n": 3,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 292
+    },
+    {
+      "id": "TC-08.3-04",
+      "pbi": "RF-08",
+      "us": "US-08.3",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:15:29.280Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 288
+    },
+    {
+      "id": "TC-08.3-07",
+      "pbi": "RF-08",
+      "us": "US-08.3",
+      "ac": "AC4",
+      "executedAt": "2026-11-25T12:15:29.568Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — listed"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — listed, source Uptown Store"
+        },
+        {
+          "n": 3,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 448
+    },
+    {
+      "id": "TC-08.3-08",
+      "pbi": "RF-08",
+      "us": "US-08.3",
+      "ac": "AC5",
+      "executedAt": "2026-11-25T12:15:30.016Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — Cancelled"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 291
+    },
+    {
+      "id": "TC-08.3-09",
+      "pbi": "RF-08",
+      "us": "US-08.3",
+      "ac": "AC5",
+      "executedAt": "2026-11-25T12:15:30.307Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 366
+    },
+    {
+      "id": "TC-08.3-10",
+      "pbi": "RF-08",
+      "us": "US-08.3",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:15:30.673Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 463
+    },
+    {
+      "id": "TC-08.4-01",
+      "pbi": "RF-08",
+      "us": "US-08.4",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:15:31.136Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — In Transit"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — Uptown 15, Downtown 8"
+        },
+        {
+          "n": 3,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 496
+    },
+    {
+      "id": "TC-08.4-02",
+      "pbi": "RF-08",
+      "us": "US-08.4",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:15:31.632Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 428
+    },
+    {
+      "id": "TC-08.4-03",
+      "pbi": "RF-08",
+      "us": "US-08.4",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:15:32.061Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 506
+    },
+    {
+      "id": "TC-08.4-04",
+      "pbi": "RF-08",
+      "us": "US-08.4",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:15:32.567Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — HTTP 409 \"Insufficient stock at source store\""
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 416
+    },
+    {
+      "id": "TC-08.4-05",
+      "pbi": "RF-08",
+      "us": "US-08.4",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:15:32.983Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — UI check"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 340
+    },
+    {
+      "id": "TC-08.4-06",
+      "pbi": "RF-08",
+      "us": "US-08.4",
+      "ac": "AC4",
+      "executedAt": "2026-11-25T12:15:33.323Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 200 then 409"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — one succeeded"
+        },
+        {
+          "n": 3,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 338
+    },
+    {
+      "id": "TC-08.4-07",
+      "pbi": "RF-08",
+      "us": "US-08.4",
+      "ac": "INT",
+      "executedAt": "2026-11-25T12:15:33.661Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 200 + 409"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 340
+    },
+    {
+      "id": "TC-08.4-08",
+      "pbi": "RF-08",
+      "us": "US-08.4",
+      "ac": "INT",
+      "executedAt": "2026-11-25T12:15:34.001Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 409, 403, 409"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — 200, 409"
+        },
+        {
+          "n": 3,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 414
+    },
+    {
+      "id": "TC-08.5-01",
+      "pbi": "RF-08",
+      "us": "US-08.5",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:15:34.416Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — Unfulfillable"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 325
+    },
+    {
+      "id": "TC-08.5-02",
+      "pbi": "RF-08",
+      "us": "US-08.5",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:15:34.741Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 400"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — 409"
+        },
+        {
+          "n": 3,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 353
+    },
+    {
+      "id": "TC-08.6-01",
+      "pbi": "RF-08",
+      "us": "US-08.6",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:15:35.094Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — Received"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — Downtown 18, 1 TRANSFER_IN"
+        },
+        {
+          "n": 3,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 372
+    },
+    {
+      "id": "TC-08.6-02",
+      "pbi": "RF-08",
+      "us": "US-08.6",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:15:35.466Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 326
+    },
+    {
+      "id": "TC-08.6-03",
+      "pbi": "RF-08",
+      "us": "US-08.6",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:15:35.792Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 409"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — 200 then 409"
+        },
+        {
+          "n": 3,
+          "actual": "As expected — one succeeded"
+        },
+        {
+          "n": 4,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 432
+    },
+    {
+      "id": "TC-08.6-04",
+      "pbi": "RF-08",
+      "us": "US-08.6",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:15:36.224Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — Received, 18"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 452
+    },
+    {
+      "id": "TC-08.6-05",
+      "pbi": "RF-08",
+      "us": "US-08.6",
+      "ac": "AC4",
+      "executedAt": "2026-11-25T12:15:36.676Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 357
+    },
+    {
+      "id": "TC-08.6-07",
+      "pbi": "RF-08",
+      "us": "US-08.6",
+      "ac": "AC5",
+      "executedAt": "2026-11-25T12:15:37.033Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 339
+    },
+    {
+      "id": "TC-08.6-08",
+      "pbi": "RF-08",
+      "us": "US-08.6",
+      "ac": "INT",
+      "executedAt": "2026-11-25T12:15:37.372Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 33"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — 23"
+        },
+        {
+          "n": 3,
+          "actual": "As expected — 33"
+        }
+      ],
+      "durationMs": 356
+    },
+    {
+      "id": "TC-08.6-09",
+      "pbi": "RF-08",
+      "us": "US-08.6",
+      "ac": "INT",
+      "executedAt": "2026-11-25T12:15:37.728Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — all rows match"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 374
+    },
+    {
+      "id": "TC-08.6-10",
+      "pbi": "RF-08",
+      "us": "US-08.6",
+      "ac": "INT",
+      "executedAt": "2026-11-25T12:15:38.102Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — In Transit, Uptown 15"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 622
+    },
+    {
+      "id": "TC-08.7-01",
+      "pbi": "RF-08",
+      "us": "US-08.7",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:15:38.724Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — Completed, shortfall 10"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 328
+    },
+    {
+      "id": "TC-08.7-02",
+      "pbi": "RF-08",
+      "us": "US-08.7",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:15:39.052Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 290
+    },
+    {
+      "id": "TC-08.7-03",
+      "pbi": "RF-08",
+      "us": "US-08.7",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:15:39.342Z",
+      "status": "NOT_RUN",
+      "failedStep": null,
+      "message": "",
+      "durationMs": null,
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Not executed — manual UI test, pending tester"
+        },
+        {
+          "n": 1,
+          "actual": "Not executed — manual UI test, pending tester"
+        }
+      ]
+    },
+    {
+      "id": "TC-08.8-01",
+      "pbi": "RF-08",
+      "us": "US-08.8",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:15:39.342Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 1 Downtown request(s)"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 377
+    },
+    {
+      "id": "TC-08.8-02",
+      "pbi": "RF-08",
+      "us": "US-08.8",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:15:39.719Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — only C"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — only A"
+        },
+        {
+          "n": 3,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 319
+    },
+    {
+      "id": "TC-08.8-03",
+      "pbi": "RF-08",
+      "us": "US-08.8",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:15:40.039Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — REQUESTED → APPROVED → FULFILLMENT_PENDING → DISPATCHED → RECEIVED → COMPLETED"
+        }
+      ],
+      "durationMs": 352
+    },
+    {
+      "id": "TC-09.1-01",
+      "pbi": "RF-09",
+      "us": "US-09.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:15:40.391Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 256
+    },
+    {
+      "id": "TC-09.1-02",
+      "pbi": "RF-09",
+      "us": "US-09.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:15:40.647Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 256
+    },
+    {
+      "id": "TC-09.1-03",
+      "pbi": "RF-09",
+      "us": "US-09.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:15:40.904Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 1 % saved"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 258
+    },
+    {
+      "id": "TC-09.1-04",
+      "pbi": "RF-09",
+      "us": "US-09.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:15:41.162Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 400, 400"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — all 400"
+        },
+        {
+          "n": 3,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 261
+    },
+    {
+      "id": "TC-09.1-05",
+      "pbi": "RF-09",
+      "us": "US-09.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:15:41.423Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 400"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 258
+    },
+    {
+      "id": "TC-09.1-06",
+      "pbi": "RF-09",
+      "us": "US-09.1",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:15:41.681Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 259
+    },
+    {
+      "id": "TC-09.1-07",
+      "pbi": "RF-09",
+      "us": "US-09.1",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:15:41.940Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — A saved"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 258
+    },
+    {
+      "id": "TC-09.1-08",
+      "pbi": "RF-09",
+      "us": "US-09.1",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:15:42.198Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — both saved"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 259
+    },
+    {
+      "id": "TC-09.1-09",
+      "pbi": "RF-09",
+      "us": "US-09.1",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:15:42.457Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 257
+    },
+    {
+      "id": "TC-09.1-10",
+      "pbi": "RF-09",
+      "us": "US-09.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:15:42.714Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 400"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 468
+    },
+    {
+      "id": "TC-09.1-11",
+      "pbi": "RF-09",
+      "us": "US-09.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:15:43.182Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 391
+    },
+    {
+      "id": "TC-09.1-12",
+      "pbi": "RF-09",
+      "us": "US-09.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:15:43.573Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — Scheduled"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — Active, discount 2"
+        },
+        {
+          "n": 3,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 6341
+    },
+    {
+      "id": "TC-09.2-01",
+      "pbi": "RF-09",
+      "us": "US-09.2",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:15:49.914Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 1358
+    },
+    {
+      "id": "TC-09.2-02",
+      "pbi": "RF-09",
+      "us": "US-09.2",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:15:51.273Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 527
+    },
+    {
+      "id": "TC-09.2-03",
+      "pbi": "RF-09",
+      "us": "US-09.2",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:15:51.801Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — Inactive"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 303
+    },
+    {
+      "id": "TC-09.2-04",
+      "pbi": "RF-09",
+      "us": "US-09.2",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:15:52.104Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 262
+    },
+    {
+      "id": "TC-09.2-05",
+      "pbi": "RF-09",
+      "us": "US-09.2",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:15:52.366Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 261
+    },
+    {
+      "id": "TC-09.2-06",
+      "pbi": "RF-09",
+      "us": "US-09.2",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:15:52.627Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 293
+    },
+    {
+      "id": "TC-09.3-02",
+      "pbi": "RF-09",
+      "us": "US-09.3",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:15:52.920Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 306
+    },
+    {
+      "id": "TC-09.3-03",
+      "pbi": "RF-09",
+      "us": "US-09.3",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:15:53.227Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 20"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 364
+    },
+    {
+      "id": "TC-09.3-04",
+      "pbi": "RF-09",
+      "us": "US-09.3",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:15:53.591Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — cart total 59"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — ended"
+        },
+        {
+          "n": 3,
+          "actual": "As expected — 409 total changed"
+        },
+        {
+          "n": 4,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 306
+    },
+    {
+      "id": "TC-09.3-05",
+      "pbi": "RF-09",
+      "us": "US-09.3",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:15:53.898Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — discount displayed"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 4302
+    },
+    {
+      "id": "TC-09.3-06",
+      "pbi": "RF-09",
+      "us": "US-09.3",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:15:58.200Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — receipt SALE1013"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 397
+    },
+    {
+      "id": "TC-09.3-07",
+      "pbi": "RF-09",
+      "us": "US-09.3",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:15:58.598Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — noted"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        },
+        {
+          "n": 3,
+          "actual": "As expected — identical"
+        }
+      ],
+      "durationMs": 376
+    },
+    {
+      "id": "TC-09.3-08",
+      "pbi": "RF-09",
+      "us": "US-09.3",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:15:58.974Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — noted"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — unchanged"
+        },
+        {
+          "n": 3,
+          "actual": "As expected — unchanged"
+        }
+      ],
+      "durationMs": 627
+    },
+    {
+      "id": "TC-09.3-09",
+      "pbi": "RF-09",
+      "us": "US-09.3",
+      "ac": "AC4",
+      "executedAt": "2026-11-25T12:15:59.601Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 0 / 65"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — 0 / 65"
+        }
+      ],
+      "durationMs": 636
+    },
+    {
+      "id": "TC-09.3-10",
+      "pbi": "RF-09",
+      "us": "US-09.3",
+      "ac": "AC4",
+      "executedAt": "2026-11-25T12:16:00.237Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — UI check"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 411
+    },
+    {
+      "id": "TC-10.1-01",
+      "pbi": "RF-10",
+      "us": "US-10.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:16:00.649Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 1"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — 2"
+        },
+        {
+          "n": 3,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 623
+    },
+    {
+      "id": "TC-10.1-02",
+      "pbi": "RF-10",
+      "us": "US-10.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:16:01.272Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — [\"2026-10\",\"2026-11\"]"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 544
+    },
+    {
+      "id": "TC-10.1-03",
+      "pbi": "RF-10",
+      "us": "US-10.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:16:01.816Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 5 / 509"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 393
+    },
+    {
+      "id": "TC-10.1-04",
+      "pbi": "RF-10",
+      "us": "US-10.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:16:02.209Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 395
+    },
+    {
+      "id": "TC-10.1-05",
+      "pbi": "RF-10",
+      "us": "US-10.1",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:16:02.604Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 403"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 328
+    },
+    {
+      "id": "TC-10.1-06",
+      "pbi": "RF-10",
+      "us": "US-10.1",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:16:02.932Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 308
+    },
+    {
+      "id": "TC-10.1-07",
+      "pbi": "RF-10",
+      "us": "US-10.1",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:16:03.241Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 307
+    },
+    {
+      "id": "TC-10.1-08",
+      "pbi": "RF-10",
+      "us": "US-10.1",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:16:03.548Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 3 / 199"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — 3 / 199"
+        }
+      ],
+      "durationMs": 422
+    },
+    {
+      "id": "TC-10.1-09",
+      "pbi": "RF-10",
+      "us": "US-10.1",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:16:03.971Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 5 / 509"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 405
+    },
+    {
+      "id": "TC-10.2-01",
+      "pbi": "RF-10",
+      "us": "US-10.2",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:16:04.376Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 374
+    },
+    {
+      "id": "TC-10.2-02",
+      "pbi": "RF-10",
+      "us": "US-10.2",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:16:04.750Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 294
+    },
+    {
+      "id": "TC-10.2-03",
+      "pbi": "RF-10",
+      "us": "US-10.2",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:16:05.044Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — Denim Jeans 3, Rain Jacket 2, Classic T-Shirt 1"
+        }
+      ],
+      "durationMs": 393
+    },
+    {
+      "id": "TC-10.3-01",
+      "pbi": "RF-10",
+      "us": "US-10.3",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:16:05.437Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — T-Shirt LOW_STOCK, Cap OK, Rain Jacket OUT_OF_STOCK"
+        }
+      ],
+      "durationMs": 292
+    },
+    {
+      "id": "TC-10.3-02",
+      "pbi": "RF-10",
+      "us": "US-10.3",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:16:05.729Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 321
+    },
+    {
+      "id": "TC-10.3-03",
+      "pbi": "RF-10",
+      "us": "US-10.3",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:16:06.051Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — P002, P004"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 292
+    },
+    {
+      "id": "TC-10.3-04",
+      "pbi": "RF-10",
+      "us": "US-10.3",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:16:06.343Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 255
+    },
+    {
+      "id": "TC-10.3-05",
+      "pbi": "RF-10",
+      "us": "US-10.3",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:16:06.598Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 256
+    },
+    {
+      "id": "TC-10.3-06",
+      "pbi": "RF-10",
+      "us": "US-10.3",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:16:06.854Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — Downtown 2, Uptown 1"
+        }
+      ],
+      "durationMs": 349
+    },
+    {
+      "id": "TC-10.4-01",
+      "pbi": "RF-10",
+      "us": "US-10.4",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:16:07.203Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 363
+    },
+    {
+      "id": "TC-10.4-02",
+      "pbi": "RF-10",
+      "us": "US-10.4",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:16:07.566Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 1689
+    },
+    {
+      "id": "TC-10.4-03",
+      "pbi": "RF-10",
+      "us": "US-10.4",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:16:09.255Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 319
+    },
+    {
+      "id": "TC-10.5-01",
+      "pbi": "RF-10",
+      "us": "US-10.5",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:16:09.574Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 299
+    },
+    {
+      "id": "TC-10.5-02",
+      "pbi": "RF-10",
+      "us": "US-10.5",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:16:09.873Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 401"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 335
+    },
+    {
+      "id": "TC-10.5-03",
+      "pbi": "RF-10",
+      "us": "US-10.5",
+      "ac": "AC1",
+      "executedAt": "2026-11-25T12:16:10.209Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 403, 403"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 338
+    },
+    {
+      "id": "TC-10.5-04",
+      "pbi": "RF-10",
+      "us": "US-10.5",
+      "ac": "AC2",
+      "executedAt": "2026-11-25T12:16:10.547Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — only inventory1"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — only sales"
+        },
+        {
+          "n": 3,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 340
+    },
+    {
+      "id": "TC-10.5-05",
+      "pbi": "RF-10",
+      "us": "US-10.5",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:16:10.887Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 397
+    },
+    {
+      "id": "TC-10.5-06",
+      "pbi": "RF-10",
+      "us": "US-10.5",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:16:11.284Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — both stores"
+        }
+      ],
+      "durationMs": 396
+    },
+    {
+      "id": "TC-10.5-07",
+      "pbi": "RF-10",
+      "us": "US-10.5",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:16:11.680Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 369
+    },
+    {
+      "id": "TC-10.5-08",
+      "pbi": "RF-10",
+      "us": "US-10.5",
+      "ac": "AC3",
+      "executedAt": "2026-11-25T12:16:12.049Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 289
+    },
+    {
+      "id": "TC-10.5-09",
+      "pbi": "RF-10",
+      "us": "US-10.5",
+      "ac": "AC4",
+      "executedAt": "2026-11-25T12:16:12.338Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — UI check"
+        },
+        {
+          "n": 2,
+          "actual": "As expected — all refused"
+        },
+        {
+          "n": 3,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 336
+    },
+    {
+      "id": "TC-10.5-10",
+      "pbi": "RF-10",
+      "us": "US-10.5",
+      "ac": "AC4",
+      "executedAt": "2026-11-25T12:16:12.674Z",
+      "status": "PASS",
+      "failedStep": null,
+      "message": "",
+      "steps": [
+        {
+          "n": 0,
+          "actual": "Done"
+        },
+        {
+          "n": 1,
+          "actual": "As expected — 5 entries preserved"
+        },
+        {
+          "n": 2,
+          "actual": "As expected"
+        }
+      ],
+      "durationMs": 793
+    }
+  ]
+}

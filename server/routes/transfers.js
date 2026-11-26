@@ -4,6 +4,8 @@ const db = require('../db');
 const { requirePermission, requireAnyPermission, hasPermission } = require('../permissions');
 const { resolveStoreScope } = require('../middleware/storeScope');
 
+const requestOf = (transfer) => db.stockRequests.find((r) => r.id === transfer.stockRequestId);
+
 function enrichTransfer(t) {
   return {
     ...t,
@@ -40,6 +42,10 @@ router.post('/:transferId/dispatch', requirePermission('TRANSFER_DISPATCH'), res
     quantity: transfer.quantity, actorId: req.user.id, note: `to ${transfer.destinationStoreId}`, createdAt: new Date().toISOString(),
   });
   transfer.status = 'IN_TRANSIT';
+  transfer.dispatchedBy = req.user.id;
+  transfer.dispatchedAt = new Date().toISOString();
+  const request = requestOf(transfer);
+  if (request) request.history.push({ status: 'DISPATCHED', at: transfer.dispatchedAt, by: req.user.id, orderId: transfer.id });
   db.logAudit({ user: req.user, action: 'DISPATCH_TRANSFER', resource: transfer.id, storeId: transfer.sourceStoreId });
   db.notify(transfer.destinationStoreId, 'TRANSFER_IN_TRANSIT', `${transfer.quantity}x ${db.getProduct(transfer.productId).name} is on the way`);
 
@@ -56,7 +62,7 @@ router.post('/:transferId/receive', requirePermission('TRANSFER_RECEIVE'), resol
   }
 
   let row = db.getInventoryRow(transfer.destinationStoreId, transfer.productId);
-  if (!row) { row = { storeId: transfer.destinationStoreId, productId: transfer.productId, quantity: 0, threshold: 10 }; db.inventory.push(row); }
+  if (!row) { row = { storeId: transfer.destinationStoreId, productId: transfer.productId, quantity: 0, threshold: 0 }; db.inventory.push(row); }
   row.quantity += transfer.quantity;
 
   db.stockMovements.push({
@@ -64,11 +70,65 @@ router.post('/:transferId/receive', requirePermission('TRANSFER_RECEIVE'), resol
     quantity: transfer.quantity, actorId: req.user.id, note: `from ${transfer.sourceStoreId}`, createdAt: new Date().toISOString(),
   });
   transfer.status = 'COMPLETED';
+  transfer.receivedBy = req.user.id;
+  transfer.receivedAt = new Date().toISOString();
 
-  const request = db.stockRequests.find((r) => r.id === transfer.stockRequestId);
-  if (request) { request.status = 'COMPLETED'; request.history.push({ status: 'COMPLETED', at: new Date().toISOString(), by: req.user.id }); }
+  const request = requestOf(transfer);
+  if (request) {
+    request.receivedQty = (request.receivedQty || 0) + transfer.quantity;
+    request.history.push({ status: 'RECEIVED', at: transfer.receivedAt, by: req.user.id, orderId: transfer.id });
+    if (request.receivedQty >= request.quantity) { // BR-22: complete once everything requested has arrived
+      request.status = 'COMPLETED';
+      request.history.push({ status: 'COMPLETED', at: transfer.receivedAt, by: req.user.id });
+    }
+  }
 
   db.logAudit({ user: req.user, action: 'RECEIVE_TRANSFER', resource: transfer.id, storeId: transfer.destinationStoreId });
+  res.json(enrichTransfer(transfer));
+});
+
+// The order's quantity goes back to its request, which stays In Progress for HO to reallocate (ST-01).
+function releaseToRequest(transfer, user, status, reason) {
+  const request = requestOf(transfer);
+  if (!request) return;
+  request.allocatedQty = Math.max(0, (request.allocatedQty || 0) - transfer.quantity);
+  request.history.push({ status, at: new Date().toISOString(), by: user.id, orderId: transfer.id, reason });
+}
+
+// US-08.3 AC5 — HO cancels an Issued order with a reason (BR-21).
+router.post('/:transferId/cancel', requirePermission('STOCK_REQUEST_APPROVE'), (req, res) => {
+  const transfer = db.transfers.find((t) => t.id === req.params.transferId);
+  if (!transfer) return res.status(404).json({ error: 'Transfer not found' });
+  if (transfer.status !== 'PENDING_DISPATCH') return res.status(409).json({ error: `Cannot cancel a transfer in status ${transfer.status}` });
+  const reason = typeof (req.body && req.body.reason) === 'string' ? req.body.reason.trim() : '';
+  if (!reason) return res.status(400).json({ error: 'A reason is required' });
+  transfer.status = 'CANCELLED';
+  transfer.cancelReason = reason;
+  transfer.cancelledBy = req.user.id;
+  transfer.cancelledAt = new Date().toISOString();
+  releaseToRequest(transfer, req.user, 'ORDER_CANCELLED', reason);
+  db.notify(transfer.sourceStoreId, 'TRANSFER_CANCELLED', `Transfer ${transfer.id} was cancelled: ${reason}`);
+  db.logAudit({ user: req.user, action: 'CANCEL_TRANSFER', resource: transfer.id, storeId: transfer.sourceStoreId, after: { status: transfer.status, reason } });
+  res.json(enrichTransfer(transfer));
+});
+
+// US-08.5 — the source Store Manager reports an Issued order unfulfillable with a reason (BR-15).
+router.post('/:transferId/unfulfillable', requirePermission('TRANSFER_ORDER_REPORT'), resolveStoreScope, (req, res) => {
+  const transfer = db.transfers.find((t) => t.id === req.params.transferId);
+  if (!transfer) return res.status(404).json({ error: 'Transfer not found' });
+  if (req.storeScope.type === 'SINGLE' && req.storeScope.storeId !== transfer.sourceStoreId) {
+    return res.status(403).json({ error: 'Only the source store can report this order' });
+  }
+  if (transfer.status !== 'PENDING_DISPATCH') return res.status(409).json({ error: `Cannot report a transfer in status ${transfer.status}` });
+  const reason = typeof (req.body && req.body.reason) === 'string' ? req.body.reason.trim() : '';
+  if (!reason) return res.status(400).json({ error: 'A reason is required' });
+  transfer.status = 'UNFULFILLABLE';
+  transfer.unfulfillableReason = reason;
+  transfer.reportedBy = req.user.id;
+  transfer.reportedAt = new Date().toISOString();
+  releaseToRequest(transfer, req.user, 'ORDER_UNFULFILLABLE', reason);
+  db.notify(null, 'TRANSFER_UNFULFILLABLE', `Transfer ${transfer.id} cannot be fulfilled by ${db.getStore(transfer.sourceStoreId)?.name}: ${reason}`);
+  db.logAudit({ user: req.user, action: 'REPORT_TRANSFER_UNFULFILLABLE', resource: transfer.id, storeId: transfer.sourceStoreId, after: { status: transfer.status, reason } });
   res.json(enrichTransfer(transfer));
 });
 
@@ -89,7 +149,7 @@ router.post('/factory-orders/:orderId/receive', requirePermission('INVENTORY_REC
   }
 
   let row = db.getInventoryRow(order.destinationStoreId, order.productId);
-  if (!row) { row = { storeId: order.destinationStoreId, productId: order.productId, quantity: 0, threshold: 10 }; db.inventory.push(row); }
+  if (!row) { row = { storeId: order.destinationStoreId, productId: order.productId, quantity: 0, threshold: 0 }; db.inventory.push(row); }
   row.quantity += order.quantity;
 
   db.stockMovements.push({

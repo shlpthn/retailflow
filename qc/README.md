@@ -1,22 +1,40 @@
-# QC — Sprint 3 & 4
+# QC — Sprints 3–5
 
-Test cases and API automation for **US-06.4** (payment & sale completion), **US-06.6** (sales history filters + store scope → BA US-07.1) and **RF-08** (HO-coordinated stock transfer + stock integrity), written against the BA spec.
+Test cases written against the RetailFlow BA spec, executable by a manual tester and automated end-to-end through the API.
+
+| Sprint | Backlog item | BA user stories |
+|---|---|---|
+| S3 | US-06.4 · US-06.6 | US-06.4 (payment & sale completion) · US-07.1 (sales history filters + store scope) |
+| S4 | RF-08 | US-08.1 … US-08.8 (HO-coordinated stock transfer, incl. stock integrity) |
+| S5 | RF-09 · RF-10 | US-09.1 … 09.3 (promotions) · US-10.1 … 10.5 (reporting & audit) |
+
+## Deliverables
+
+| Path | Content |
+|---|---|
+| `RetailFlow_QC_TestCases.xlsx` | Sheet 1 *User Stories & AC*; then one sheet per user story: Testcase ID · Testcase Name · Test Type · Acceptance Criteria ID · Description · Step # · Step Description · Expected Result (step 0 = prerequisite) |
+| `TestRun/TestRun_<date>.xlsx` | One file per day, one sheet per run: Testcase ID · Step # · Test Step Description · Expected Result · Actual Result · Note (bug) |
+| `TestRun/Bug_Summary.xlsx` | All bugs with severity, PBI / US / AC, test case + step, first found, last seen, status (git-ignored) |
+
+## Run
 
 ```bash
-npm ci                                  # once, at repo root
-node qc/run.js                          # run every automated case (~1 min)
-node qc/run.js --suite us-06.4          # one suite: us-06.4 | us-06.6 | rf-08
-node qc/run.js --id TC-RF08-020         # one case (repeat --id for more)
-pip install openpyxl && python3 qc/build_excel.py   # rebuild the workbook
+npm ci                                   # once, at repo root
+node qc/run.js                           # all automated cases, quick check → qc/results/latest.json
+node qc/run.js --pbi RF-09 --id TC-09.3-04
+node qc/run.js --date 2026-12-05 --run 1 --title "Sprint 6 regression"   # record a run → qc/runs/
+pip install openpyxl && python3 qc/build_excel.py                        # rebuild all workbooks
 ```
+
+## Layout
 
 | Path | What |
 |---|---|
-| `RetailFlow_QC_TestCases.xlsx` | Deliverable: Read Me, Summary, Test Cases, Traceability, Automation Scripts |
-| `suites/*.js` | Test case catalog **and** automation — one object per case; `auto` is the script (manual cases have none) |
-| `lib/harness.js` | Boots a server per case on a fresh seeded DB, per-role API clients, stock reconciliation |
-| `run.js` | Runner → `results/latest.json` (git-ignored); exit code 1 when a case fails |
-| `build_excel.py` | Builds the workbook from `results/latest.json` (+ bug ids from `bug-log.md`) |
-| `bug-log.md` | QC bug log — git-ignored, local only |
+| `catalog/rf-06.js` … `rf-10.js` | PBI → user story → AC → test cases; each case holds its manual steps and its automation (`auto`) |
+| `catalog/common.js` | Prerequisite wording and shared business helpers |
+| `lib/harness.js` | Server per case on a fresh seeded DB, per-role API clients, step tracking (`ctx.at(n)`), stock reconciliation |
+| `run.js` | Executes cases; records Actual Result per step (passed steps "As expected", failing step with the observation, later steps "Not executed") |
+| `runs/<date>_run<n>.json` | Recorded runs (source of the TestRun files) |
+| `bug-register.json` | Bugs mapped to `TC-ID#step` (git-ignored, source of Bug_Summary and the Note column) |
 
-To add a case, append an object to the right suite (copy a neighbour), run it with `--id`, then rebuild the workbook. When Dev ships BA endpoints with different paths than assumed, update `PATHS` at the top of `suites/rf-08.js`.
+API paths assumed for BA features that do not exist yet are constants at the top of `catalog/common.js` (`RF08`, `PROMO`, `REPORT`).

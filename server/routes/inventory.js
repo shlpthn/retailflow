@@ -31,11 +31,11 @@ router.get('/', requirePermission('INVENTORY_VIEW'), resolveStoreScope, (req, re
 
   for (const product of db.products) {
     if (!db.getInventoryRow(storeId, product.id)) {
-      db.inventory.push({ storeId, productId: product.id, quantity: 0, threshold: 10 });
+      db.inventory.push({ storeId, productId: product.id, quantity: 0, threshold: 0 });
     }
   }
 
-  const rows = db.getInventoryForStore(storeId).map((row) => {
+  const allRows = db.getInventoryForStore(storeId).map((row) => {
     const product = db.getProduct(row.productId);
     return {
       storeId: row.storeId,
@@ -49,7 +49,9 @@ router.get('/', requirePermission('INVENTORY_VIEW'), resolveStoreScope, (req, re
     };
   });
 
-  const lowStock = rows.filter((r) => r.status !== 'OK');
+  // US-10.3 AC1 filters: low-stock only, zero stock (the activity panel always covers every row).
+  const rows = allRows.filter((r) => (req.query.lowStockOnly !== 'true' || r.status !== 'OK') && (req.query.zeroStock !== 'true' || r.quantity === 0));
+  const lowStock = allRows.filter((r) => r.status !== 'OK');
   const pendingTransfersIn = db.transfers.filter(
     (t) => t.destinationStoreId === storeId && ['DISPATCHED', 'IN_TRANSIT'].includes(t.status)
   );
@@ -149,7 +151,7 @@ router.post('/add-stock', requirePermission('INVENTORY_RECEIVE'), resolveStoreSc
   if (!product) return res.status(404).json({ error: 'Unknown product/barcode' });
 
   let row = db.getInventoryRow(storeId, productId);
-  if (!row) { row = { storeId, productId, quantity: 0, threshold: 10 }; db.inventory.push(row); }
+  if (!row) { row = { storeId, productId, quantity: 0, threshold: 0 }; db.inventory.push(row); }
   const before = row.quantity;
   row.quantity += qty;
 
@@ -191,6 +193,32 @@ router.post('/dispatch-stock', requirePermission('INVENTORY_DISPATCH'), resolveS
   });
 
   res.json({ storeId, productId, quantity: row.quantity });
+});
+
+// US-05.3 / US-08.6 AC3 — stock adjustment with a reason code (BR-11, BR-12). quantityChange is signed and ≠ 0.
+const ADJUST_REASONS = ['DAMAGED', 'EXPIRED', 'LOST', 'STOCKTAKE_DIFF', 'TRANSFER_DIFF', 'OTHER'];
+router.post('/adjust', requirePermission('INVENTORY_ADJUST'), resolveStoreScope, (req, res) => {
+  const { productId, quantityChange, reasonCode, note, reference } = req.body || {};
+  const change = typeof quantityChange === 'number' ? quantityChange : (typeof quantityChange === 'string' && /^-?[0-9]+$/.test(quantityChange) ? Number(quantityChange) : NaN);
+  if (!productId || !Number.isSafeInteger(change) || change === 0) return res.status(400).json({ error: 'productId and a non-zero whole quantityChange are required' });
+  if (!ADJUST_REASONS.includes(reasonCode)) return res.status(400).json({ error: `reasonCode must be one of ${ADJUST_REASONS.join(', ')}` });
+  if (reasonCode === 'OTHER' && !(note && String(note).trim())) return res.status(400).json({ error: 'A note is required for reason OTHER' });
+  const storeId = req.storeScope.storeId;
+  if (!assertStoreAccess(req, res, storeId)) return;
+  const product = db.getProduct(productId);
+  if (!product) return res.status(404).json({ error: 'Unknown product' });
+
+  let row = db.getInventoryRow(storeId, productId);
+  if (!row) { row = { storeId, productId, quantity: 0, threshold: 0 }; db.inventory.push(row); }
+  if (row.quantity + change < 0) return res.status(409).json({ error: `Stock cannot go below 0 (on-hand ${row.quantity})` });
+  const before = row.quantity;
+  row.quantity += change;
+  db.stockMovements.push({
+    id: db.id('MOV'), storeId, productId, type: 'ADJUST', quantity: change, reasonCode,
+    reference: reference || null, actorId: req.user.id, note: note || null, createdAt: new Date().toISOString(),
+  });
+  db.logAudit({ user: req.user, action: 'ADJUST_STOCK', resource: `${storeId}/${productId}`, storeId, before: { quantity: before }, after: { quantity: row.quantity, reasonCode, reference: reference || null } });
+  res.status(201).json({ storeId, productId, quantity: row.quantity, reasonCode, reference: reference || null });
 });
 
 module.exports = router;

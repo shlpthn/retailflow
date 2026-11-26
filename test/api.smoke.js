@@ -100,7 +100,8 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
     check('POST promo rejects Infinity value', r.status === 400, r.status + ' ' + JSON.stringify(r.body));
     r = await req('POST', '/api/promotions', T.ho, { name: 'BOGO', code: 'BOGO1', type: 'BOGO', value: 10, validFrom: '2026-01-01', validTo: '2026-12-31' });
     check('POST promo rejects bad type', r.status === 400, r.status + ' ' + JSON.stringify(r.body));
-    r = await req('POST', '/api/promotions', T.ho, { name: 'BOGO', code: 'BOGO1', type: 'PERCENT', value: 10, validFrom: '2026-01-01', validTo: '2026-12-31' });
+    // one promotion at a time (BR-16): use a window after the seeded 2026 promotion
+    r = await req('POST', '/api/promotions', T.ho, { name: 'BOGO', code: 'BOGO1', type: 'PERCENT', value: 10, validFrom: '2027-01-01', validTo: '2027-01-31' });
     check('POST promo accepts valid promo', r.status === 201 && r.body && r.body.value === 10, r.status + ' ' + JSON.stringify(r.body));
 
 // ---- Bug 1: approve must not strand requests ----

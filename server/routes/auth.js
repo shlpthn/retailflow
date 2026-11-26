@@ -9,7 +9,12 @@ router.post('/login', (req, res) => {
   const { username, password } = req.body || {};
   if (!username || !password) return res.status(400).json({ error: 'username and password required' });
   const result = login(username, password);
-  if (!result) return res.status(401).json({ error: 'Invalid credentials' });
+  const account = db.getUserByUsername(username);
+  if (!result) {
+    db.logAudit({ user: null, userName: String(username), action: 'LOGIN_FAILED', resource: account ? account.id : String(username), storeId: account && account.storeId, result: 'FAILED', entityType: 'User' });
+    return res.status(401).json({ error: 'Invalid credentials' });
+  }
+  db.logAudit({ user: account, action: 'LOGIN_SUCCESS', resource: account.id, storeId: account.storeId, entityType: 'User' });
   res.json(result);
 });
 

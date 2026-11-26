@@ -111,11 +111,16 @@ export const StockRequestsPage: React.FC = () => {
   }
 
   const handleReject = async (id: string) => {
-    const reason = prompt('Reason for rejecting this request (optional):')
+    const reason = prompt('Reason for rejecting this request (required):')
+    if (reason === null) return
+    if (!reason.trim()) {
+      toast.error('A reason is required to reject a request')
+      return
+    }
     try {
       await api(`/stock-requests/${id}/reject`, {
         method: 'POST',
-        body: { reason: reason || null },
+        body: { reason: reason.trim() },
       })
       toast.success('Request rejected')
       loadData()
