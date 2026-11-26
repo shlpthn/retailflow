@@ -74,6 +74,7 @@ export const InventoryPage: React.FC = () => {
   // Dialog states
   const [stockModalMode, setStockModalMode] = useState<'add-stock' | 'dispatch-stock' | null>(null)
   const [isRequestModalOpen, setIsRequestModalOpen] = useState(false)
+  const [requestProductId, setRequestProductId] = useState<string | null>(null)
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false)
   const [historyModalTab, setHistoryModalTab] = useState<'movements' | 'restocks'>('movements')
 
@@ -171,7 +172,19 @@ export const InventoryPage: React.FC = () => {
   }> = []
 
   inventory.activityPanel.lowStockAlerts.forEach((r) =>
-    alertItems.push({ id: `low-${r.productId}`, text: `Low stock: ${r.name} (${r.quantity} left)` })
+    alertItems.push({
+      id: `low-${r.productId}`,
+      text: `Low stock: ${r.name} (${r.quantity} left)`,
+      action: has('STOCK_REQUEST_CREATE')
+        ? {
+            label: 'Request',
+            fn: () => {
+              setRequestProductId(r.productId)
+              setIsRequestModalOpen(true)
+            },
+          }
+        : undefined,
+    })
   )
 
   inventory.activityPanel.pendingRequests.forEach((r) =>
@@ -435,7 +448,11 @@ export const InventoryPage: React.FC = () => {
       <RequestStockDialog
         open={isRequestModalOpen}
         rows={inventory.rows}
-        onClose={() => setIsRequestModalOpen(false)}
+        initialProductId={requestProductId}
+        onClose={() => {
+          setIsRequestModalOpen(false)
+          setRequestProductId(null)
+        }}
         onSuccess={loadData}
       />
 

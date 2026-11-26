@@ -21,6 +21,8 @@ interface InventoryRow {
 interface RequestStockDialogProps {
   open: boolean
   rows: InventoryRow[]
+  /** Product to select when the dialog is opened from a low-stock alert. */
+  initialProductId?: string | null
   onClose: () => void
   onSuccess: () => void
 }
@@ -28,6 +30,7 @@ interface RequestStockDialogProps {
 export const RequestStockDialog: React.FC<RequestStockDialogProps> = ({
   open,
   rows,
+  initialProductId,
   onClose,
   onSuccess,
 }) => {
@@ -41,6 +44,13 @@ export const RequestStockDialog: React.FC<RequestStockDialogProps> = ({
       setSelectedProductId(rows[0].productId)
     }
   }, [rows, selectedProductId])
+
+  // US-08.1 AC2: pre-fill the form from the low-stock list.
+  React.useEffect(() => {
+    if (open && initialProductId) {
+      setSelectedProductId(initialProductId)
+    }
+  }, [open, initialProductId])
 
   const handleSend = async () => {
     if (!selectedProductId || quantity <= 0) return
